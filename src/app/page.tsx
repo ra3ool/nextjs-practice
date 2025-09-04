@@ -39,7 +39,7 @@ export default function HomePage() {
         </CardContent>
         <CardFooter className="justify-end">
           <Button asChild>
-            <Link href="/about">Go to About</Link>
+            <Link href="/dashboard">Go to dashboard</Link>
           </Button>
         </CardFooter>
       </Card>

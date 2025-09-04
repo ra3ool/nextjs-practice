@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
-export function SiteHeader() {
+export function SiteHeader({ className }: { className: string }) {
   return (
-    <header className="border-b">
+    <header className={cn('border-b', className)}>
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <Link href="/" className="font-semibold tracking-tight">
           Next Panel

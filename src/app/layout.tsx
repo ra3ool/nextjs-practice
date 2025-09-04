@@ -6,8 +6,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Next Steps',
-  description: 'Learning Next.js step by step',
+  title: 'Next Panel',
+  description: 'Learning Next.js',
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SiteHeader />
+        <SiteHeader className="site-header" />
         <main className="container mx-auto px-4 py-8">{children}</main>
       </body>
     </html>
