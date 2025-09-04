@@ -6,8 +6,13 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Next Panel',
-  description: 'Learning Next.js',
+  title: {
+    default: 'Next Panel',
+    template: '%s | Next Panel',
+  },
+  description: 'Next.js Panel Practice',
+  keywords: ['Next.js', 'React', 'Learning'],
+  authors: [{ name: 'Rasool' }],
 };
 
 export default function RootLayout({
