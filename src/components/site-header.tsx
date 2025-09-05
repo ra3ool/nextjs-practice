@@ -1,8 +1,13 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export function SiteHeader({ className }: { className: string }) {
+  const { data: session, status } = useSession();
+
   return (
     <header className={cn('border-b', className)}>
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
@@ -16,9 +21,25 @@ export function SiteHeader({ className }: { className: string }) {
           >
             About
           </Link>
-          <Button asChild size="sm">
-            <Link href="/login">Login</Link>
-          </Button>
+
+          {status === 'loading' ? (
+            <Button size="sm" disabled>
+              Loading...
+            </Button>
+          ) : session ? (
+            <Button
+              size="sm"
+              variant="outline"
+              className="bg-red-200"
+              onClick={() => signOut({ callbackUrl: '/auth' })}
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button asChild size="sm">
+              <Link href="/auth">Login</Link>
+            </Button>
+          )}
         </nav>
       </div>
     </header>
