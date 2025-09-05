@@ -1,7 +1,9 @@
 import { SiteHeader } from '@/components/site-header';
+import { Toaster } from '@/components/ui/sonner';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,8 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SiteHeader className="site-header" />
-        <main className="container mx-auto px-4 py-8">{children}</main>
+        <Providers>
+          <SiteHeader className="site-header" />
+          <main className="container mx-auto px-4 py-8">{children}</main>
+        </Providers>
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );
