@@ -1,27 +1,19 @@
+import { authOptions } from '@/lib/auth';
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
+import { getServerSession } from 'next-auth';
 
 export const metadata: Metadata = {
   title: 'Profile',
 };
 
-export default function ProfilePage() {
-  'use client';
+export default async function DashboardHome() {
+  const session = await getServerSession(authOptions);
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-bold">Streaming Getting User</h1>
-      <Suspense fallback={<p>Loading user...</p>}>
-        <UserInfo />
-      </Suspense>
+    <div>
+      <h1 className="text-xl font-bold">Dashboard Home</h1>
+      <p>Welcome back, {session?.user?.name}!</p>
+      <p>Email: {session?.user?.email}</p>
     </div>
   );
-}
-
-async function UserInfo() {
-  const res = await fetch('https://jsonplaceholder.typicode.com/users/2', {
-    cache: 'no-store',
-  });
-  const user = await res.json();
-  return <p>User: {user.name}</p>;
 }
