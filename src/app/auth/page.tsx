@@ -20,6 +20,7 @@ import { useState } from 'react';
 export default function AuthPage() {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -34,19 +35,34 @@ export default function AuthPage() {
           password,
           redirect: false,
         });
-        if (res?.error) {
+        if (res?.ok) {
+          toast.success('Welcome back!');
+          router.push('/dashboard');
+        } else if (res?.error) {
           if (res.error === 'CredentialsSignin') {
             toast.error('Invalid email or password');
           } else {
             toast.error('Something went wrong. Please try again.');
           }
-        } else if (res?.ok) {
-          toast.success('Welcome back!');
-          router.push('/dashboard');
         }
       } else {
-        // 🔹 Placeholder for signup (DB integration in next step)
-        toast.info('Signup will be available after DB integration');
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        if (res.ok) {
+          toast.success('Account created! Logging you in...');
+          await signIn('credentials', {
+            email,
+            password,
+            callbackUrl: '/dashboard',
+          });
+        } else {
+          const data = await res.json();
+          toast.error(data.error || 'Registration failed');
+        }
       }
     } catch (error) {
       console.error('Error in auth: ', error);
@@ -79,6 +95,19 @@ export default function AuthPage() {
         <CardContent className="space-y-3">
           {/* TODO use components ui later with validation */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <div className="grid gap-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="name"
+                  placeholder="Ati"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
