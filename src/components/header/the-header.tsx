@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Loader, LogOutIcon, ShoppingCartIcon, UserIcon } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { ToggleTheme } from './toggle-theme';
 
 export function SiteHeader({ className }: { className: string }) {
   const { data: session, status } = useSession();
@@ -15,19 +16,23 @@ export function SiteHeader({ className }: { className: string }) {
         <Link href="/" className="font-semibold tracking-tight">
           Next Panel
         </Link>
-        <nav className="flex items-center gap-3">
-          <Link
-            href="/cart"
-            className="flex gap-2  text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-          >
-            <ShoppingCartIcon />
-            Cart
-          </Link>
+        <nav className="flex items-center gap-2">
+          <ToggleTheme />
+
+          <Button variant="ghost" asChild>
+            <Link
+              href="/cart"
+              className="flex gap-2  text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            >
+              <ShoppingCartIcon />
+              Cart
+            </Link>
+          </Button>
 
           {status === 'loading' ? (
             <Button disabled>
               <Loader className="animate-spin" />
-              Loading...
+              Loading
             </Button>
           ) : session ? (
             <Button
