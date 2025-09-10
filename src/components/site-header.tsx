@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Loader, LogOutIcon, ShoppingCartIcon, UserIcon } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -16,28 +17,33 @@ export function SiteHeader({ className }: { className: string }) {
         </Link>
         <nav className="flex items-center gap-3">
           <Link
-            href="/about"
-            className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+            href="/cart"
+            className="flex gap-2  text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
           >
-            About
+            <ShoppingCartIcon />
+            Cart
           </Link>
 
           {status === 'loading' ? (
-            <Button size="sm" disabled>
+            <Button disabled>
+              <Loader className="animate-spin" />
               Loading...
             </Button>
           ) : session ? (
             <Button
-              size="sm"
               variant="outline"
               className="bg-red-200"
               onClick={() => signOut({ callbackUrl: '/auth' })}
             >
+              <LogOutIcon />
               Logout
             </Button>
           ) : (
-            <Button asChild size="sm">
-              <Link href="/auth">Login</Link>
+            <Button asChild>
+              <Link href="/auth">
+                <UserIcon />
+                Login
+              </Link>
             </Button>
           )}
         </nav>
