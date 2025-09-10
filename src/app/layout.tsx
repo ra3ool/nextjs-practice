@@ -1,4 +1,4 @@
-import { SiteHeader } from '@/components/site-header';
+import { SiteHeader } from '@/components/header/the-header';
 import { Toaster } from '@/components/ui/sonner';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
           <SiteHeader className="site-header" />
