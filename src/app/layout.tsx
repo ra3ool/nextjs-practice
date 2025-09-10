@@ -6,11 +6,12 @@ import './globals.css';
 import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
+const appName = process.env.APP_NAME || '';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Next Panel',
-    template: '%s | Next Panel',
+    default: appName,
+    template: `%s | ${appName}`,
   },
   description: 'Next.js Panel Practice',
   keywords: ['Next.js', 'React', 'Learning'],
