@@ -1,3 +1,4 @@
+import ProductCard from '@/components/products/product-card';
 import { products } from '@/db/products';
 
 function ProductsList({ title, limit }: { title?: string; limit?: number }) {
@@ -7,10 +8,10 @@ function ProductsList({ title, limit }: { title?: string; limit?: number }) {
 
   return (
     <>
-      <h2 className="mb-4">{title}</h2>
+      <h2 className="font-bold text-2xl mb-4">{title}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {limitedProducts.map((product) => {
-          return <div>{product.title}</div>;
+          return <ProductCard product={product} key={product.id} />;
         })}
       </div>
     </>
