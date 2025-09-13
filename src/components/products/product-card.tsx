@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { createSlug } from '@/utils/create-slug';
 import { StarIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,7 +24,7 @@ function ProductCard({ product }: { product: any }) {
         </Link>
       </CardHeader>
       <CardContent className="p-4 flex flex-col gap-2">
-        <Link href={`categories/${product.category}`}>
+        <Link href={`categories/${createSlug(product.category)}`}>
           <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
             {product.category}
           </p>

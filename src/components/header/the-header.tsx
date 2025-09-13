@@ -4,7 +4,7 @@ import HeaderMenu from './header-menu';
 
 export function SiteHeader({ className }: { className: string }) {
   return (
-    <header className={cn('border-b', className)}>
+    <header className={cn('border-b select-none', className)}>
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <Link href="/" className="font-semibold tracking-tight">
           Store Project
