@@ -1,9 +1,53 @@
 import { products } from '@/db/products';
+import { createSlug } from '@/utils/create-slug';
 import { PrismaClient } from '@prisma/client';
 
-const db = new PrismaClient();
+export async function seedProducts(db: PrismaClient) {
+  console.log('🌱 Seeding products...');
 
-export async function seedProducts() {
-  await db.product.deleteMany();
-  await db.product.createMany({ data: products });
+  // categories
+  const categories = Array.from(new Set(products.map((p) => p.category)));
+  const categoryMap: Record<string, number> = {};
+  for (const name of categories) {
+    const slug = createSlug(name);
+    const category = await db.category.upsert({
+      where: { slug },
+      update: {},
+      create: { name, slug },
+    });
+    categoryMap[name] = category.id;
+  }
+
+  // brands
+  const brands = Array.from(new Set(products.map((p) => p.brand)));
+  const brandMap: Record<string, number> = {};
+  for (const name of brands) {
+    const slug = createSlug(name);
+    const brand = await db.brand.upsert({
+      where: { slug },
+      update: {},
+      create: { name, slug },
+    });
+    brandMap[name] = brand.id;
+  }
+
+  // products
+  for (const p of products) {
+    await db.product.upsert({
+      where: { slug: p.slug },
+      update: {},
+      create: {
+        name: p.name,
+        slug: p.slug,
+        description: p.description,
+        price: p.price,
+        rate: p.rate,
+        images: JSON.stringify(p.images),
+        categoryId: categoryMap[p.category],
+        brandId: brandMap[p.brand],
+      },
+    });
+  }
+
+  console.log('📦 Products seeded');
 }
