@@ -10,39 +10,43 @@ function ProductCard({ product }: { product: any }) {
     <Card className="flex flex-col overflow-hidden duration-300 hover:shadow-xl">
       <CardHeader className="p-4 flex items-center justify-center">
         <Link
-          href={`products/${product.id}`}
-          className="flex justify-center items-center h-48 w-full"
+          href={`products/${product.slug}`}
+          className="flex justify-center items-center h-48 w-full relative"
         >
           <Image
-            src={product.image}
-            alt={product.title}
-            width={192}
-            height={192}
+            src={product.images[0]}
+            alt={product.name}
+            fill
+            sizes="(max-width: 768px) 100px, 192px"
             priority={true}
-            className="object-contain h-full w-auto max-w-full"
+            className="object-contain"
           />
         </Link>
       </CardHeader>
       <CardContent className="p-4 flex flex-col gap-2">
-        <Link href={`categories/${createSlug(product.category)}`}>
-          <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
-            {product.category}
-          </p>
-        </Link>
-        <Link href={`products/${product.id}`}>
+        <Link href={`products/${product.slug}`}>
           <h6 className="font-semibold text-lg line-clamp-2 hover:text-blue-600 transition-colors">
-            {product.title}
+            {product.name}
           </h6>
         </Link>
+        <div className="flex items-center justify-between flex-wrap">
+          <Link href={`brands/${product.brand.slug}`}>
+            <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
+              {product.brand.name}
+            </p>
+          </Link>
+          <Link href={`categories/${product.category.slug}`}>
+            <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
+              {product.category.name}
+            </p>
+          </Link>
+        </div>
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <span className="text-yellow-500 mr-1">
               <StarIcon size={16} />
             </span>
-            <p>
-              {product.rating?.rate}{' '}
-              <span className="text-gray-500">({product.rating?.count})</span>
-            </p>
+            <p>{product.rate}</p>
           </div>
           <ProductPrice
             value={product.price}
