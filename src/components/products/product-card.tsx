@@ -10,7 +10,7 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
     <Card className="flex flex-col overflow-hidden duration-300 hover:shadow-xl">
       <CardHeader className="p-4 flex items-center justify-center">
         <Link
-          href={`products/${product.slug}`}
+          href={`product/${product.slug}`}
           className="flex justify-center items-center h-48 w-full relative"
         >
           <Image
@@ -24,7 +24,7 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
         </Link>
       </CardHeader>
       <CardContent className="p-4 flex flex-col gap-2">
-        <Link href={`products/${product.slug}`}>
+        <Link href={`product/${product.slug}`}>
           <h6 className="font-semibold text-lg line-clamp-2 hover:text-blue-600 transition-colors">
             {product.name}
           </h6>
