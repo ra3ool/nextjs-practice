@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { createSlug } from '@/utils/create-slug';
+import { ProductWithRelations } from '@/types';
 import { StarIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductPrice from './products-price';
 
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product }: { product: ProductWithRelations }) {
   return (
     <Card className="flex flex-col overflow-hidden duration-300 hover:shadow-xl">
       <CardHeader className="p-4 flex items-center justify-center">

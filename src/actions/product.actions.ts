@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 
-export const getProducts = async (limit: number = 20) => {
-  const db = new PrismaClient();
+const db = new PrismaClient();
 
+export const getProducts = async (limit: number = 20) => {
   const data = await db.product.findMany({
     take: limit,
     orderBy: { createdAt: 'desc' },
@@ -14,7 +14,7 @@ export const getProducts = async (limit: number = 20) => {
 
   const productsWithParsedImages = data.map((product) => ({
     ...product,
-    images: JSON.parse(product.images) as string[],
+    images: JSON.parse(product.images),
     price: Number(product.price),
     rate: Number(product.rate),
   }));
