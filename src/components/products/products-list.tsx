@@ -9,7 +9,6 @@ async function ProductsList({
   limit?: number;
 }) {
   const products = await getProducts(limit);
-  console.log('products :', products);
 
   if (products.length === 0) return <h3>No products found</h3>;
 

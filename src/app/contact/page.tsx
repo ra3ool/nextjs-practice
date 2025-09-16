@@ -8,8 +8,6 @@ const submitContact = async (data: FormData) => {
   'use server';
   const name = data.get('name')?.toString() ?? '';
 
-  console.log('Received contact:', name);
-
   revalidatePath('/'); //TODO read more about
 };
 

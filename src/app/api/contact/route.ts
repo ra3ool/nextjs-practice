@@ -4,8 +4,6 @@ export async function POST(req: Request) {
   const formData = await req.formData();
   const name = formData.get('name')?.toString();
 
-  console.log('API received:', name);
-
   return NextResponse.json({ success: true, name });
 }
 
