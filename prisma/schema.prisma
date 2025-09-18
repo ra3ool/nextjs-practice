@@ -25,6 +25,7 @@ model Product {
   description String   @db.Text
   price       Decimal  @default(0) @db.Decimal(12, 2)
   rate        Decimal  @default(0) @db.Decimal(3, 2)
+  stock       Int      @default(0)
   createdAt   DateTime @default(now()) @db.Timestamp(6)
   images      String   @db.Text
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)

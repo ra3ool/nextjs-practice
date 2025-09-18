@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ProductWithRelations } from '@/types';
 import { StarIcon } from 'lucide-react';
@@ -48,10 +49,14 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
             </span>
             <p>{product.rate}</p>
           </div>
-          <ProductPrice
-            value={product.price}
-            className="font-bold text-green-700"
-          />
+          {product.stock > 0 ? (
+            <ProductPrice
+              value={product.price}
+              className="font-bold text-green-700"
+            />
+          ) : (
+            <Badge variant="destructive">Out Of Stock</Badge>
+          )}
         </div>
       </CardContent>
     </Card>

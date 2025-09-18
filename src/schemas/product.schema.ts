@@ -12,6 +12,7 @@ export const insertProductSchema = z.object({
   brandId: z.number().int().positive(),
   price: z.number().positive().max(999999999.99),
   rate: z.number().min(0).max(5).optional().default(0),
+  stock: z.number().min(0).positive().default(0),
   images: z.array(z.url()).min(1).max(10),
 });
 

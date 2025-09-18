@@ -10,6 +10,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png'],
     brand: 'Fjallraven',
     rate: 3.9,
+    stock: 32,
   },
   {
     id: 2,
@@ -24,6 +25,7 @@ export const products = [
     ],
     brand: 'Generic',
     rate: 4.1,
+    stock: 0,
   },
   {
     id: 3,
@@ -36,6 +38,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_t.png'],
     brand: 'Generic',
     rate: 4.7,
+    stock: 36,
   },
   {
     id: 4,
@@ -48,6 +51,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/71YXzeOuslL._AC_UY879_t.png'],
     brand: 'Generic',
     rate: 2.1,
+    stock: 89,
   },
   {
     id: 5,
@@ -62,6 +66,7 @@ export const products = [
     ],
     brand: 'John Hardy',
     rate: 4.6,
+    stock: 69,
   },
   {
     id: 6,
@@ -76,6 +81,7 @@ export const products = [
     ],
     brand: 'Solid Gold',
     rate: 3.9,
+    stock: 0,
   },
   {
     id: 7,
@@ -90,6 +96,7 @@ export const products = [
     ],
     brand: 'Generic',
     rate: 3.0,
+    stock: 0,
   },
   {
     id: 8,
@@ -104,6 +111,7 @@ export const products = [
     ],
     brand: 'Generic',
     rate: 1.9,
+    stock: 76,
   },
   {
     id: 9,
@@ -116,6 +124,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/61IBBVJvSDL._AC_SY879_t.png'],
     brand: 'WD',
     rate: 3.3,
+    stock: 66,
   },
   {
     id: 10,
@@ -128,6 +137,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/61U7T1koQqL._AC_SX679_t.png'],
     brand: 'SanDisk',
     rate: 2.9,
+    stock: 0,
   },
   {
     id: 11,
@@ -140,6 +150,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/71kWymZ+c+L._AC_SX679_t.png'],
     brand: 'Silicon Power',
     rate: 4.8,
+    stock: 324,
   },
   {
     id: 12,
@@ -152,6 +163,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/61mtL65D4cL._AC_SX679_t.png'],
     brand: 'WD',
     rate: 4.8,
+    stock: 567,
   },
   {
     id: 13,
@@ -164,6 +176,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/81QpkIctqPL._AC_SX679_t.png'],
     brand: 'Acer',
     rate: 2.9,
+    stock: 12,
   },
   {
     id: 14,
@@ -176,6 +189,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/81Zt42ioCgL._AC_SX679_t.png'],
     brand: 'Samsung',
     rate: 2.2,
+    stock: 155,
   },
   {
     id: 15,
@@ -188,6 +202,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/51Y5NI-I5jL._AC_UX679_t.png'],
     brand: 'BIYLACLESEN',
     rate: 2.6,
+    stock: 1778,
   },
   {
     id: 16,
@@ -200,6 +215,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/81XH0e8fefL._AC_UY879_t.png'],
     brand: 'Lock and Love',
     rate: 2.9,
+    stock: 32,
   },
   {
     id: 17,
@@ -212,6 +228,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/71HblAHs5xL._AC_UY879_-2t.png'],
     brand: 'Generic',
     rate: 3.8,
+    stock: 0,
   },
   {
     id: 18,
@@ -224,6 +241,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/71z3kpMAYsL._AC_UY879_t.png'],
     brand: 'MBJ',
     rate: 4.7,
+    stock: 1463,
   },
   {
     id: 19,
@@ -236,6 +254,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_t.png'],
     brand: 'Opna',
     rate: 4.5,
+    stock: 99,
   },
   {
     id: 20,
@@ -248,5 +267,6 @@ export const products = [
     images: ['https://fakestoreapi.com/img/61pHAEJ4NML._AC_UX679_t.png'],
     brand: 'DANVOUY',
     rate: 3.6,
+    stock: 1665,
   },
 ];

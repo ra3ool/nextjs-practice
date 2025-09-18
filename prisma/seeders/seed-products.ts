@@ -42,6 +42,7 @@ export async function seedProducts(db: PrismaClient) {
         description: p.description,
         price: p.price,
         rate: p.rate,
+        stock: p.stock,
         images: JSON.stringify(p.images),
         categoryId: categoryMap[p.category],
         brandId: brandMap[p.brand],

@@ -1,4 +1,4 @@
-import { Product } from '@/types';
+import { ProductWithRelations } from '@/types';
 import { PrismaClient } from '@prisma/client';
 
 interface GetProductById {
@@ -11,14 +11,16 @@ type GetProductParams = GetProductById | GetProductBySlug;
 
 const db = new PrismaClient();
 
-const convertProduct = (product: any): Product => ({
+const convertProduct = (product: any): ProductWithRelations => ({
   ...product,
   images: JSON.parse(product.images),
   price: Number(product.price),
   rate: Number(product.rate),
 });
 
-export const getProducts = async (limit: number = 20): Promise<Product[]> => {
+export const getProducts = async (
+  limit: number = 20,
+): Promise<ProductWithRelations[]> => {
   try {
     const data = await db.product.findMany({
       take: limit,
@@ -37,7 +39,7 @@ export const getProducts = async (limit: number = 20): Promise<Product[]> => {
 
 export const getProduct = async (
   params: GetProductParams,
-): Promise<Product | null> => {
+): Promise<ProductWithRelations | null> => {
   try {
     const where = 'id' in params ? { id: params.id } : { slug: params.slug };
 
