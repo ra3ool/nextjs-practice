@@ -31,12 +31,12 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
           </h6>
         </Link>
         <div className="flex items-center justify-between flex-wrap">
-          <Link href={`brands/${product.brand.slug}`}>
+          <Link href={`/products/brands/${product.brand.slug}`}>
             <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
               {product.brand.name}
             </p>
           </Link>
-          <Link href={`categories/${product.category.slug}`}>
+          <Link href={`/products/categories/${product.category.slug}`}>
             <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
               {product.category.name}
             </p>
