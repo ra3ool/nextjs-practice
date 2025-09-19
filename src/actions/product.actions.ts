@@ -11,6 +11,7 @@ type GetProductParams = GetProductById | GetProductBySlug;
 
 const db = new PrismaClient();
 
+//FIXME to don't use any
 const convertProduct = (product: any): ProductWithRelations => ({
   ...product,
   images: JSON.parse(product.images),

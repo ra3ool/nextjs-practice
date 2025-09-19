@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 const submitContact = async (data: FormData) => {
   'use server';
   const name = data.get('name')?.toString() ?? '';
+  console.log('name :', name);
 
   revalidatePath('/'); //TODO read more about
 };

@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Return user data without password
+    //TODO fix _ to don't get error in vercel compiling
     const { password: _, ...userWithoutPassword } = user;
 
     return NextResponse.json(
