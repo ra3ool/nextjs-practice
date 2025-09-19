@@ -18,7 +18,7 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
             src={product.images[0]}
             alt={product.name}
             fill
-            sizes="(max-width: 768px) 100px, 192px"
+            sizes="(max-width: 768px) 50vw, 192px"
             priority={true}
             className="object-contain"
           />

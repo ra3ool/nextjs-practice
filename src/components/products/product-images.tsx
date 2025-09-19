@@ -4,40 +4,43 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useState } from 'react';
 
+const PREFETCH_COUNT = 4;
+
 export default function ProductImages({ images }: { images: string[] }) {
   const [current, setCurrent] = useState(0);
 
   return (
     <div className="space-y-4">
-      <div className="relative w-full max-w-sm aspect-square mx-auto">
+      <div className="relative w-full h-96 md:h-[450px] rounded-lg overflow-hidden">
         <Image
           src={images[current]}
           alt="product image"
           fill
-          sizes="(max-width: 640px) 100vw, 350px"
-          className="object-contain rounded-lg"
+          sizes="(max-width: 768px) 100vw, 50vw"
           priority={current === 0}
+          className="object-contain rounded-lg"
         />
       </div>
 
-      <div className="flex space-x-2">
+      <div className="flex flex-wrap gap-2 justify-center">
         {images.map((image, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrent(index)}
+          <div
             className={cn(
-              'relative w-16 h-16 rounded-md overflow-hidden border cursor-pointer',
+              'relative w-16 h-16 md:w-20 md:h-20 cursor-pointer border-2 rounded-md overflow-hidden',
               current === index ? 'border-blue-500' : 'border-transparent',
             )}
+            key={index}
+            onClick={() => setCurrent(index)}
           >
             <Image
               src={image}
-              alt={`thumbnail ${index}`}
+              alt={`thumbnail ${index + 1}`}
               fill
               sizes="64px"
+              priority={index < PREFETCH_COUNT}
               className="object-contain"
             />
-          </button>
+          </div>
         ))}
       </div>
     </div>
