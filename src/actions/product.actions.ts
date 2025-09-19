@@ -1,15 +1,5 @@
+import { prisma } from '@/lib/prisma';
 import { ProductWithRelations } from '@/types';
-import { PrismaClient } from '@prisma/client';
-
-interface GetProductById {
-  id: number;
-}
-interface GetProductBySlug {
-  slug: string;
-}
-type GetProductParams = GetProductById | GetProductBySlug;
-
-const db = new PrismaClient();
 
 //FIXME to don't use any
 const convertProduct = (product: any): ProductWithRelations => ({
@@ -23,7 +13,7 @@ export const getProducts = async (
   limit: number = 20,
 ): Promise<ProductWithRelations[]> => {
   try {
-    const data = await db.product.findMany({
+    const data = await prisma.product.findMany({
       take: limit,
       orderBy: { createdAt: 'desc' },
       include: { category: true, brand: true },
@@ -33,18 +23,17 @@ export const getProducts = async (
   } catch (error) {
     console.error('Error fetching product list:', error);
     return [];
-  } finally {
-    await db.$disconnect();
   }
 };
 
-export const getProduct = async (
-  params: GetProductParams,
-): Promise<ProductWithRelations | null> => {
+export const getProduct = async (params: {
+  id?: number;
+  slug?: string;
+}): Promise<ProductWithRelations | null> => {
   try {
-    const where = 'id' in params ? { id: params.id } : { slug: params.slug };
+    const where = params.id ? { id: params.id } : { slug: params.slug };
 
-    const product = await db.product.findUnique({
+    const product = await prisma.product.findUnique({
       where,
       include: { category: true, brand: true },
     });
@@ -53,7 +42,5 @@ export const getProduct = async (
   } catch (error) {
     console.error('Error fetching product:', error);
     return null;
-  } finally {
-    await db.$disconnect();
   }
 };
