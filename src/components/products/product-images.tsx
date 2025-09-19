@@ -1,7 +1,7 @@
 'use client';
 
+import { ImageWithLoader } from '@/components/image-with-loader';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 import { useState } from 'react';
 
 const PREFETCH_COUNT = 4;
@@ -12,7 +12,7 @@ export default function ProductImages({ images }: { images: string[] }) {
   return (
     <div className="space-y-4">
       <div className="relative w-full h-96 md:h-[450px] rounded-lg overflow-hidden">
-        <Image
+        <ImageWithLoader
           src={images[current]}
           alt="product image"
           fill
@@ -22,27 +22,29 @@ export default function ProductImages({ images }: { images: string[] }) {
         />
       </div>
 
-      <div className="flex flex-wrap gap-2 justify-center">
-        {images.map((image, index) => (
-          <div
-            className={cn(
-              'relative w-16 h-16 md:w-20 md:h-20 cursor-pointer border-2 rounded-md overflow-hidden',
-              current === index ? 'border-blue-500' : 'border-transparent',
-            )}
-            key={index}
-            onClick={() => setCurrent(index)}
-          >
-            <Image
-              src={image}
-              alt={`thumbnail ${index + 1}`}
-              fill
-              sizes="64px"
-              priority={index < PREFETCH_COUNT}
-              className="object-contain"
-            />
-          </div>
-        ))}
-      </div>
+      {images.length > 1 && (
+        <div className="flex flex-wrap gap-2 justify-center">
+          {images.map((image, index) => (
+            <div
+              className={cn(
+                'relative w-16 h-16 md:w-20 md:h-20 cursor-pointer border-2 rounded-md overflow-hidden',
+                current === index ? 'border-blue-500' : 'border-transparent',
+              )}
+              key={index}
+              onClick={() => setCurrent(index)}
+            >
+              <ImageWithLoader
+                src={image}
+                alt={`thumbnail ${index + 1}`}
+                fill
+                sizes="64px"
+                priority={index < PREFETCH_COUNT}
+                className="object-contain"
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

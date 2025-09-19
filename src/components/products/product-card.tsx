@@ -1,8 +1,8 @@
+import { ImageWithLoader } from '@/components/image-with-loader';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ProductWithRelations } from '@/types';
 import { StarIcon } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import ProductPrice from './products-price';
 
@@ -14,7 +14,7 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
           href={`product/${product.slug}`}
           className="flex justify-center items-center h-48 w-full relative"
         >
-          <Image
+          <ImageWithLoader
             src={product.images[0]}
             alt={product.name}
             fill
