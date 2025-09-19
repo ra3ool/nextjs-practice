@@ -15,6 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { signOut, useSession } from '@/lib/auth-client';
 import {
   ChevronDownIcon,
   EllipsisVerticalIcon,
@@ -24,7 +25,6 @@ import {
   ShoppingCartIcon,
   UserIcon,
 } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { ToggleTheme } from './toggle-theme';
 
