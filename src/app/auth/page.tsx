@@ -9,11 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { AuthForm } from './AuthForm';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || undefined;
 
   return (
     <Card className="w-full max-w-md">
@@ -31,7 +34,10 @@ export default function AuthPage() {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <AuthForm mode={isLogin ? 'login' : 'register'} />
+        <AuthForm
+          mode={isLogin ? 'login' : 'register'}
+          callbackUrl={callbackUrl}
+        />
       </CardContent>
     </Card>
   );

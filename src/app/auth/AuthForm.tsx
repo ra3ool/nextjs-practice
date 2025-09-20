@@ -22,7 +22,7 @@ import { z } from 'zod';
 // Create separate schemas for better type safety and validation
 const loginSchema = z.object({
   email: z.email(),
-  password: z.string().min(4, 'Password must be at least 4 characters'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
 const registerSchema = loginSchema.extend({
@@ -32,7 +32,13 @@ const registerSchema = loginSchema.extend({
 type LoginValues = z.infer<typeof loginSchema>;
 type RegisterValues = z.infer<typeof registerSchema>;
 
-export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
+export function AuthForm({
+  mode,
+  callbackUrl,
+}: {
+  mode: 'login' | 'register';
+  callbackUrl?: string;
+}) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,50 +58,49 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
     try {
       if (mode === 'login') {
-        const res = await signIn('credentials', {
+        const signInRes = await signIn('credentials', {
           email: data.email,
           password: data.password,
           redirect: false,
         });
 
-        if (res?.ok) {
+        if (signInRes?.ok) {
           toast.success('Welcome back!');
-          router.push('/dashboard');
+          router.push(callbackUrl || '/dashboard');
         } else {
-          if (res?.error === 'CredentialsSignin') {
+          if (signInRes?.error === 'CredentialsSignin') {
             toast.error('Invalid email or password');
           } else {
             toast.error('Something went wrong. Please try again.');
           }
         }
       } else {
-        const res = await fetch('/api/auth/register', {
+        const registerRes = await fetch('/api/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
 
-        const result = await res.json();
-
-        if (res.ok) {
+        if (registerRes.ok) {
           toast.success('Account created successfully!');
 
           // Auto-login after successful registration
-          const loginRes = await signIn('credentials', {
+          const signInRes = await signIn('credentials', {
             email: data.email,
             password: data.password,
             redirect: false,
           });
 
-          if (loginRes?.ok) {
+          if (signInRes?.ok) {
             toast.success('Welcome to the app!');
-            router.push('/dashboard');
+            router.push(callbackUrl || '/dashboard');
           } else {
             toast.error(
               'Account created but login failed. Please try signing in.',
             );
           }
         } else {
+          const result = await registerRes.json();
           toast.error(result.error || 'Registration failed');
         }
       }

@@ -26,6 +26,7 @@ import {
   UserIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ToggleTheme } from './toggle-theme';
 
 export default function HeaderMenu() {
@@ -78,6 +79,7 @@ function NavContent() {
 }
 
 function NavAuthButtons() {
+  const pathName = usePathname();
   const { data: session, status } = useSession();
 
   if (status === 'loading') {
@@ -92,7 +94,10 @@ function NavAuthButtons() {
   if (!session) {
     return (
       <Button asChild>
-        <Link href="/auth" className="flex items-center gap-2">
+        <Link
+          href={`/auth?callbackUrl=${pathName}`}
+          className="flex items-center gap-2"
+        >
           <UserIcon className="h-4 w-4" />
           Login
         </Link>
@@ -120,7 +125,7 @@ function NavAuthButtons() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => signOut({ callbackUrl: '/auth' })}
+          onClick={() => signOut()}
           className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-600"
         >
           <LogOutIcon className="h-4 w-4 text-current" />
