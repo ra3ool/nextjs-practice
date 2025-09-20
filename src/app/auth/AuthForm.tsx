@@ -21,14 +21,12 @@ import { z } from 'zod';
 
 // Create separate schemas for better type safety and validation
 const loginSchema = z.object({
-  email: z.email('Please enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.email(),
+  password: z.string().min(4, 'Password must be at least 4 characters'),
 });
 
-const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.email('Please enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+const registerSchema = loginSchema.extend({
+  name: z.string().min(4, 'Full Name must be at least 4 characters'),
 });
 
 type LoginValues = z.infer<typeof loginSchema>;
@@ -45,7 +43,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     defaultValues: {
       email: '',
       password: '',
-      ...(mode === 'register' && { name: '' }),
+      name: '',
     },
   });
 
@@ -140,7 +138,6 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
-                  type="email"
                   placeholder="m@example.com"
                   disabled={isLoading}
                   {...field}
