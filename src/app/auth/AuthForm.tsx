@@ -11,34 +11,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { signIn } from '@/lib/auth-client';
+import { loginSchema, registerSchema } from '@/schemas/auth.schema';
+import { LoginType, RegisterType } from '@/types/auth.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
-
-// Create separate schemas for better type safety and validation
-const loginSchema = z.object({
-  email: z.email(),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-const registerSchema = loginSchema
-  .extend({
-    name: z.string().min(4, 'Full Name must be at least 4 characters'),
-    confirmPassword: z
-      .string()
-      .min(6, 'Password must be at least 6 characters'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
-
-type LoginValues = z.infer<typeof loginSchema>;
-type RegisterValues = z.infer<typeof registerSchema>;
 
 export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const searchParams = useSearchParams();
@@ -48,7 +28,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
   const schema = mode === 'login' ? loginSchema : registerSchema;
 
-  const form = useForm<LoginValues | RegisterValues>({
+  const form = useForm<LoginType | RegisterType>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: '',
@@ -58,7 +38,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     },
   });
 
-  const onSubmit = async (data: LoginValues | RegisterValues) => {
+  const onSubmit = async (data: LoginType | RegisterType) => {
     setIsLoading(true);
 
     try {

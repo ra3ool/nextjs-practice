@@ -1,7 +1,7 @@
 import { ImageWithLoader } from '@/components/image-with-loader';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ProductWithRelations } from '@/types';
+import { ProductWithRelations } from '@/types/product.type';
 import { StarIcon } from 'lucide-react';
 import Link from 'next/link';
 import ProductPrice from './products-price';
