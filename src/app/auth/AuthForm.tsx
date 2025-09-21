@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { signIn } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -25,21 +25,25 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-const registerSchema = loginSchema.extend({
-  name: z.string().min(4, 'Full Name must be at least 4 characters'),
-});
+const registerSchema = loginSchema
+  .extend({
+    name: z.string().min(4, 'Full Name must be at least 4 characters'),
+    confirmPassword: z
+      .string()
+      .min(6, 'Password must be at least 6 characters'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 type LoginValues = z.infer<typeof loginSchema>;
 type RegisterValues = z.infer<typeof registerSchema>;
 
-export function AuthForm({
-  mode,
-  callbackUrl,
-}: {
-  mode: 'login' | 'register';
-  callbackUrl?: string;
-}) {
+export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const callbackUrl = searchParams.get('callbackUrl');
   const [isLoading, setIsLoading] = useState(false);
 
   const schema = mode === 'login' ? loginSchema : registerSchema;
@@ -49,6 +53,7 @@ export function AuthForm({
     defaultValues: {
       email: '',
       password: '',
+      confirmPassword: '',
       name: '',
     },
   });
@@ -171,6 +176,27 @@ export function AuthForm({
             </FormItem>
           )}
         />
+
+        {mode === 'register' && (
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirmation Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="********"
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
