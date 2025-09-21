@@ -1,5 +1,6 @@
 'use client';
 
+import { loginAction, registerAction } from '@/actions/auth.actions';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -10,19 +11,23 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { signIn } from '@/lib/auth-client';
 import { loginSchema, registerSchema } from '@/schemas/auth.schema';
 import { LoginType, RegisterType } from '@/types/auth.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { useForm, UseFormReturn } from 'react-hook-form';
 
-export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
-  const searchParams = useSearchParams();
+type AuthMode = 'login' | 'register';
+
+interface AuthFormProps {
+  mode: AuthMode;
+}
+
+export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,68 +35,23 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
   const form = useForm<LoginType | RegisterType>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: '',
-      name: '',
-    },
+    defaultValues: { email: '', password: '', confirmPassword: '', name: '' },
   });
 
   const onSubmit = async (data: LoginType | RegisterType) => {
     setIsLoading(true);
-
     try {
-      if (mode === 'login') {
-        const signInRes = await signIn('credentials', {
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        });
-
-        if (signInRes?.ok) {
-          toast.success('Welcome back!');
-          router.push(callbackUrl || '/dashboard');
-        } else {
-          if (signInRes?.error === 'CredentialsSignin') {
-            toast.error('Invalid email or password');
-          } else {
-            toast.error('Something went wrong. Please try again.');
-          }
-        }
-      } else {
-        const registerRes = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-
-        if (registerRes.ok) {
-          toast.success('Account created successfully!');
-
-          // Auto-login after successful registration
-          const signInRes = await signIn('credentials', {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-          });
-
-          if (signInRes?.ok) {
-            toast.success('Welcome to the app!');
-            router.push(callbackUrl || '/dashboard');
-          } else {
-            toast.error(
-              'Account created but login failed. Please try signing in.',
+      const result =
+        mode === 'login'
+          ? await loginAction(data as LoginType, callbackUrl || undefined)
+          : await registerAction(
+              data as RegisterType,
+              callbackUrl || undefined,
             );
-          }
-        } else {
-          const result = await registerRes.json();
-          toast.error(result.error || 'Registration failed');
-        }
+
+      if (result.success && result.redirectTo) {
+        router.push(result.redirectTo);
       }
-    } catch (error) {
-      console.error('Auth error:', error);
-      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -100,83 +60,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {mode === 'register' && (
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter your full name"
-                    disabled={isLoading}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="m@example.com"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder="********"
-                  disabled={isLoading}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {mode === 'register' && (
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirmation Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="********"
-                    disabled={isLoading}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        {renderInputs(mode, form, isLoading)}
 
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -191,4 +75,75 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       </form>
     </Form>
   );
+}
+
+function renderInputs(
+  mode: AuthMode,
+  form: UseFormReturn<LoginType | RegisterType>,
+  isLoading: boolean,
+) {
+  const fields = {
+    login: [
+      {
+        name: 'email',
+        label: 'Email',
+        type: 'email',
+        placeholder: 'm@example.com',
+      },
+      {
+        name: 'password',
+        label: 'Password',
+        type: 'password',
+        placeholder: '********',
+      },
+    ],
+    register: [
+      {
+        name: 'name',
+        label: 'Full Name',
+        type: 'text',
+        placeholder: 'Enter your full name',
+      },
+      {
+        name: 'email',
+        label: 'Email',
+        type: 'email',
+        placeholder: 'm@example.com',
+      },
+      {
+        name: 'password',
+        label: 'Password',
+        type: 'password',
+        placeholder: '********',
+      },
+      {
+        name: 'confirmPassword',
+        label: 'Confirmation Password',
+        type: 'password',
+        placeholder: '********',
+      },
+    ],
+  } as const;
+
+  return fields[mode].map((field) => (
+    <FormField
+      key={field.name}
+      control={form.control}
+      name={field.name as any}
+      render={({ field: rhfField }) => (
+        <FormItem>
+          <FormLabel>{field.label}</FormLabel>
+          <FormControl>
+            <Input
+              type={field.type}
+              placeholder={field.placeholder}
+              disabled={isLoading}
+              {...rhfField}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  ));
 }
