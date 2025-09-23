@@ -21,11 +21,7 @@ import { useForm, UseFormReturn } from 'react-hook-form';
 
 type AuthMode = 'login' | 'register';
 
-interface AuthFormProps {
-  mode: AuthMode;
-}
-
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ mode }: { mode: AuthMode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
@@ -43,14 +39,11 @@ export function AuthForm({ mode }: AuthFormProps) {
     try {
       const result =
         mode === 'login'
-          ? await loginAction(data as LoginType, callbackUrl || undefined)
-          : await registerAction(
-              data as RegisterType,
-              callbackUrl || undefined,
-            );
+          ? await loginAction(data as LoginType)
+          : await registerAction(data as RegisterType);
 
-      if (result.success && result.redirectTo) {
-        router.push(result.redirectTo);
+      if (result.success) {
+        router.push(callbackUrl || 'dashboard');
       }
     } finally {
       setIsLoading(false);

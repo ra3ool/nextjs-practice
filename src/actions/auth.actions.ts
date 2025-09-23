@@ -5,7 +5,7 @@ import { loginSchema, registerSchema } from '@/schemas/auth.schema';
 import { LoginType, RegisterType } from '@/types/auth.type';
 import { toast } from 'sonner';
 
-export async function loginAction(input: LoginType, callbackUrl?: string) {
+export async function loginAction(input: LoginType) {
   const parsed = loginSchema.safeParse(input);
   if (!parsed.success) {
     toast.error(parsed.error.issues[0]?.message || 'Invalid login data');
@@ -22,7 +22,7 @@ export async function loginAction(input: LoginType, callbackUrl?: string) {
 
   if (res?.ok) {
     toast.success('Welcome back!');
-    return { success: true, redirectTo: callbackUrl || '/dashboard' };
+    return { success: true };
   }
 
   toast.error(
@@ -34,7 +34,7 @@ export async function loginAction(input: LoginType, callbackUrl?: string) {
   return { success: false };
 }
 
-export async function registerAction(input: RegisterType, callbackUrl?: string) {
+export async function registerAction(input: RegisterType) {
   const parsed = registerSchema.safeParse(input);
   if (!parsed.success) {
     toast.error(parsed.error.issues[0]?.message || 'Invalid registration data');
@@ -58,5 +58,5 @@ export async function registerAction(input: RegisterType, callbackUrl?: string) 
   toast.success('Account created successfully!');
 
   // Auto-login after registration
-  return loginAction(data, callbackUrl);
+  return loginAction(data);
 }

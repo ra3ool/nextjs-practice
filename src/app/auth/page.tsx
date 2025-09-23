@@ -22,7 +22,7 @@ export default function AuthPage() {
           {isLogin ? 'Login to your account' : 'Create a new account'}
         </CardTitle>
         <CardDescription>
-          Enter your email below to {isLogin ? 'login' : 'create'} your account
+          Enter your data below to {isLogin ? 'login' : 'create'} your account
         </CardDescription>
         <CardAction>
           <Button variant="link" onClick={() => setIsLogin(!isLogin)}>
