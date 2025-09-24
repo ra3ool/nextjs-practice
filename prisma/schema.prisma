@@ -13,7 +13,8 @@ model User {
   email     String   @unique
   password  String
   role      String   @default("user")
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  Cart      Cart[]
 
   @@map("users")
 }
@@ -52,4 +53,17 @@ model Brand {
   products Product[]
 
   @@map("brands")
+}
+
+model Cart {
+  id            Int      @id @default(autoincrement())
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int?
+  sessionCardId String
+  items         Json     @default("[]") @db.Json
+  itemPrice     Decimal  @default(0) @db.Decimal(12, 2)
+  totalPrice    Decimal  @default(0) @db.Decimal(12, 2)
+  shippingPrice Decimal  @default(0) @db.Decimal(12, 2)
+  taxPrice      Decimal  @default(0) @db.Decimal(12, 2)
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
 }
