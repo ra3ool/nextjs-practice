@@ -5,7 +5,7 @@ import { loginSchema, registerSchema } from '@/schemas/auth.schema';
 import { LoginType, RegisterType } from '@/types/auth.type';
 import { toast } from 'sonner';
 
-export async function loginAction(input: LoginType) {
+export const loginAction = async (input: LoginType) => {
   const parsed = loginSchema.safeParse(input);
   if (!parsed.success) {
     toast.error(parsed.error.issues[0]?.message || 'Invalid login data');
@@ -32,9 +32,9 @@ export async function loginAction(input: LoginType) {
   );
 
   return { success: false };
-}
+};
 
-export async function registerAction(input: RegisterType) {
+export const registerAction = async (input: RegisterType) => {
   const parsed = registerSchema.safeParse(input);
   if (!parsed.success) {
     toast.error(parsed.error.issues[0]?.message || 'Invalid registration data');
@@ -59,4 +59,4 @@ export async function registerAction(input: RegisterType) {
 
   // Auto-login after registration
   return loginAction(data);
-}
+};

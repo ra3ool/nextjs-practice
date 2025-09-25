@@ -1,4 +1,5 @@
 import { getProduct } from '@/actions/product.actions';
+import AddToCart from '@/components/products/add-to-cart';
 import ProductImages from '@/components/products/product-images';
 import ProductPrice from '@/components/products/products-price';
 import { Badge } from '@/components/ui/badge';
@@ -64,7 +65,18 @@ export default async function ProductDetails(props: {
               <Badge variant="destructive">Out Of Stock</Badge>
             )}
           </div>
-          {product.stock > 0 && <Button className="w-full">Add To Card</Button>}
+          {product.stock > 0 && (
+            <AddToCart
+              item={{
+                productId: product.id,
+                name: product.name,
+                slug: product.slug,
+                price: product.price,
+                qty: 1,
+                image: product.images[0],
+              }}
+            />
+          )}
         </Card>
       </div>
     </div>
