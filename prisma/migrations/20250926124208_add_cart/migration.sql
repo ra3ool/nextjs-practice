@@ -1,11 +1,8 @@
--- AlterTable
-ALTER TABLE `users` MODIFY `createdAt` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6);
-
 -- CreateTable
-CREATE TABLE `Cart` (
+CREATE TABLE `cart` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NULL,
-    `sessionCardId` VARCHAR(191) NOT NULL,
+    `sessionCartId` VARCHAR(191) NOT NULL,
     `items` JSON NOT NULL,
     `itemPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `totalPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
@@ -13,8 +10,9 @@ CREATE TABLE `Cart` (
     `taxPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `createdAt` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
 
+    UNIQUE INDEX `cart_sessionCartId_key`(`sessionCartId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Cart` ADD CONSTRAINT `Cart_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `cart` ADD CONSTRAINT `cart_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
