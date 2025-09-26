@@ -1,16 +1,16 @@
 'use client';
 
-import { addToCart } from '@/actions/cart.actions';
+import { addItemToCart } from '@/actions/cart.actions';
 import { Button } from '@/components/ui/button';
-import { CartItem } from '@/types/cart.type';
+import { CartItemType } from '@/types/cart.type';
 import { PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-function AddToCart({ item }: { item: CartItem }) {
+function AddToCart({ item }: { item: CartItemType }) {
   const router = useRouter();
   const handleAddToCart = async () => {
-    const res = await addToCart(item);
+    const res = await addItemToCart(item);
     if (!res.success) {
       toast.warning(res.message);
       return;
