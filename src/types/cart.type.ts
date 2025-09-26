@@ -1,5 +1,5 @@
-import { cartItem, insertCartSchema } from '@/schemas/cart.schema';
-import z from 'zod';
+import { cartItemSchema, insertCartSchema } from '@/schemas/cart.schema';
+import { z } from 'zod';
 
-export type Cart = z.infer<typeof insertCartSchema>;
-export type CartItem = z.infer<typeof cartItem>;
+export type CartType = z.infer<typeof insertCartSchema>;
+export type CartItemType = z.infer<typeof cartItemSchema>;
