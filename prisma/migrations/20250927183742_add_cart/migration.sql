@@ -4,7 +4,7 @@ CREATE TABLE `cart` (
     `userId` INTEGER NULL,
     `sessionCartId` VARCHAR(191) NOT NULL,
     `items` JSON NOT NULL,
-    `itemPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    `itemsPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `totalPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `shippingPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `taxPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,

@@ -61,7 +61,7 @@ model Cart {
   userId        Int?
   sessionCartId String   @unique
   items         Json     @default("[]") @db.Json
-  itemPrice     Decimal  @default(0) @db.Decimal(12, 2)
+  itemsPrice     Decimal  @default(0) @db.Decimal(12, 2)
   totalPrice    Decimal  @default(0) @db.Decimal(12, 2)
   shippingPrice Decimal  @default(0) @db.Decimal(12, 2)
   taxPrice      Decimal  @default(0) @db.Decimal(12, 2)
