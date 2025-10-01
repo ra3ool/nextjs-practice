@@ -28,7 +28,7 @@ const getSessionData = async () => {
     sessionCartId = crypto.randomUUID();
     cookieStore.set('sessionCartId', sessionCartId, {
       path: '/',
-      httpOnly: false, // set true if want server-only cookie
+      httpOnly: false,
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 30, // 30 days
     });
@@ -43,8 +43,8 @@ const getSessionData = async () => {
 const getOrCreateCart = async () => {
   const { sessionCartId, userId } = await getSessionData();
 
-  let cart = await prisma.cart.findFirst({
-    where: userId ? { userId } : { sessionCartId },
+  let cart = await prisma.cart.findUnique({
+    where: { sessionCartId },
   });
 
   if (!cart) {
