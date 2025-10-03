@@ -1,33 +1,83 @@
 'use client';
 
-import { addItemToCart } from '@/actions/cart.actions';
+import { addItemToCart, removeItemFromCart } from '@/actions/cart.actions';
 import { Button } from '@/components/ui/button';
-import { CartItemType } from '@/types/cart.type';
-import { PlusIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { CartItemType, CartType } from '@/types/cart.type';
+import { MinusIcon, PlusIcon } from 'lucide-react';
+import { useTransition } from 'react';
 import { toast } from 'sonner';
 
-function AddToCart({ item }: { item: CartItemType }) {
-  const router = useRouter();
-  const handleAddToCart = async () => {
-    const res = await addItemToCart(item);
-    if (!res.success) {
-      toast.warning(res.message);
-      return;
-    }
-    toast.success(res.message, {
-      action: {
-        label: 'Undo',
-        onClick: () => console.log('Undo'),
-      },
+type Props = {
+  cart: CartType;
+  item: CartItemType;
+};
+type Action = 'add' | 'delete';
+
+const actionMap = {
+  add: addItemToCart,
+  delete: removeItemFromCart,
+};
+
+export default function AddToCart({ cart, item }: Props) {
+  const [isPending, startTransition] = useTransition();
+
+  const existItem = cart.items.find(
+    (cartItem) => cartItem.productId === item.productId,
+  );
+
+  const handleCartAction = (action: Action, showToastAction = true) => {
+    startTransition(() => {
+      (async () => {
+        const res = await actionMap[action](item);
+        if (!res.success) {
+          toast.warning(res.message);
+          return;
+        }
+
+        toast.success(
+          res.message,
+          showToastAction
+            ? { action: { label: 'Undo', onClick: () => undoAction(action) } }
+            : undefined,
+        );
+      })();
     });
   };
-  return (
-    <Button className="w-full" type="button" onClick={handleAddToCart}>
+
+  const undoAction = (previousAction: Action) => {
+    if (previousAction === 'add') handleCartAction('delete', false);
+    if (previousAction === 'delete') handleCartAction('add', false);
+  };
+
+  return existItem ? (
+    <div className="flex justify-around items-center">
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isPending}
+        onClick={() => handleCartAction('delete')}
+      >
+        <MinusIcon />
+      </Button>
+      {existItem.qty}
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isPending}
+        onClick={() => handleCartAction('add')}
+      >
+        <PlusIcon />
+      </Button>
+    </div>
+  ) : (
+    <Button
+      className="w-full"
+      type="button"
+      disabled={isPending}
+      onClick={() => handleCartAction('add')}
+    >
       <PlusIcon />
       Add To Cart
     </Button>
   );
 }
-
-export default AddToCart;
