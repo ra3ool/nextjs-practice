@@ -2,7 +2,7 @@
 
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { cartItemSchema, insertCartSchema } from '@/schemas/cart.schema';
+import { cartItemSchema } from '@/schemas/cart.schema';
 import { CartItemType } from '@/types/cart.type';
 import { round2 } from '@/utils/round2';
 import { getServerSession } from 'next-auth';
@@ -22,9 +22,11 @@ const calcPrice = (items: CartItemType[]) => {
 
 const getSessionData = async () => {
   const cookieStore = await cookies();
-  const session = await getServerSession(authOptions);
-
   let sessionCartId = cookieStore.get('sessionCartId')?.value;
+
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id ? +session.user.id : null;
+
   if (!sessionCartId) {
     sessionCartId = crypto.randomUUID();
     cookieStore.set('sessionCartId', sessionCartId, {
@@ -35,32 +37,27 @@ const getSessionData = async () => {
     });
   }
 
-  return { sessionCartId, userId: session?.user?.id ? +session.user.id : null };
+  return { sessionCartId, userId };
 };
 
 /**
  * 🛍️ Get or create cart for current user/guest
  */
-const getOrCreateCart = async () => {
+const getOrCreateCart = async (txClient = prisma) => {
   const { sessionCartId, userId } = await getSessionData();
 
-  let cart = await prisma.cart.findUnique({
+  return await txClient.cart.upsert({
     where: { sessionCartId },
-  });
-
-  if (!cart) {
-    const newCartData = {
+    create: {
       sessionCartId,
       ...(userId && { userId }),
       items: [],
       ...calcPrice([]),
-    };
-
-    const validated = insertCartSchema.parse(newCartData);
-    cart = await prisma.cart.create({ data: validated });
-  }
-
-  return cart;
+    },
+    update: {
+      ...(userId && { userId }), // link cart to user if they just logged in
+    },
+  });
 };
 
 /**
@@ -68,13 +65,9 @@ const getOrCreateCart = async () => {
  */
 export const getMyCart = async () => {
   try {
-    const cart = await getOrCreateCart();
-    return { success: true, cart };
+    return await getOrCreateCart();
   } catch (error) {
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : 'An error occurred',
-    };
+    return error;
   }
 };
 
@@ -84,43 +77,49 @@ export const getMyCart = async () => {
 export const addItemToCart = async (item: CartItemType) => {
   try {
     const checkedItem = cartItemSchema.parse(item);
-    const product = await prisma.product.findUnique({
-      where: { id: item.productId },
-      select: {
-        stock: true,
-      },
+    let message = '';
+
+    await prisma.$transaction(async (tx) => {
+      const product = await tx.product.findUnique({
+        where: { id: checkedItem.productId },
+        select: { stock: true },
+      });
+
+      if (!product) throw Error('Product does not exist');
+
+      const cart = await getOrCreateCart(tx as typeof prisma); // use tx client
+      const cartItems = (cart.items as CartItemType[]) ?? [];
+
+      const existingItemIndex = cartItems.findIndex(
+        (cartItem) => cartItem.productId === checkedItem.productId,
+      );
+
+      if (existingItemIndex !== -1) {
+        if (
+          product.stock <
+          cartItems[existingItemIndex].qty + checkedItem.qty
+        ) {
+          throw Error('Not enough stock!');
+        }
+        cartItems[existingItemIndex].qty += checkedItem.qty;
+        message = 'Item updated';
+      } else {
+        if (product.stock < checkedItem.qty) throw Error('Not enough stock!');
+        cartItems.push(checkedItem);
+        message = 'Item added to cart';
+      }
+
+      await tx.cart.update({
+        where: { id: cart.id },
+        data: {
+          items: cartItems,
+          ...calcPrice(cartItems),
+        },
+      });
     });
-    if (!product) throw Error('Product not exist');
 
-    const cart = await getOrCreateCart();
-    const cartItems = (cart.items as CartItemType[]) ?? [];
-
-    const existingItemIndex = cartItems.findIndex(
-      (cartItem) => cartItem.productId === checkedItem.productId,
-    );
-
-    if (existingItemIndex !== -1) {
-      if (product.stock < cartItems[existingItemIndex].qty + checkedItem.qty)
-        throw Error('Not enough stock!');
-
-      cartItems[existingItemIndex].qty += checkedItem.qty;
-    } else {
-      cartItems.push(checkedItem);
-    }
-
-    await prisma.cart.update({
-      where: { id: cart.id },
-      data: {
-        items: cartItems,
-        ...calcPrice(cartItems),
-      },
-    });
-
-    revalidatePath(`/product/${item.slug}`);
-    return {
-      success: true,
-      message: `Item ${existingItemIndex !== -1 ? 'updated' : 'added to cart'}`,
-    };
+    revalidatePath(`/product/${checkedItem.slug}`);
+    return { success: true, message };
   } catch (error) {
     return {
       success: false,
@@ -144,13 +143,16 @@ export const removeItemFromCart = async (item: CartItemType) => {
     );
     if (existingItemIndex === -1) throw Error('Item not in the cart');
 
+    let message = '';
+
     if (cartItems[existingItemIndex].qty === 1) {
       cartItems = cartItems.filter(
         (item) => item.productId !== cartItems[existingItemIndex].productId,
       );
-      existingItemIndex = -1;
+      message = 'Item removed from cart';
     } else {
       cartItems[existingItemIndex].qty -= checkedItem.qty;
+      message = 'Item updated';
     }
 
     await prisma.cart.update({
@@ -162,12 +164,7 @@ export const removeItemFromCart = async (item: CartItemType) => {
     });
 
     revalidatePath(`/product/${item.slug}`);
-    return {
-      success: true,
-      message: `Item ${
-        existingItemIndex !== -1 ? 'updated' : 'removed from cart'
-      }`,
-    };
+    return { success: true, message };
   } catch (error) {
     return {
       success: false,
@@ -183,7 +180,7 @@ export const clearCart = async () => {
   try {
     const cart = await getOrCreateCart();
 
-    const cleared = await prisma.cart.update({
+    await prisma.cart.update({
       where: { id: cart.id },
       data: {
         items: [],
@@ -191,7 +188,7 @@ export const clearCart = async () => {
       },
     });
 
-    return { success: true, message: 'Cart cleared', cart: cleared };
+    return { success: true, message: 'Cart cleared' };
   } catch (error) {
     return {
       success: false,
