@@ -91,7 +91,6 @@ export const addItemToCart = async (item: CartItemType) => {
       },
     });
     if (!product) throw Error('Product not exist');
-    console.log('product :', product);
 
     const cart = await getOrCreateCart();
     const cartItems = (cart.items as CartItemType[]) ?? [];
@@ -133,22 +132,42 @@ export const addItemToCart = async (item: CartItemType) => {
 /**
  * ❌ Remove item from cart
  */
-export const removeItemFromCart = async (productId: number) => {
+export const removeItemFromCart = async (item: CartItemType) => {
   try {
-    const cart = await getOrCreateCart();
-    const items = (cart.items as CartItemType[]).filter(
-      (item) => item.productId !== productId,
-    );
+    const checkedItem = cartItemSchema.parse(item);
 
-    const updated = await prisma.cart.update({
+    const cart = await getOrCreateCart();
+    let cartItems = (cart.items as CartItemType[]) ?? [];
+
+    let existingItemIndex = cartItems.findIndex(
+      (cartItem) => cartItem.productId === checkedItem.productId,
+    );
+    if (existingItemIndex === -1) throw Error('Item not in the cart');
+
+    if (cartItems[existingItemIndex].qty === 1) {
+      cartItems = cartItems.filter(
+        (item) => item.productId !== cartItems[existingItemIndex].productId,
+      );
+      existingItemIndex = -1;
+    } else {
+      cartItems[existingItemIndex].qty -= checkedItem.qty;
+    }
+
+    await prisma.cart.update({
       where: { id: cart.id },
       data: {
-        items,
-        ...calcPrice(items),
+        items: cartItems,
+        ...calcPrice(cartItems),
       },
     });
 
-    return { success: true, message: 'Item removed', cart: updated };
+    revalidatePath(`/product/${item.slug}`);
+    return {
+      success: true,
+      message: `Item ${
+        existingItemIndex !== -1 ? 'updated' : 'removed from cart'
+      }`,
+    };
   } catch (error) {
     return {
       success: false,
