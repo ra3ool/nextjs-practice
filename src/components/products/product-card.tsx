@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ProductWithRelations } from '@/types/product.type';
 import { StarIcon } from 'lucide-react';
 import Link from 'next/link';
-import ProductPrice from './products-price';
+import { ProductPrice } from './products-price';
 
 function ProductCard({ product }: { product: ProductWithRelations }) {
   return (
@@ -63,4 +63,4 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
   );
 }
 
-export default ProductCard;
+export { ProductCard };

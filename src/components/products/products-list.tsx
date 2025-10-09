@@ -1,5 +1,5 @@
 import { getProducts } from '@/actions/product.actions';
-import ProductCard from '@/components/products/product-card';
+import { ProductCard } from '@/components/products/product-card';
 
 async function ProductsList({
   title,
@@ -24,4 +24,4 @@ async function ProductsList({
   );
 }
 
-export default ProductsList;
+export { ProductsList };

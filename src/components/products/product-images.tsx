@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const PREFETCH_COUNT = 4;
 
-export default function ProductImages({ images }: { images: string[] }) {
+function ProductImages({ images }: { images: string[] }) {
   const [current, setCurrent] = useState(0);
 
   return (
@@ -48,3 +48,5 @@ export default function ProductImages({ images }: { images: string[] }) {
     </div>
   );
 }
+
+export { ProductImages };

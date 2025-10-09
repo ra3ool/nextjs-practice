@@ -18,7 +18,7 @@ const actionMap = {
   delete: removeItemFromCart,
 };
 
-export default function AddToCart({ cart, item }: Props) {
+function AddToCart({ cart, item }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const existItem = cart.items.find(
@@ -81,3 +81,5 @@ export default function AddToCart({ cart, item }: Props) {
     </Button>
   );
 }
+
+export { AddToCart };

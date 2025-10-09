@@ -29,7 +29,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ToggleTheme } from './toggle-theme';
 
-export default function HeaderMenu() {
+function HeaderMenu() {
   return (
     <>
       <nav className="hidden md:flex items-center gap-2">
@@ -135,3 +135,5 @@ function NavAuthButtons() {
     </DropdownMenu>
   );
 }
+
+export { HeaderMenu };

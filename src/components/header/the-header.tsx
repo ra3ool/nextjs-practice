@@ -1,8 +1,8 @@
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import HeaderMenu from './header-menu';
+import { HeaderMenu } from './header-menu';
 
-export function SiteHeader({ className }: { className: string }) {
+function SiteHeader({ className }: { className: string }) {
   return (
     <header className={cn('border-b select-none', className)}>
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
@@ -15,3 +15,5 @@ export function SiteHeader({ className }: { className: string }) {
     </header>
   );
 }
+
+export { SiteHeader };

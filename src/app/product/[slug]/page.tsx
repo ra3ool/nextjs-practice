@@ -1,8 +1,8 @@
 import { getMyCart } from '@/actions/cart.actions';
 import { getProduct } from '@/actions/product.actions';
-import AddToCart from '@/components/products/add-to-cart';
-import ProductImages from '@/components/products/product-images';
-import ProductPrice from '@/components/products/products-price';
+import { AddToCart } from '@/components/products/add-to-cart';
+import { ProductImages } from '@/components/products/product-images';
+import { ProductPrice } from '@/components/products/products-price';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CartType } from '@/types/cart.type';
