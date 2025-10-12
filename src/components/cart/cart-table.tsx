@@ -11,14 +11,15 @@ import {
 } from '@/components/ui/table';
 import { CartType } from '@/types/cart.type';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
-import { toast } from 'sonner';
+import { AddToCart } from '../products/add-to-cart';
 
 function CartTable({ cart }: { cart?: CartType }) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const goToProductDetails = (itemSlug: string) => {
+    router.push(`/product/${itemSlug}`);
+  };
+
   return (
     <>
       <h2 className="text-2xl">shopping cart</h2>
@@ -38,24 +39,30 @@ function CartTable({ cart }: { cart?: CartType }) {
               <TableBody>
                 {cart.items.map((item) => (
                   <TableRow key={item.slug}>
-                    <TableCell className="font-medium">
-                      <Link
-                        href={`/products/${item.slug}`}
-                        className="flex items-center gap-4"
-                      >
-                        <div className="relative h-10 w-10">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            sizes="40px"
-                            className="object-contain"
-                          />
-                        </div>
-                        {item.name}
-                      </Link>
+                    <TableCell
+                      className="font-medium flex items-center gap-4 cursor-pointer"
+                      onClick={() => goToProductDetails(item.slug)}
+                    >
+                      <div className="relative h-10 w-10">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          sizes="40px"
+                          className="object-contain"
+                        />
+                      </div>
+                      {item.name}
                     </TableCell>
-                    <TableCell>{item.qty}</TableCell>
+                    <TableCell>
+                      <AddToCart
+                        cart={cart}
+                        item={{
+                          ...item,
+                          qty: 1,
+                        }}
+                      />
+                    </TableCell>
                     <TableCell>{item.price}</TableCell>
                   </TableRow>
                 ))}
