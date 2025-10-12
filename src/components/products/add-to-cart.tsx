@@ -21,7 +21,7 @@ const actionMap = {
 function AddToCart({ cart, item }: Props) {
   const [isPending, startTransition] = useTransition();
 
-  const existItem = cart.items.find(
+  const existItem = cart.items?.find(
     (cartItem) => cartItem.productId === item.productId,
   );
 
