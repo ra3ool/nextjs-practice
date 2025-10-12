@@ -7,8 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CartType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+
+export const metadata: Metadata = {
+  title: 'Product',
+};
 
 export default async function ProductDetails({
   params,
