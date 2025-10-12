@@ -6,6 +6,7 @@ import { ProductPrice } from '@/components/products/products-price';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { CartType } from '@/types/cart.type';
+import { serializeCart } from '@/utils/serialize-cart';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -23,20 +24,7 @@ export default async function ProductDetails({
 
   if (!product) notFound();
 
-  const cart = JSON.parse(
-    JSON.stringify(rawCart, (key, value) => {
-      if (typeof value === 'bigint') return Number(value);
-      if (
-        value &&
-        typeof value === 'object' &&
-        value.constructor?.name === 'Decimal'
-      ) {
-        return Number(value);
-      }
-      if (value instanceof Date) return value.toISOString();
-      return value;
-    }),
-  );
+  const cart = serializeCart(rawCart as CartType);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -92,7 +80,7 @@ export default async function ProductDetails({
 
           {product.stock > 0 && (
             <AddToCart
-              cart={cart as CartType}
+              cart={cart}
               item={{
                 productId: product.id,
                 name: product.name,
