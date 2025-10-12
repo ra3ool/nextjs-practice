@@ -10,6 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { CartType } from '@/types/cart.type';
+import { round2 } from '@/utils/round2';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { AddToCart } from '../products/add-to-cart';
@@ -63,7 +64,7 @@ function CartTable({ cart }: { cart?: CartType }) {
                         }}
                       />
                     </TableCell>
-                    <TableCell>{item.price}</TableCell>
+                    <TableCell>{round2(item.price * item.qty)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
