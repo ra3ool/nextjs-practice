@@ -92,6 +92,7 @@ export default async function ProductDetails({
                 slug: product.slug,
                 price: product.price,
                 qty: 1,
+                stock: product.stock,
                 image: product.images[0],
               }}
             />

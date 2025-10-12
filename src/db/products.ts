@@ -254,7 +254,7 @@ export const products = [
     images: ['https://fakestoreapi.com/img/51eg55uWmdL._AC_UX679_t.png'],
     brand: 'Opna',
     rate: 4.5,
-    stock: 99,
+    stock: 5,
   },
   {
     id: 20,

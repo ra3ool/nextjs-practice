@@ -63,7 +63,7 @@ function AddToCart({ cart, item }: Props) {
       <Button
         variant="outline"
         type="button"
-        disabled={isPending}
+        disabled={isPending || existItem.stock <= existItem.qty}
         onClick={() => handleCartAction('add')}
       >
         <PlusIcon />

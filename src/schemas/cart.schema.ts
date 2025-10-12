@@ -9,6 +9,7 @@ export const cartItemSchema = z.object({
   name: z.string().min(1).max(255),
   slug: z.string().min(1).max(255),
   qty: z.number().int().min(1, 'Quantity must be at least 1'),
+  stock: z.number().int().min(0).default(0),
   image: z.string().url().or(z.string().min(1)),
   price: decimalSchema.refine((val) => val >= 0, 'Price cannot be negative'),
 });
