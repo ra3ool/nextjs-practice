@@ -12,9 +12,22 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-const metadata: Metadata = {
-  title: 'Product',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const product = await getProduct({ slug: params.slug });
+
+  if (!product) {
+    return { title: 'Product Not Found' };
+  }
+
+  return {
+    title: `${product.name} | ${process.env.APP_NAME || ''}`,
+    description: product.description,
+  };
+}
 
 async function ProductDetails({
   params,
@@ -106,5 +119,4 @@ async function ProductDetails({
   );
 }
 
-export { metadata };
 export default ProductDetails;
