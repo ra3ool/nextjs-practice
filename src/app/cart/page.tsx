@@ -15,7 +15,7 @@ export default async function CartPage() {
   return (
     <>
       <h2 className="text-2xl">shopping cart</h2>
-      {!cart || cart.items?.length === 0 ? (
+      {!cart.sessionCartId || cart.items?.length === 0 ? (
         <p className="mt-3">cart is empty, go shopping</p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 mt-3">

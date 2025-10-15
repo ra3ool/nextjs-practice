@@ -40,7 +40,7 @@ function CartTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {cart.items.map((item) => (
+            {cart.items?.map((item) => (
               <TableRow key={item.slug}>
                 <TableCell
                   className="font-medium flex items-center gap-4 cursor-pointer"
