@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { useState } from 'react';
-import { AuthForm } from './AuthForm';
+import { AuthForm } from '@/components/auth/auth-form';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
