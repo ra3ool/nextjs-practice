@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
-const PROTECTED_ROUTES = ['/dashboard'];
+const PROTECTED_ROUTES = ['/dashboard', '/cart/checkout'];
 const AUTH_ROUTES = ['/auth'];
 
 export async function middleware(request: NextRequest) {
@@ -14,11 +14,13 @@ export async function middleware(request: NextRequest) {
   );
 
   if (token && isAuthRoute) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(
+      new URL(`/dashboard?callbackUrl=${pathname}`, request.url),
+    );
   }
 
   if (!token && isProtectedRoute) {
-    return NextResponse.redirect(new URL('/auth', request.url));
+    return NextResponse.redirect(new URL(`/auth?callbackUrl=${pathname}`, request.url));
   }
 
   return NextResponse.next();
@@ -31,5 +33,6 @@ export const config = {
     '/settings/:path*',
     '/admin/:path*',
     '/auth',
+    '/cart/:path*',
   ],
 };
