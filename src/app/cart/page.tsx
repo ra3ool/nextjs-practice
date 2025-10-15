@@ -20,6 +20,7 @@ export default async function CartPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 mt-3">
           <CartTable cart={cart} className="lg:col-span-3" />
+          <CartInfo cart={cart} className="h-fit" />
         </div>
       )}
     </>
