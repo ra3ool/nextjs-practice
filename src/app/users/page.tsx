@@ -1,4 +1,4 @@
-import { getUsers } from '@/actions/user-actions';
+import { getUsers } from '@/actions/mock-user.actions';
 
 export default async function UsersPage() {
   const users = await getUsers();
