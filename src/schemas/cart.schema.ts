@@ -28,3 +28,12 @@ export const cartResponseSchema = insertCartSchema.extend({
   id: z.number().int().positive(),
   createdAt: z.date(),
 });
+
+export const cartCheckoutSchema = z.object({
+  fullName: z.string().min(3),
+  country: z.string().min(3),
+  city: z.string().min(2),
+  address: z.string().min(10),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
+});
