@@ -14,11 +14,14 @@ export default async function CheckoutPage() {
   const cart = serializeCart((await getMyCart()) as CartType);
   if (!cart.sessionCartId || cart.items?.length === 0) redirect('/cart');
 
+  const address = undefined;
+
   return (
     <>
       <h2 className="text-2xl">checkout cart</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 mt-3">
+        <CartCheckoutForm address={address} className="lg:col-span-3" />
         <CartInfo cart={cart} className="h-fit" />
       </div>
     </>
