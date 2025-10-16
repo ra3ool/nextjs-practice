@@ -8,7 +8,8 @@ CREATE TABLE `cart` (
     `totalPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `shippingPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `taxPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
-    `createdAt` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `cart_sessionCartId_key`(`sessionCartId`),
     PRIMARY KEY (`id`)

@@ -25,7 +25,7 @@ const getSessionData = async () => {
   let sessionCartId = cookieStore.get('sessionCartId')?.value;
 
   const session = await getServerSession(authOptions);
-  const userId = session?.user?.id ? +session.user.id : null;
+  const userId = session?.user?.id ? session.user.id : null;
 
   if (!sessionCartId) {
     sessionCartId = crypto.randomUUID();

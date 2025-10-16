@@ -8,15 +8,36 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  email     String   @unique
-  password  String
-  role      String   @default("user")
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  Cart      Cart[]
+  id          Int           @id @default(autoincrement())
+  name        String?
+  email       String        @unique
+  password    String
+  role        String        @default("user")
+  createdAt   DateTime      @default(now())
+  Cart        Cart[]
+  UserAddress UserAddress[]
 
   @@map("users")
+}
+
+model UserAddress {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  country     String   @db.VarChar(50)
+  city        String   @db.VarChar(50)
+  address     String   @db.VarChar(255)
+  postalCode  String?  @db.VarChar(20)
+  lat         Decimal? @db.Decimal(10, 7)
+  lng         Decimal? @db.Decimal(10, 7)
+  phoneNumber String   @db.VarChar(20)
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, address, postalCode])
+  @@index([userId])
+  @@map("user_addresses")
 }
 
 model Product {
@@ -27,7 +48,8 @@ model Product {
   price       Decimal  @default(0) @db.Decimal(12, 2)
   rate        Decimal  @default(0) @db.Decimal(3, 2)
   stock       Int      @default(0)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   images      String   @db.Text
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  Int
@@ -65,7 +87,8 @@ model Cart {
   totalPrice    Decimal  @default(0) @db.Decimal(12, 2)
   shippingPrice Decimal  @default(0) @db.Decimal(12, 2)
   taxPrice      Decimal  @default(0) @db.Decimal(12, 2)
-  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("cart")
 }
