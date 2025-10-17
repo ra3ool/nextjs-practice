@@ -24,6 +24,7 @@ function CartTable({
   className?: string;
 }) {
   const router = useRouter();
+  // TODO make constants for routes
   const goToProductDetails = (itemSlug: string) => {
     router.push(`/product/${itemSlug}`);
   };
