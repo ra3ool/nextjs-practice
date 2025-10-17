@@ -1,5 +1,6 @@
 'use client';
 
+import { updateUserAddress } from '@/actions/user.actions';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -16,7 +17,7 @@ import { CartCheckoutType } from '@/types/cart.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
 import { useTransition } from 'react';
-import { ControllerRenderProps, useForm } from 'react-hook-form';
+import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 function CartCheckoutForm({
@@ -28,8 +29,9 @@ function CartCheckoutForm({
 }) {
   const form = useForm<CartCheckoutType>({
     resolver: zodResolver(cartCheckoutSchema),
-    defaultValues: {
+    defaultValues: address || {
       fullName: 'Rasool',
+      phoneNumber: '09123456789',
       country: 'Iran',
       city: 'Tehran',
       address: 'Diamond street',
@@ -38,8 +40,13 @@ function CartCheckoutForm({
 
   const [isPending, startTransition] = useTransition();
 
-  const onSubmit = (values: CartCheckoutType) => {
-    console.log('values :', values);
+  const onSubmit: SubmitHandler<z.infer<typeof cartCheckoutSchema>> = (
+    values: CartCheckoutType,
+  ) => {
+    startTransition(async () => {
+      const result = await updateUserAddress(values);
+      // router.push('/payment-method')
+    });
   };
 
   return (
@@ -48,33 +55,63 @@ function CartCheckoutForm({
         <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
           <h3>please enter an address to ship to</h3>
 
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({
-              field,
-            }: {
-              field: ControllerRenderProps<
-                z.infer<typeof cartCheckoutSchema>,
-                'fullName'
-              >;
-            }) => (
-              <FormItem>
-                <FormLabel>Full Name</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter fullName"
-                    disabled={isPending}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex flex-col gap-3 w-full sm:flex-row items-start">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<
+                  z.infer<typeof cartCheckoutSchema>,
+                  'fullName'
+                >;
+              }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Full Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter fullName"
+                      disabled={isPending}
+                      suppressHydrationWarning
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="flex flex-col gap-3 w-full sm:flex-row">
+            <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<
+                  z.infer<typeof cartCheckoutSchema>,
+                  'phoneNumber'
+                >;
+              }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter phoneNumber"
+                      disabled={isPending}
+                      suppressHydrationWarning
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="flex flex-col gap-3 w-full sm:flex-row items-start">
             {/* TODO change country input to select box  */}
             <FormField
               control={form.control}
@@ -94,6 +131,7 @@ function CartCheckoutForm({
                       type="text"
                       placeholder="Enter country"
                       disabled={isPending}
+                      suppressHydrationWarning
                       {...field}
                     />
                   </FormControl>
@@ -120,6 +158,7 @@ function CartCheckoutForm({
                       type="text"
                       placeholder="Enter city"
                       disabled={isPending}
+                      suppressHydrationWarning
                       {...field}
                     />
                   </FormControl>
@@ -148,6 +187,7 @@ function CartCheckoutForm({
                     type="text"
                     placeholder="Enter address"
                     disabled={isPending}
+                    suppressHydrationWarning
                     {...field}
                   />
                 </FormControl>
@@ -155,7 +195,7 @@ function CartCheckoutForm({
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} suppressHydrationWarning>
             {isPending ? (
               <LoaderIcon className="animate-spin w-4 h-4" />
             ) : (
