@@ -16,7 +16,7 @@ export default async function CartPage() {
 
   return (
     <>
-      <h2 className="text-2xl">shopping cart</h2>
+      <h2 className="text-2xl">Shopping Cart</h2>
       {!cart.sessionCartId || cart.items?.length === 0 ? (
         <p className="mt-3">cart is empty, go shopping</p>
       ) : (
@@ -27,7 +27,9 @@ export default async function CartPage() {
             className="h-fit"
             cardButton={
               <Button asChild>
-                <Link href="/cart/checkout">Proceed To Checkout</Link>
+                <Link href="/cart/shipping-address">
+                  Proceed To Shipping Address
+                </Link>
               </Button>
             }
           />

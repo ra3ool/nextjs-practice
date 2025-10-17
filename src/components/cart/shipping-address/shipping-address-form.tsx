@@ -12,23 +12,23 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { cartCheckoutSchema } from '@/schemas/cart.schema';
-import { CartCheckoutType } from '@/types/cart.type';
+import { shippingAddressSchema } from '@/schemas/cart.schema';
+import { ShippingAddressType } from '@/types/cart.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
 import { useTransition } from 'react';
 import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-function CartCheckoutForm({
+function ShippingAddressForm({
   address,
   className,
 }: {
-  address?: CartCheckoutType;
+  address?: ShippingAddressType;
   className?: string;
 }) {
-  const form = useForm<CartCheckoutType>({
-    resolver: zodResolver(cartCheckoutSchema),
+  const form = useForm<ShippingAddressType>({
+    resolver: zodResolver(shippingAddressSchema),
     defaultValues: address || {
       fullName: 'Rasool',
       phoneNumber: '09123456789',
@@ -40,12 +40,12 @@ function CartCheckoutForm({
 
   const [isPending, startTransition] = useTransition();
 
-  const onSubmit: SubmitHandler<z.infer<typeof cartCheckoutSchema>> = (
-    values: CartCheckoutType,
+  const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = (
+    values: ShippingAddressType,
   ) => {
     startTransition(async () => {
       const result = await updateUserAddress(values);
-      // router.push('/payment-method')
+      // router.push('/cart/payment-method')
     });
   };
 
@@ -63,7 +63,7 @@ function CartCheckoutForm({
                 field,
               }: {
                 field: ControllerRenderProps<
-                  z.infer<typeof cartCheckoutSchema>,
+                  z.infer<typeof shippingAddressSchema>,
                   'fullName'
                 >;
               }) => (
@@ -90,7 +90,7 @@ function CartCheckoutForm({
                 field,
               }: {
                 field: ControllerRenderProps<
-                  z.infer<typeof cartCheckoutSchema>,
+                  z.infer<typeof shippingAddressSchema>,
                   'phoneNumber'
                 >;
               }) => (
@@ -120,7 +120,7 @@ function CartCheckoutForm({
                 field,
               }: {
                 field: ControllerRenderProps<
-                  z.infer<typeof cartCheckoutSchema>,
+                  z.infer<typeof shippingAddressSchema>,
                   'country'
                 >;
               }) => (
@@ -147,7 +147,7 @@ function CartCheckoutForm({
                 field,
               }: {
                 field: ControllerRenderProps<
-                  z.infer<typeof cartCheckoutSchema>,
+                  z.infer<typeof shippingAddressSchema>,
                   'city'
                 >;
               }) => (
@@ -176,7 +176,7 @@ function CartCheckoutForm({
               field,
             }: {
               field: ControllerRenderProps<
-                z.infer<typeof cartCheckoutSchema>,
+                z.infer<typeof shippingAddressSchema>,
                 'address'
               >;
             }) => (
@@ -209,4 +209,4 @@ function CartCheckoutForm({
   );
 }
 
-export { CartCheckoutForm };
+export { ShippingAddressForm };

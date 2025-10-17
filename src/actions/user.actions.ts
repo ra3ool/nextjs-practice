@@ -2,8 +2,8 @@
 
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { cartCheckoutSchema } from '@/schemas/cart.schema';
-import { CartCheckoutType } from '@/types/cart.type';
+import { shippingAddressSchema } from '@/schemas/cart.schema';
+import { ShippingAddressType } from '@/types/cart.type';
 import { getServerSession, User } from 'next-auth';
 
 export async function getUser(id: number): Promise<User | null> {
@@ -15,13 +15,13 @@ export async function getUser(id: number): Promise<User | null> {
   }
 }
 
-export async function updateUserAddress(data: CartCheckoutType) {
+export async function updateUserAddress(data: ShippingAddressType) {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id ? +session.user.id : null;
     if (!userId) return null;
 
-    const address = cartCheckoutSchema.parse(data);
+    const address = shippingAddressSchema.parse(data);
     console.log('address :', address);
 
     await prisma.user.update({
