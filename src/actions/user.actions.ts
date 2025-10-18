@@ -4,7 +4,14 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { shippingAddressSchema } from '@/schemas/cart.schema';
 import { ShippingAddressType } from '@/types/cart.type';
+import { Prisma } from '@prisma/client';
 import { getServerSession, User } from 'next-auth';
+
+type ServiceResponse<T> = {
+  success: boolean;
+  message: string;
+  data?: T | null;
+};
 
 export async function getUser(id: number): Promise<User | null> {
   try {
@@ -15,28 +22,127 @@ export async function getUser(id: number): Promise<User | null> {
   }
 }
 
-export async function updateUserAddress(data: ShippingAddressType) {
+export async function getUserAddresses(userId: number) {
+  try {
+    const addresses = await prisma.userAddress.findMany({
+      where: { userId },
+      orderBy: [
+        { isDefault: 'desc' }, // Default addresses first
+        { createdAt: 'desc' }, // Then newest first
+      ],
+    });
+    return addresses || [];
+  } catch (error) {
+    console.error('Failed to fetch user addresses:', error);
+    return [];
+  }
+}
+
+export async function updateUserAddress(
+  data: ShippingAddressType,
+): Promise<ServiceResponse<ShippingAddressType>> {
   try {
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id ? +session.user.id : null;
-    if (!userId) return null;
+    const userId = +session!.user!.id;
 
-    const address = shippingAddressSchema.parse(data);
-    console.log('address :', address);
+    const validatedData = shippingAddressSchema.parse(data);
 
-    await prisma.user.update({
-      where: { id: userId },
-      data: {},
+    // Handle default address logic
+    if (validatedData.isDefault) {
+      await prisma.userAddress.updateMany({
+        where: {
+          userId,
+          isDefault: true,
+          ...(validatedData.id && { id: { not: validatedData.id } }), // Exclude current address if updating
+        },
+        data: { isDefault: false },
+      });
+    }
+
+    const operation = validatedData.id ? 'update' : 'create';
+
+    const userAddress = await prisma.userAddress.upsert({
+      where: {
+        id: validatedData.id ?? -1,
+        userId,
+      },
+      create: {
+        userId,
+        country: validatedData.country,
+        city: validatedData.city,
+        address: validatedData.address,
+        postalCode: validatedData.postalCode || null, // Ensure null for empty values
+        phoneNumber: validatedData.phoneNumber,
+        isDefault: validatedData.isDefault ?? false,
+        // lat: validatedData.lat ? new Prisma.Decimal(validatedData.lat) : null,
+        // lng: validatedData.lng ? new Prisma.Decimal(validatedData.lng) : null,
+      },
+      update: {
+        country: validatedData.country,
+        city: validatedData.city,
+        address: validatedData.address,
+        postalCode: validatedData.postalCode || null, // Ensure null for empty values
+        phoneNumber: validatedData.phoneNumber,
+        isDefault: validatedData.isDefault ?? false,
+        // lat: validatedData.lat ? new Prisma.Decimal(validatedData.lat) : null,
+        // lng: validatedData.lng ? new Prisma.Decimal(validatedData.lng) : null,
+      },
     });
 
-    // TODO make a helper for all response
     return {
       success: true,
-      message: '',
-      data: [],
+      message: `Address ${operation}d successfully`,
+      data: {
+        ...userAddress,
+        postalCode: userAddress.postalCode ?? undefined,
+        // lat: userAddress.lat ? Number(userAddress.lat) : undefined,
+        // lng: userAddress.lng ? Number(userAddress.lng) : undefined,
+      },
     };
   } catch (error) {
     console.error('Failed to update user address:', error);
-    return null;
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case 'P2025':
+          return {
+            success: false,
+            message: 'Address not found or access denied',
+          };
+        case 'P2002':
+          return {
+            success: false,
+            message: 'Address already exists',
+          };
+      }
+    }
+
+    return {
+      success: false,
+      message: 'An unexpected error occurred',
+    };
+  }
+}
+
+export async function deleteUserAddress(addressId: number) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id ? +session.user.id : null;
+
+    if (!userId) {
+      return { success: false, message: 'Authentication required' };
+    }
+
+    await prisma.userAddress.delete({
+      where: {
+        id: addressId,
+        userId,
+      },
+    });
+
+    return { success: true, message: 'Address deleted successfully' };
+  } catch (error) {
+    console.error('Failed to delete address:', error);
+    return { success: false, message: 'Failed to delete address' };
   }
 }
