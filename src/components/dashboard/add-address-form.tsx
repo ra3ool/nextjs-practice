@@ -18,12 +18,13 @@ import { shippingAddressSchema } from '@/schemas/cart.schema';
 import { ShippingAddressType } from '@/types/cart.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-function ShippingAddressForm({
+function AddAddressForm({
   addresses,
   className,
 }: {
@@ -43,7 +44,7 @@ function ShippingAddressForm({
       isDefault: false,
     },
   });
-
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = (
@@ -53,7 +54,7 @@ function ShippingAddressForm({
       const result = await updateUserAddress(values);
       if (result?.success) {
         toast.success(result.message);
-        // router.push('/cart/payment-method')
+        router.refresh();
       } else {
         toast.error(result?.message);
       }
@@ -64,8 +65,6 @@ function ShippingAddressForm({
     <div className={cn(className)}>
       <Form {...form}>
         <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <h3>please enter an address to ship to</h3>
-
           <FormField
             control={form.control}
             name="id"
@@ -209,7 +208,7 @@ function ShippingAddressForm({
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter Address"
+                    placeholder="Street Name and ..."
                     disabled={isPending}
                     suppressHydrationWarning
                     {...field}
@@ -309,7 +308,7 @@ function ShippingAddressForm({
             ) : (
               <ArrowRightIcon className="w-4 h-4" />
             )}
-            Continue
+            Save Address
           </Button>
         </form>
       </Form>
@@ -317,4 +316,4 @@ function ShippingAddressForm({
   );
 }
 
-export { ShippingAddressForm };
+export { AddAddressForm };

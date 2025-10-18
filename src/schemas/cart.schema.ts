@@ -47,8 +47,7 @@ export const shippingAddressSchema = z.object({
     .string()
     .regex(/^\d{10}$/, 'Invalid postal code format')
     .optional()
-    .or(z.literal(''))
-    .or(z.literal(null)),
+    .or(z.literal('')),
   phoneNumber: z.string().regex(/^09\d{9}$/, 'Invalid phone number format'),
   isDefault: z.boolean(),
   // lat: z.string().optional(),
