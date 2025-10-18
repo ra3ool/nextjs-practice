@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          <SiteHeader className="site-header" />
+          <SiteHeader className="site-header sticky top-0 z-10" />
           <main className="container mx-auto px-4 py-8">{children}</main>
         </Providers>
         <Toaster position="bottom-right" />
