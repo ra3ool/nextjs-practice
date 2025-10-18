@@ -15,7 +15,6 @@ import {
 import { authOptions } from '@/lib/auth';
 import type { CartType, ShippingAddressType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
-import { EllipsisVerticalIcon } from 'lucide-react';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
@@ -65,7 +64,10 @@ export default async function ShippingAddressPage() {
               your address list is empty, try to add new address
             </p>
           ) : (
-            <AddressesList addresses={addresses as ShippingAddressType[]} />
+            <AddressesList
+              addresses={addresses as ShippingAddressType[]}
+              deletable={false}
+            />
           )}
         </div>
         <CartInfo cart={serializedCart} className="h-fit sticky top-20" />

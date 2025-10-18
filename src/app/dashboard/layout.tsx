@@ -16,6 +16,9 @@ export default function DashboardLayout({
           <Link href="/dashboard/profile" className="block hover:underline">
             Profile
           </Link>
+          <Link href="/dashboard/addresses" className="block hover:underline">
+            Addresses
+          </Link>
         </nav>
       </aside>
       <main className="p-6">{children}</main>
