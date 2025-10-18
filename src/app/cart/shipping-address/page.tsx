@@ -1,7 +1,7 @@
 import { getMyCart } from '@/actions/cart.actions';
 import { getUserAddresses } from '@/actions/user.actions';
 import { CartInfo } from '@/components/cart/cart-info';
-import { ShippingAddressForm } from '@/components/cart/shipping-address/shipping-address-form';
+import { AddressesList } from '@/components/dashboard/addresses-list';
 import { authOptions } from '@/lib/auth';
 import type { CartType, ShippingAddressType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
@@ -24,11 +24,7 @@ export default async function ShippingAddressPage() {
     redirect('/cart');
   }
 
-  if (!session?.user?.id) {
-    redirect('/auth/signin');
-  }
-
-  const userId = +session.user.id;
+  const userId = +session!.user!.id;
   const addresses = await getUserAddresses(userId);
 
   return (
@@ -36,11 +32,11 @@ export default async function ShippingAddressPage() {
       <h2 className="text-2xl mb-6">Shipping Address</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <ShippingAddressForm
+        <AddressesList
           addresses={addresses as ShippingAddressType[]}
           className="lg:col-span-3"
         />
-        <CartInfo cart={serializedCart} className="h-fit" />
+        <CartInfo cart={serializedCart} className="h-fit sticky top-20" />
       </div>
     </>
   );
