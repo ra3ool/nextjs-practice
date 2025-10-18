@@ -172,18 +172,17 @@ export async function updateUserAddress(
   }
 }
 
-export async function deleteUserAddress(addressId: number) {
+export async function deleteUserAddress(address: ShippingAddressType) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.id ? +session.user.id : null;
+    if (address.isDefault)
+      return { success: false, message: "You can't delete default address!" };
 
-    if (!userId) {
-      return { success: false, message: 'Authentication required' };
-    }
+    const session = await getServerSession(authOptions);
+    const userId = +session!.user!.id;
 
     await prisma.userAddress.delete({
       where: {
-        id: addressId,
+        id: address.id,
         userId,
       },
     });

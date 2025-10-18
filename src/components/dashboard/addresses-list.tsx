@@ -1,10 +1,10 @@
 'use client';
 
-import { setDefaultAddress } from '@/actions/user.actions';
+import { deleteUserAddress, setDefaultAddress } from '@/actions/user.actions';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { ShippingAddressType } from '@/types/cart.type';
-import { CheckIcon } from 'lucide-react';
+import { CheckIcon, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { type MouseEventHandler, useTransition } from 'react';
 import { toast } from 'sonner';
@@ -12,9 +12,11 @@ import { toast } from 'sonner';
 function AddressesList({
   addresses,
   className,
+  deletable = true,
 }: {
   addresses: ShippingAddressType[];
   className?: string;
+  deletable?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -23,6 +25,19 @@ function AddressesList({
     if (isPending) return;
     startTransition(async () => {
       const result = await setDefaultAddress(address);
+
+      if (result.success) {
+        toast.success(result.message);
+        router.refresh();
+      } else {
+        toast.error(result.message);
+      }
+    });
+  };
+  const handleDeleteAddress = (address: ShippingAddressType) => {
+    if (isPending) return;
+    startTransition(async () => {
+      const result = await deleteUserAddress(address);
 
       if (result.success) {
         toast.success(result.message);
@@ -42,8 +57,10 @@ function AddressesList({
           className={cn(
             'cursor-pointer',
             address.isDefault ? 'border border-amber-200' : undefined,
+            isPending ? 'opacity-50' : undefined,
           )}
           onClick={() => handleAddressClick(address)}
+          {...(deletable && { handleDeleteAddress })}
         />
       ))}
     </div>
@@ -53,10 +70,12 @@ function AddressesList({
 function AddressCard({
   address,
   className,
+  handleDeleteAddress,
   onClick,
 }: {
   address: ShippingAddressType;
   className?: string;
+  handleDeleteAddress?: Function;
   onClick?: MouseEventHandler;
 }) {
   return (
@@ -74,7 +93,18 @@ function AddressCard({
         </div>
         {address.postalCode && <>Postal Code: {address.postalCode}</>}
       </div>
-      {address.isDefault && <CheckIcon />}
+      <div className="flex gap-4">
+        {address.isDefault && <CheckIcon className="text-amber-200" />}
+        {typeof handleDeleteAddress === 'function' && (
+          <TrashIcon
+            className="text-red-400"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteAddress(address);
+            }}
+          />
+        )}
+      </div>
     </Card>
   );
 }
