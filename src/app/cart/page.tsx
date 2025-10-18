@@ -24,7 +24,7 @@ export default async function CartPage() {
           <CartTable cart={cart} className="lg:col-span-3" />
           <CartInfo
             cart={cart}
-            className="h-fit"
+            className="h-fit sticky top-20"
             cardButton={
               <Button asChild>
                 <Link href="/cart/shipping-address">

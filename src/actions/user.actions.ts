@@ -26,15 +26,63 @@ export async function getUserAddresses(userId: number) {
   try {
     const addresses = await prisma.userAddress.findMany({
       where: { userId },
-      orderBy: [
-        { isDefault: 'desc' }, // Default addresses first
-        { createdAt: 'desc' }, // Then newest first
-      ],
+      orderBy: [{ createdAt: 'desc' }],
     });
     return addresses || [];
   } catch (error) {
     console.error('Failed to fetch user addresses:', error);
     return [];
+  }
+}
+
+export async function setDefaultAddress(
+  address: ShippingAddressType,
+): Promise<ServiceResponse<void>> {
+  if (address.isDefault)
+    return {
+      success: false,
+      message: 'Address already set as default',
+    };
+
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = +session!.user!.id;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.userAddress.updateMany({
+        where: { userId, isDefault: true },
+        data: { isDefault: false },
+      });
+
+      await tx.userAddress.update({
+        where: {
+          id: address.id,
+          userId,
+        },
+        data: { isDefault: true },
+      });
+    });
+
+    return {
+      success: true,
+      message: 'Default address updated successfully',
+    };
+  } catch (error) {
+    console.error('Failed to set default address:', error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') {
+        return {
+          success: false,
+          message: 'Address not found or you do not have permission',
+        };
+      }
+    }
+
+    return {
+      success: false,
+      message: 'Failed to update default address',
+    };
   }
 }
 
@@ -71,7 +119,7 @@ export async function updateUserAddress(
         country: validatedData.country,
         city: validatedData.city,
         address: validatedData.address,
-        postalCode: validatedData.postalCode || null, // Ensure null for empty values
+        postalCode: validatedData.postalCode || null,
         phoneNumber: validatedData.phoneNumber,
         isDefault: validatedData.isDefault ?? false,
         // lat: validatedData.lat ? new Prisma.Decimal(validatedData.lat) : null,
@@ -81,7 +129,7 @@ export async function updateUserAddress(
         country: validatedData.country,
         city: validatedData.city,
         address: validatedData.address,
-        postalCode: validatedData.postalCode || null, // Ensure null for empty values
+        postalCode: validatedData.postalCode || null,
         phoneNumber: validatedData.phoneNumber,
         isDefault: validatedData.isDefault ?? false,
         // lat: validatedData.lat ? new Prisma.Decimal(validatedData.lat) : null,
