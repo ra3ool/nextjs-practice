@@ -30,32 +30,26 @@ export const cartResponseSchema = insertCartSchema.extend({
 });
 
 export const shippingAddressSchema = z.object({
-  fullName: z
-    .string()
-    .min(3, 'Full name must be at least 3 characters')
-    .max(50, 'Full name too long'),
-
-  phoneNumber: z
-    .string()
-    .regex(/^09\d{9}$/, 'Invalid phone number format')
-    .min(10, 'Phone number must be at least 10 digits')
-    .max(15, 'Phone number cannot exceed 15 digits'),
-
+  id: z.number().optional(),
   country: z
     .string()
     .min(2, 'Country must be at least 2 characters')
     .max(50, 'Country name too long'),
-
   city: z
     .string()
     .min(2, 'City must be at least 2 characters')
     .max(50, 'City name too long'),
-
   address: z
     .string()
     .min(10, 'Address must be at least 10 characters')
     .max(200, 'Address too long'),
-
-  lat: z.number().optional(),
-  lng: z.number().optional(),
+  postalCode: z
+    .string()
+    .regex(/^\d{10}$/, 'Invalid postal code format')
+    .optional()
+    .or(z.literal('')),
+  phoneNumber: z.string().regex(/^09\d{9}$/, 'Invalid phone number format'),
+  isDefault: z.boolean(),
+  // lat: z.string().optional(),
+  // lng: z.string().optional(),
 });

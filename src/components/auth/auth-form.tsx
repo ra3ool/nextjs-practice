@@ -55,7 +55,12 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {renderInputs(mode, form, isLoading)}
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isLoading}
+          suppressHydrationWarning
+        >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isLoading
             ? mode === 'login'
@@ -122,7 +127,7 @@ function renderInputs(
     <FormField
       key={field.name}
       control={form.control}
-      name={field.name as any}
+      name={field.name}
       render={({ field: rhfField }) => (
         <FormItem>
           <FormLabel>{field.label}</FormLabel>
@@ -131,6 +136,7 @@ function renderInputs(
               type={field.type}
               placeholder={field.placeholder}
               disabled={isLoading}
+              suppressHydrationWarning
               {...rhfField}
             />
           </FormControl>
