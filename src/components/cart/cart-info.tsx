@@ -5,8 +5,9 @@ import { Card } from '@/components/ui/card';
 import { useCart } from '@/contexts/cart.context';
 import { cn } from '@/lib/utils';
 import type { CartType, StepsType } from '@/types/cart.type';
+import { formatPrice } from '@/utils/format-price';
 import { usePathname, useRouter } from 'next/navigation';
-import { memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 
 interface CartInfoProps {
   cart: CartType;
@@ -44,13 +45,14 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
     <Card className={cn('p-4 select-none', className)}>
       <div className="flex items-center gap-2">
         Subtotal({subtotalQty}):
-        <span className="font-bold">${cart.itemsPrice || 0}</span>
+        <span className="font-bold">{formatPrice(cart.itemsPrice)}</span>
       </div>
       <div className="flex items-center gap-2">
-        Tax: <span className="font-bold">${cart.taxPrice || 0}</span>
+        Tax: <span className="font-bold">{formatPrice(cart.taxPrice)}</span>
       </div>
       <div className="flex items-center gap-2">
-        Total Price: <span className="font-bold">${cart.totalPrice || 0}</span>
+        Total Price:{' '}
+        <span className="font-bold">{formatPrice(cart.totalPrice)}</span>
       </div>
       <ActionButton
         step={currentStep}
