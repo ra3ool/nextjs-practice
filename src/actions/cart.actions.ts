@@ -46,6 +46,7 @@ const getSessionData = async () => {
 const getOrCreateCart = async (txClient = prisma) => {
   const { sessionCartId, userId } = await getSessionData();
 
+  //FIXME consider that each user only has one cart in db and merge carts if more
   return await txClient.cart.upsert({
     where: { sessionCartId },
     create: {
