@@ -13,28 +13,48 @@ import {
 } from '@/components/ui/sheet';
 import { useCart } from '@/contexts/cart.context';
 import type { ShippingAddressType } from '@/types/cart.type';
-import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
-
-export const metadata: Metadata = {
-  title: 'Shipping Address',
-};
+import { redirect, useRouter } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
+import { toast } from 'sonner';
 
 function ClientShippingAddressPage({
   addresses,
 }: {
   addresses: ShippingAddressType[];
 }) {
-  const { cart } = useCart();
+  const router = useRouter();
+  const { cart, setAddresses, setOnFormSubmit } = useCart();
 
   if (!cart.sessionCartId || cart.items?.length === 0) {
     redirect('/cart');
   }
 
+  useEffect(() => {
+    setAddresses(addresses);
+  }, [addresses, setAddresses]);
+
+  const hasDefaultAddress = useMemo(
+    () => addresses.some((address) => address.isDefault),
+    [addresses],
+  );
+
+  useEffect(() => {
+    setOnFormSubmit(() => {
+      console.log('addresses :', addresses);
+
+      if (!hasDefaultAddress) {
+        toast.error('Please select a default address before proceeding');
+        return;
+      }
+
+      // router.push('/cart/payment-method');
+    });
+  }, [addresses, setOnFormSubmit, router]);
+
   return (
     <>
-      <div className="flex gap-8">
-        <h2 className="text-2xl mb-6">Shipping Address</h2>
+      <div className="flex gap-8 items-center mb-6">
+        <h2 className="text-2xl">Shipping Address</h2>
         {/* TODO make side-sheet close after adding address */}
         <Sheet>
           <SheetTrigger asChild>
@@ -51,15 +71,13 @@ function ClientShippingAddressPage({
           </SheetContent>
         </Sheet>
       </div>
+
       {addresses.length === 0 ? (
         <p className="mb-6">
-          your address list is empty, try to add new address
+          Your address list is empty, try to add new address
         </p>
       ) : (
-        <AddressesList
-          addresses={addresses as ShippingAddressType[]}
-          deletable={false}
-        />
+        <AddressesList addresses={addresses} deletable={false} />
       )}
     </>
   );

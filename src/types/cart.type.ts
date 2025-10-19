@@ -15,12 +15,14 @@ export type CartItemType = z.infer<typeof cartItemSchema>;
 
 export type ShippingAddressType = z.infer<typeof shippingAddressSchema>;
 
-export type StepsType = 'cart' | 'shipping' | 'payment' | 'review';
+export type StepsType = '' | 'cart' | 'shipping' | 'payment' | 'review'; //empty string used for loading state
 export interface CartContextType {
   session: Session | null;
   cart: CartType;
   currentStep: StepsType;
   setCurrentStep: (step: StepsType) => void;
+  addresses: ShippingAddressType[];
+  setAddresses: (addresses: ShippingAddressType[]) => void;
   onFormSubmit?: () => void;
   setOnFormSubmit: (handler: () => void) => void;
 }

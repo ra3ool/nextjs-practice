@@ -3,6 +3,7 @@
 import type {
   CartContextType,
   CartProviderType,
+  ShippingAddressType,
   StepsType,
 } from '@/types/cart.type';
 import { createContext, useContext, useState } from 'react';
@@ -10,8 +11,9 @@ import { createContext, useContext, useState } from 'react';
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 function CartProvider({ children, session, cart }: CartProviderType) {
-  const [currentStep, setCurrentStep] = useState<StepsType>('cart');
+  const [currentStep, setCurrentStep] = useState<StepsType>('');
   const [onFormSubmit, setOnFormSubmit] = useState<() => void>(() => {});
+  const [addresses, setAddresses] = useState<ShippingAddressType[]>([]);
 
   return (
     <CartContext.Provider
@@ -20,6 +22,8 @@ function CartProvider({ children, session, cart }: CartProviderType) {
         session,
         currentStep,
         setCurrentStep,
+        addresses,
+        setAddresses,
         onFormSubmit,
         setOnFormSubmit,
       }}
