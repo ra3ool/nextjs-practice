@@ -1,22 +1,29 @@
 'use client';
 
-import type { CartType } from '@/types/cart.type';
-import type { Session } from 'next-auth';
-import { createContext, useContext } from 'react';
-
-interface CartContextType {
-  session: Session | null;
-  cart: CartType;
-}
-interface CartProviderType extends CartContextType {
-  children: React.ReactNode;
-}
+import {
+  CartContextType,
+  CartProviderType,
+  StepsType,
+} from '@/types/cart.type';
+import { createContext, useContext, useState } from 'react';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 function CartProvider({ children, session, cart }: CartProviderType) {
+  const [currentStep, setCurrentStep] = useState<StepsType>('cart');
+  const [onFormSubmit, setOnFormSubmit] = useState<() => void>(() => {});
+
   return (
-    <CartContext.Provider value={{ cart, session }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        session,
+        currentStep,
+        setCurrentStep,
+        onFormSubmit,
+        setOnFormSubmit,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
