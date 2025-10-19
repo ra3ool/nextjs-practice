@@ -37,7 +37,7 @@ export default async function ShippingAddressPage() {
   const addresses = await getUserAddresses(userId);
 
   return (
-    <div className='flex flex-col gap-6'>
+    <div className="flex flex-col gap-6">
       <div className="flex gap-8">
         <h2 className="text-xl font-bold">Your saved addresses</h2>
         <Sheet>
@@ -57,7 +57,7 @@ export default async function ShippingAddressPage() {
       </div>
       {addresses.length === 0 ? (
         <p className="mb-6">
-          your address list is empty, try to add new address
+          Your address list is empty, try to add new address
         </p>
       ) : (
         <AddressesList addresses={addresses as ShippingAddressType[]} />

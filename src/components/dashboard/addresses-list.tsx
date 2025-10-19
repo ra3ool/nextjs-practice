@@ -56,7 +56,9 @@ function AddressesList({
           address={address}
           className={cn(
             'cursor-pointer',
-            address.isDefault ? 'border border-amber-200' : undefined,
+            address.isDefault
+              ? 'ring ring-amber-700 dark:ring-amber-200'
+              : undefined,
             isPending ? 'opacity-50' : undefined,
           )}
           onClick={() => handleAddressClick(address)}
@@ -94,7 +96,9 @@ function AddressCard({
         {address.postalCode && <>Postal Code: {address.postalCode}</>}
       </div>
       <div className="flex gap-4">
-        {address.isDefault && <CheckIcon className="text-amber-200" />}
+        {address.isDefault && (
+          <CheckIcon className="text-amber-700 dark:text-amber-200" />
+        )}
         {typeof handleDeleteAddress === 'function' && (
           <TrashIcon
             className="text-red-400"

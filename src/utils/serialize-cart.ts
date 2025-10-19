@@ -3,7 +3,7 @@ import type { CartType } from '@/types/cart.type';
 export function serializeCart(cart: CartType): CartType {
   return {
     ...cart,
-    items: cart.items.map((item) => ({
+    items: cart.items?.map((item) => ({
       ...item,
       price: Number(item.price),
       qty: Number(item.qty),
