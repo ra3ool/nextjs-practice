@@ -1,9 +1,9 @@
 import { SiteHeader } from '@/components/header/the-header';
 import { Toaster } from '@/components/ui/sonner';
+import { AppProviders } from '@/contexts/app.context';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 const appName = process.env.APP_NAME || '';
@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
+        <AppProviders>
           <SiteHeader className="site-header sticky top-0 z-10" />
           <main className="container mx-auto px-4 py-8">{children}</main>
-        </Providers>
+        </AppProviders>
         <Toaster position="bottom-right" />
       </body>
     </html>
