@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { ProductWithRelations } from '@/types/product.type';
+import type { ProductWithRelations } from '@/types/product.type';
 
 //FIXME to don't use any
 const convertProduct = (product: any): ProductWithRelations => ({

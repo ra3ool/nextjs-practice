@@ -3,7 +3,7 @@
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { shippingAddressSchema } from '@/schemas/cart.schema';
-import { ShippingAddressType } from '@/types/cart.type';
+import type { ShippingAddressType } from '@/types/cart.type';
 import { Prisma } from '@prisma/client';
 import { getServerSession, User } from 'next-auth';
 

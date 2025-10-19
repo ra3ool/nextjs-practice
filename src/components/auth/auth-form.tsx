@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { loginSchema, registerSchema } from '@/schemas/auth.schema';
-import { LoginType, RegisterType } from '@/types/auth.type';
+import type { LoginType, RegisterType } from '@/types/auth.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';

@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { shippingAddressSchema } from '@/schemas/cart.schema';
-import { ShippingAddressType } from '@/types/cart.type';
+import type { ShippingAddressType } from '@/types/cart.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';

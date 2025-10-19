@@ -2,7 +2,7 @@
 
 import { addItemToCart, removeItemFromCart } from '@/actions/cart.actions';
 import { Button } from '@/components/ui/button';
-import { CartItemType, CartType } from '@/types/cart.type';
+import type { CartItemType, CartType } from '@/types/cart.type';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import { useTransition } from 'react';
 import { toast } from 'sonner';

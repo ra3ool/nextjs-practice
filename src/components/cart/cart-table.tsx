@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
-import { CartType } from '@/types/cart.type';
+import type { CartType } from '@/types/cart.type';
 import { round2 } from '@/utils/round2';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';

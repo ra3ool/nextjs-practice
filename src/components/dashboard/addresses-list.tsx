@@ -3,7 +3,7 @@
 import { deleteUserAddress, setDefaultAddress } from '@/actions/user.actions';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ShippingAddressType } from '@/types/cart.type';
+import type { ShippingAddressType } from '@/types/cart.type';
 import { CheckIcon, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { type MouseEventHandler, useTransition } from 'react';

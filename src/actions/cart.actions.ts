@@ -3,7 +3,7 @@
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { cartItemSchema } from '@/schemas/cart.schema';
-import { CartItemType } from '@/types/cart.type';
+import type { CartItemType } from '@/types/cart.type';
 import { round2 } from '@/utils/round2';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';

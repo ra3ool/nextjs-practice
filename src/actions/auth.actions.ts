@@ -2,7 +2,7 @@
 
 import { signIn } from '@/lib/auth-client';
 import { loginSchema, registerSchema } from '@/schemas/auth.schema';
-import { LoginType, RegisterType } from '@/types/auth.type';
+import type { LoginType, RegisterType } from '@/types/auth.type';
 import { toast } from 'sonner';
 
 export const loginAction = async (input: LoginType) => {

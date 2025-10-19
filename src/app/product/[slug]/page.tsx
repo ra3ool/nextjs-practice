@@ -5,9 +5,9 @@ import { ProductImages } from '@/components/products/product-images';
 import { ProductPrice } from '@/components/products/products-price';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { CartType } from '@/types/cart.type';
+import type { CartType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 

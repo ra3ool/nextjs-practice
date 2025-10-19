@@ -1,4 +1,4 @@
-import { CartType } from '@/types/cart.type';
+import type { CartType } from '@/types/cart.type';
 
 export function serializeCart(cart: CartType): CartType {
   return {

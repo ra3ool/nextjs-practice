@@ -1,6 +1,5 @@
 import { getMyCart } from '@/actions/cart.actions';
 import { getUserAddresses } from '@/actions/user.actions';
-import { CartInfo } from '@/components/cart/cart-info';
 import { AddAddressForm } from '@/components/dashboard/add-address-form';
 import { AddressesList } from '@/components/dashboard/addresses-list';
 import { Button } from '@/components/ui/button';

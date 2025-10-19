@@ -2,7 +2,7 @@ import { getMyCart } from '@/actions/cart.actions';
 import { CartInfo } from '@/components/cart/cart-info';
 import { CartProvider } from '@/contexts/cart.context';
 import { authOptions } from '@/lib/auth';
-import { CartType } from '@/types/cart.type';
+import type { CartType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
 import { getServerSession } from 'next-auth';
 
