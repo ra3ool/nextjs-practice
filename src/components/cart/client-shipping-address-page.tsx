@@ -13,9 +13,8 @@ import {
 } from '@/components/ui/sheet';
 import { useCart } from '@/contexts/cart.context';
 import type { ShippingAddressType } from '@/types/cart.type';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { toast } from 'sonner';
 
 function ClientShippingAddressPage({
   addresses,
@@ -25,9 +24,11 @@ function ClientShippingAddressPage({
   const router = useRouter();
   const { cart, setAddresses, setOnFormSubmit } = useCart();
 
-  if (!cart.sessionCartId || cart.items?.length === 0) {
-    redirect('/cart');
-  }
+  useEffect(() => {
+    if (!cart.sessionCartId || cart.items?.length === 0) {
+      router.replace('/cart');
+    }
+  }, [cart, router]);
 
   useEffect(() => {
     setAddresses(addresses);
@@ -40,16 +41,13 @@ function ClientShippingAddressPage({
 
   useEffect(() => {
     setOnFormSubmit(() => {
-      console.log('addresses :', addresses);
+      if (!hasDefaultAddress) return () => {};
 
-      if (!hasDefaultAddress) {
-        toast.error('Please select a default address before proceeding');
-        return;
-      }
-
-      // router.push('/cart/payment-method');
+      return () => {
+        router.push('/cart/payment-method');
+      };
     });
-  }, [addresses, setOnFormSubmit, router]);
+  }, [hasDefaultAddress, setOnFormSubmit, router]);
 
   return (
     <>

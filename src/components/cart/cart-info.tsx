@@ -24,7 +24,6 @@ const STEPS_MAP: Record<string, StepsType> = {
 const CartInfo = memo(({ cart, className }: CartInfoProps) => {
   const { currentStep, setCurrentStep, onFormSubmit, addresses } = useCart();
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
     const step = STEPS_MAP[pathname] || 'cart';
@@ -35,35 +34,6 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
     () => addresses.some((address) => address.isDefault),
     [addresses],
   );
-
-  const getActionButton = useCallback(() => {
-    switch (currentStep) {
-      case 'cart':
-        return (
-          <Button onClick={() => router.push('/cart/shipping-address')}>
-            Proceed To Shipping Address
-          </Button>
-        );
-      case 'shipping':
-        return (
-          <Button disabled={!hasDefaultAddress} onClick={onFormSubmit}>
-            {!hasDefaultAddress
-              ? 'Please select an address'
-              : 'Proceed To Payment Method'}
-          </Button>
-        );
-      case 'payment':
-        return (
-          <Button onClick={() => router.push('/cart/review')}>
-            Review Order
-          </Button>
-        );
-      case 'review':
-        return <Button>Place Order</Button>;
-      default:
-        return <Button disabled>Loading...</Button>;
-    }
-  }, [currentStep, onFormSubmit, hasDefaultAddress, router]);
 
   const subtotalQty = useMemo(
     () => cart.items?.reduce((a, c) => a + c.qty, 0) ?? 0,
@@ -82,10 +52,52 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
       <div className="flex items-center gap-2">
         Total Price: <span className="font-bold">${cart.totalPrice || 0}</span>
       </div>
-      {getActionButton()}
+      <ActionButton
+        step={currentStep}
+        hasDefault={hasDefaultAddress}
+        onFormSubmit={onFormSubmit}
+      />
     </Card>
   );
 });
+
+function ActionButton({
+  step,
+  hasDefault,
+  onFormSubmit,
+}: {
+  step: StepsType;
+  hasDefault: boolean;
+  onFormSubmit?: () => void;
+}) {
+  const router = useRouter();
+  switch (step) {
+    case 'cart':
+      return (
+        <Button onClick={() => router.push('/cart/shipping-address')}>
+          Proceed To Shipping Address
+        </Button>
+      );
+    case 'shipping':
+      return (
+        <Button disabled={!hasDefault} onClick={onFormSubmit}>
+          {!hasDefault
+            ? 'Please select an address'
+            : 'Proceed To Payment Method'}
+        </Button>
+      );
+    case 'payment':
+      return (
+        <Button onClick={() => router.push('/cart/review')}>
+          Review Order
+        </Button>
+      );
+    case 'review':
+      return <Button>Place Order</Button>;
+    default:
+      return <Button disabled>Loading...</Button>;
+  }
+}
 
 CartInfo.displayName = 'CartInfo';
 

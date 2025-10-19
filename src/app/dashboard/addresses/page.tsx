@@ -57,7 +57,7 @@ export default async function ShippingAddressPage() {
       </div>
       {addresses.length === 0 ? (
         <p className="mb-6">
-          Your address list is empty, try to add new address
+          your address list is empty, try to add new address
         </p>
       ) : (
         <AddressesList addresses={addresses as ShippingAddressType[]} />
