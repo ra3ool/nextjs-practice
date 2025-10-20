@@ -1,7 +1,11 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
-const PROTECTED_ROUTES = ['/dashboard', '/cart/shipping-address'];
+const PROTECTED_ROUTES = [
+  '/dashboard',
+  '/cart/shipping-address',
+  '/cart/payment-method',
+];
 const AUTH_ROUTES = ['/auth'];
 
 export async function middleware(request: NextRequest) {

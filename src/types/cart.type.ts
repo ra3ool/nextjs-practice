@@ -1,6 +1,7 @@
 import {
   cartItemSchema,
   insertCartSchema,
+  paymentMethodSchema,
   shippingAddressSchema,
 } from '@/schemas/cart.schema';
 import type { Session } from 'next-auth';
@@ -31,3 +32,5 @@ export interface CartProviderType {
   session: CartContextType['session'];
   cart: CartContextType['cart'];
 }
+
+export type PaymentMethodsType = z.infer<typeof paymentMethodSchema>;

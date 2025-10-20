@@ -1,3 +1,4 @@
+import { PAYMENT_METHODS } from '@/constants/cart.constants';
 import { z } from 'zod';
 
 const decimalSchema = z
@@ -53,3 +54,12 @@ export const shippingAddressSchema = z.object({
   // lat: z.string().optional(),
   // lng: z.string().optional(),
 });
+
+export const paymentMethodSchema = z
+  .object({
+    type: z.string(),
+  })
+  .refine((data) => PAYMENT_METHODS.includes(data.type), {
+    path: ['type'],
+    error: 'Invalid payment method',
+  });

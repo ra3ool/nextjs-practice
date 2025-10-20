@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 export default async function ShippingAddressPage() {
   const session = await getServerSession(authOptions);
-
   const userId = +session!.user!.id;
+
   const addresses = await getUserAddresses(userId);
 
   return (
