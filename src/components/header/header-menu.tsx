@@ -66,7 +66,7 @@ function NavContent() {
       <Button variant="ghost" asChild>
         <Link
           href="/cart"
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+          className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
         >
           <ShoppingCartIcon className="h-4 w-4" />
           Cart
@@ -126,7 +126,7 @@ function NavAuthButtons() {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => signOut()}
-          className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-600"
+          className="flex items-center gap-2 cursor-pointer text-red-400 focus:text-red-400"
         >
           <LogOutIcon className="h-4 w-4 text-current" />
           Logout
