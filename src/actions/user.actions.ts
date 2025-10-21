@@ -2,8 +2,14 @@
 
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { shippingAddressSchema } from '@/schemas/cart.schema';
-import type { ShippingAddressType } from '@/types/cart.type';
+import {
+  paymentMethodSchema,
+  shippingAddressSchema,
+} from '@/schemas/cart.schema';
+import type {
+  PaymentMethodsType,
+  ShippingAddressType,
+} from '@/types/cart.type';
 import { Prisma } from '@prisma/client';
 import { getServerSession, User } from 'next-auth';
 
@@ -81,7 +87,7 @@ export async function setDefaultAddress(
 
     return {
       success: false,
-      message: 'Failed to update default address',
+      message: 'Failed to set default address',
     };
   }
 }
@@ -93,47 +99,47 @@ export async function updateUserAddress(
     const session = await getServerSession(authOptions);
     const userId = +session!.user!.id;
 
-    const validatedData = shippingAddressSchema.parse(data);
+    const address = shippingAddressSchema.parse(data);
 
     // Handle default address logic
-    if (validatedData.isDefault) {
+    if (address.isDefault) {
       await prisma.userAddress.updateMany({
         where: {
           userId,
           isDefault: true,
-          ...(validatedData.id && { id: { not: validatedData.id } }), // Exclude current address if updating
+          ...(address.id && { id: { not: address.id } }), // Exclude current address if updating
         },
         data: { isDefault: false },
       });
     }
 
-    const operation = validatedData.id ? 'update' : 'create';
+    const operation = address.id ? 'update' : 'create';
 
     const userAddress = await prisma.userAddress.upsert({
       where: {
-        id: validatedData.id ?? -1,
+        id: address.id ?? -1,
         userId,
       },
       create: {
         userId,
-        country: validatedData.country,
-        city: validatedData.city,
-        address: validatedData.address,
-        postalCode: validatedData.postalCode || null,
-        phoneNumber: validatedData.phoneNumber,
-        isDefault: validatedData.isDefault ?? false,
-        // lat: validatedData.lat ? new Prisma.Decimal(validatedData.lat) : null,
-        // lng: validatedData.lng ? new Prisma.Decimal(validatedData.lng) : null,
+        country: address.country,
+        city: address.city,
+        address: address.address,
+        postalCode: address.postalCode || null,
+        phoneNumber: address.phoneNumber,
+        isDefault: address.isDefault ?? false,
+        // lat: address.lat ? new Prisma.Decimal(address.lat) : null,
+        // lng: address.lng ? new Prisma.Decimal(address.lng) : null,
       },
       update: {
-        country: validatedData.country,
-        city: validatedData.city,
-        address: validatedData.address,
-        postalCode: validatedData.postalCode || null,
-        phoneNumber: validatedData.phoneNumber,
-        isDefault: validatedData.isDefault ?? false,
-        // lat: validatedData.lat ? new Prisma.Decimal(validatedData.lat) : null,
-        // lng: validatedData.lng ? new Prisma.Decimal(validatedData.lng) : null,
+        country: address.country,
+        city: address.city,
+        address: address.address,
+        postalCode: address.postalCode || null,
+        phoneNumber: address.phoneNumber,
+        isDefault: address.isDefault ?? false,
+        // lat: address.lat ? new Prisma.Decimal(address.lat) : null,
+        // lng: address.lng ? new Prisma.Decimal(address.lng) : null,
       },
     });
 
@@ -167,7 +173,7 @@ export async function updateUserAddress(
 
     return {
       success: false,
-      message: 'An unexpected error occurred',
+      message: 'Failed to update user address',
     };
   }
 }
@@ -191,5 +197,25 @@ export async function deleteUserAddress(address: ShippingAddressType) {
   } catch (error) {
     console.error('Failed to delete address:', error);
     return { success: false, message: 'Failed to delete address' };
+  }
+}
+
+export async function updateUserPaymentMethod(data: PaymentMethodsType) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = +session!.user!.id;
+
+    const paymentMethod = paymentMethodSchema.parse(data);
+
+    // await prisma.user.update({
+    //   where: { id: userId },
+    //   data: {},
+    // });
+  } catch (error) {
+    console.error('Failed to update payment method:', error);
+    return {
+      success: false,
+      message: 'Failed to update payment method',
+    };
   }
 }
