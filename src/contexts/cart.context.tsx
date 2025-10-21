@@ -6,7 +6,7 @@ import type {
   ShippingAddressType,
   StepsType,
 } from '@/types/cart.type';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -15,21 +15,23 @@ function CartProvider({ children, session, cart }: CartProviderType) {
   const [onFormSubmit, setOnFormSubmit] = useState<() => void>(() => {});
   const [addresses, setAddresses] = useState<ShippingAddressType[]>([]);
 
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      cart,
+      session,
+      currentStep,
+      setCurrentStep,
+      addresses,
+      setAddresses,
+      onFormSubmit,
+      setOnFormSubmit,
+    }),
+    [cart, session, currentStep, addresses, onFormSubmit],
+  );
+
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        session,
-        currentStep,
-        setCurrentStep,
-        addresses,
-        setAddresses,
-        onFormSubmit,
-        setOnFormSubmit,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
   );
 }
 
