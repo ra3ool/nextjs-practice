@@ -15,6 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { routes } from '@/constants/routes.constants';
 import { signOut, useSession } from '@/lib/auth-client';
 import {
   ChevronDownIcon,
@@ -64,7 +65,7 @@ function NavContent() {
       <ToggleTheme />
 
       <Button variant="ghost" asChild>
-        <Link href="/cart" className="flex items-center">
+        <Link href={routes.cart.root} className="flex items-center">
           <ShoppingCartIcon className="h-4 w-4" />
           Cart
         </Link>
@@ -92,7 +93,7 @@ function NavAuthButtons() {
     return (
       <Button asChild>
         <Link
-          href={`/auth?callbackUrl=${pathName}`}
+          href={`${routes.auth.root}?callbackUrl=${pathName}`}
           className="flex items-center gap-2"
         >
           <UserIcon className="h-4 w-4" />
@@ -114,7 +115,7 @@ function NavAuthButtons() {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuItem asChild>
           <Link
-            href="/dashboard"
+            href={routes.dashboard.root}
             className="flex items-center gap-2 cursor-pointer"
           >
             <LayoutDashboardIcon className="h-4 w-4" />

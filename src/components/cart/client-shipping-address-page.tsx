@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { routes } from '@/constants/routes.constants';
 import { useCart } from '@/contexts/cart.context';
 import type { ShippingAddressType } from '@/types/cart.type';
 import { useRouter } from 'next/navigation';
@@ -26,7 +27,7 @@ function ClientShippingAddressPage({
 
   useEffect(() => {
     if (!cart.sessionCartId || cart.items?.length === 0) {
-      router.replace('/cart');
+      router.replace(routes.cart.root);
     }
   }, [cart, router]);
 
@@ -44,7 +45,7 @@ function ClientShippingAddressPage({
       if (!hasDefaultAddress) return () => {};
 
       return () => {
-        router.push('/cart/payment-method');
+        router.push(routes.cart.paymentMethod);
       };
     });
   }, [hasDefaultAddress, setOnFormSubmit, router]);

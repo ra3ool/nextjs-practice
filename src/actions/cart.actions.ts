@@ -1,5 +1,6 @@
 'use server';
 
+import { routes } from '@/constants/routes.constants';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { cartItemSchema } from '@/schemas/cart.schema';
@@ -119,7 +120,7 @@ export const addItemToCart = async (item: CartItemType) => {
       });
     });
 
-    revalidatePath(`/product/${checkedItem.slug}`);
+    revalidatePath(`${routes.product.root}/${checkedItem.slug}`);
     return { success: true, message };
   } catch (error) {
     return {
@@ -164,7 +165,7 @@ export const removeItemFromCart = async (item: CartItemType) => {
       },
     });
 
-    revalidatePath(`/product/${item.slug}`);
+    revalidatePath(`${routes.product.root}/${item.slug}`);
     return { success: true, message };
   } catch (error) {
     return {

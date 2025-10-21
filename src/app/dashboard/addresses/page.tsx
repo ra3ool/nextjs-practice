@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { routes } from '@/constants/routes.constants';
 import { authOptions } from '@/lib/auth';
 import type { CartType, ShippingAddressType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
@@ -30,7 +31,7 @@ export default async function ShippingAddressPage() {
   const serializedCart = serializeCart(cart as CartType);
 
   if (!serializedCart.sessionCartId || serializedCart.items?.length === 0) {
-    redirect('/cart');
+    redirect(routes.cart.root);
   }
 
   const userId = +session!.user!.id;

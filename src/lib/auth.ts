@@ -1,3 +1,4 @@
+import { routes } from '@/constants/routes.constants';
 import bcrypt from 'bcryptjs';
 import type { AuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
@@ -36,8 +37,8 @@ export const authOptions: AuthOptions = {
     }),
   ],
   pages: {
-    signIn: '/auth',
-    error: '/auth',
+    signIn: routes.auth.root,
+    error: routes.auth.root,
   },
   session: {
     strategy: 'jwt',

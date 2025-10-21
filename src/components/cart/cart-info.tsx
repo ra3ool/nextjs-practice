@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { routes } from '@/constants/routes.constants';
 import { useCart } from '@/contexts/cart.context';
 import { cn } from '@/lib/utils';
 import type { CartType, StepsType } from '@/types/cart.type';
@@ -96,7 +97,7 @@ const ActionButton = memo(
     switch (step) {
       case 'cart':
         return (
-          <Button onClick={() => goToRoute('/cart/shipping-address')}>
+          <Button onClick={() => goToRoute(routes.cart.shippingAddress)}>
             Proceed To Shipping Address
           </Button>
         );
@@ -110,7 +111,7 @@ const ActionButton = memo(
         );
       case 'payment':
         return (
-          <Button onClick={() => goToRoute('/cart/review')}>
+          <Button onClick={() => goToRoute(routes.cart.review)}>
             Review Order
           </Button>
         );

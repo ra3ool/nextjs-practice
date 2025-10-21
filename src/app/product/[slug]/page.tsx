@@ -5,6 +5,7 @@ import { ProductImages } from '@/components/products/product-images';
 import { ProductPrice } from '@/components/products/products-price';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { routes } from '@/constants/routes.constants';
 import type { CartType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
 import type { Metadata } from 'next';
@@ -50,13 +51,15 @@ export default async function ProductDetails({
         <div className="text-sm space-y-1.5">
           <div className="flex gap-1.5">
             <span>Brand:</span>
-            <Link href={`/products/brands/${product.brand.slug}`}>
+            <Link href={`${routes.products.brands}/${product.brand.slug}`}>
               <p>{product.brand.name}</p>
             </Link>
           </div>
           <div className="flex gap-1.5">
             <span>Category:</span>
-            <Link href={`/products/categories/${product.category.slug}`}>
+            <Link
+              href={`${routes.products.categories}/${product.category.slug}`}
+            >
               <p>{product.category.name}</p>
             </Link>
           </div>

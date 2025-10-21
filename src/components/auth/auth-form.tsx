@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { routes } from '@/constants/routes.constants';
 import { loginSchema, registerSchema } from '@/schemas/auth.schema';
 import type { LoginType, RegisterType } from '@/types/auth.type';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -43,7 +44,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
           : await registerAction(data as RegisterType);
 
       if (result.success) {
-        router.push(callbackUrl || 'dashboard');
+        router.push(callbackUrl || routes.dashboard.root);
       }
     } finally {
       setIsLoading(false);

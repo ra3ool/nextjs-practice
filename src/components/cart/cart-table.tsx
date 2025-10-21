@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { routes } from '@/constants/routes.constants';
 import { cn } from '@/lib/utils';
 import type { CartType } from '@/types/cart.type';
 import { round2 } from '@/utils/round2';
@@ -26,7 +27,7 @@ function CartTable({
   const router = useRouter();
   // TODO make constants for routes
   const goToProductDetails = (itemSlug: string) => {
-    router.push(`/product/${itemSlug}`);
+    router.push(`${routes.product.root}/${itemSlug}`);
   };
 
   return (
