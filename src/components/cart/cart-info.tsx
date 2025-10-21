@@ -6,30 +6,17 @@ import { useCart } from '@/contexts/cart.context';
 import { cn } from '@/lib/utils';
 import type { CartType, StepsType } from '@/types/cart.type';
 import { formatPrice } from '@/utils/format-price';
-import { usePathname, useRouter } from 'next/navigation';
-import { memo, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { memo, useMemo } from 'react';
 
 interface CartInfoProps {
   cart: CartType;
   className?: string;
 }
 
-const STEPS_MAP: Record<string, StepsType> = {
-  '/cart': 'cart',
-  '/cart/shipping-address': 'shipping',
-  '/cart/payment-method': 'payment',
-  '/cart/review': 'review',
-};
-
 //FIXME prevent re-render on address changes!
 const CartInfo = memo(({ cart, className }: CartInfoProps) => {
-  const { currentStep, setCurrentStep, onFormSubmit, addresses } = useCart();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const step = STEPS_MAP[pathname] || 'cart';
-    setCurrentStep(step);
-  }, [pathname, setCurrentStep]);
+  const { currentStep, onFormSubmit, addresses } = useCart();
 
   const hasDefaultAddress = useMemo(
     () => addresses.some((address) => address.isDefault),
@@ -100,7 +87,5 @@ function ActionButton({
       return <Button disabled>Loading...</Button>;
   }
 }
-
-CartInfo.displayName = 'CartInfo';
 
 export { CartInfo };

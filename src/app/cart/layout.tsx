@@ -1,5 +1,6 @@
 import { getMyCart } from '@/actions/cart.actions';
 import { CartInfo } from '@/components/cart/cart-info';
+import { CheckoutSteps } from '@/components/cart/checkout-steps';
 import { CartProvider } from '@/contexts/cart.context';
 import { authOptions } from '@/lib/auth';
 import type { CartType } from '@/types/cart.type';
@@ -19,6 +20,7 @@ export default async function CartLayout({
 
   return (
     <CartProvider session={session} cart={serializedCart}>
+      <CheckoutSteps className="mb-8" />
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3">{children}</div>
         <CartInfo cart={serializedCart} className="h-fit sticky top-20" />

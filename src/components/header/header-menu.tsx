@@ -64,10 +64,7 @@ function NavContent() {
       <ToggleTheme />
 
       <Button variant="ghost" asChild>
-        <Link
-          href="/cart"
-          className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-        >
+        <Link href="/cart" className="flex items-center">
           <ShoppingCartIcon className="h-4 w-4" />
           Cart
         </Link>
