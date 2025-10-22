@@ -12,15 +12,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'Product',
 };
 
-export default async function ProductDetails({
-  params,
-}: {
-  params: { slug: string };
-}) {
+async function ProductDetails({ params }: { params: { slug: string } }) {
   const { slug } = await params;
 
   const [product, rawCart] = await Promise.all([
@@ -105,3 +101,6 @@ export default async function ProductDetails({
     </div>
   );
 }
+
+export { metadata };
+export default ProductDetails;

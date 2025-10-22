@@ -1,10 +1,13 @@
 import { ClientCartPage } from '@/components/cart/client-cart-page';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'Cart',
 };
 
-export default async function CartPage() {
+function CartPage() {
   return <ClientCartPage />;
 }
+
+export { metadata };
+export default CartPage;

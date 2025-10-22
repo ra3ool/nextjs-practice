@@ -4,7 +4,7 @@ import type { AuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { prisma } from './prisma';
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
   providers: [
     Credentials({
       name: 'Credentials',
@@ -61,3 +61,5 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+
+export { authOptions };

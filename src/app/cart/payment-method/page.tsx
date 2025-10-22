@@ -3,13 +3,16 @@ import { authOptions } from '@/lib/auth';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'Payment Method',
 };
 
-export default async function PaymentMethodPage() {
+async function PaymentMethodPage() {
   const session = await getServerSession(authOptions);
   const userId = +session!.user!.id;
 
   return <ClientPaymentMethodPage />;
 }
+
+export { metadata };
+export default PaymentMethodPage;

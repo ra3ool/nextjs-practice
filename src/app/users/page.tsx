@@ -1,6 +1,6 @@
 import { getUsers } from '@/actions/mock-user.actions';
 
-export default async function UsersPage() {
+async function UsersPage() {
   const users = await getUsers();
 
   if (!users || users.length === 0) return <p>no user found</p>;
@@ -18,3 +18,5 @@ export default async function UsersPage() {
     </div>
   );
 }
+
+export default UsersPage;

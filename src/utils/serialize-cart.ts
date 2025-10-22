@@ -1,6 +1,6 @@
 import type { CartType } from '@/types/cart.type';
 
-export function serializeCart(cart: CartType): CartType {
+function serializeCart(cart: CartType): CartType {
   return {
     ...cart,
     items: cart.items?.map((item) => ({
@@ -22,5 +22,7 @@ export function serializeCart(cart: CartType): CartType {
         : cart.updatedAt,
   };
 }
+
+export { serializeCart };
 
 //TODO add prisma middleware later, instead of this file

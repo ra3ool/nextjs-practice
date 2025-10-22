@@ -8,7 +8,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 const appName = process.env.APP_NAME || '';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: {
     default: appName,
     template: `%s | ${appName}`,
@@ -18,11 +18,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Rasool' }],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
@@ -35,3 +31,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+export { metadata };
+export default RootLayout;

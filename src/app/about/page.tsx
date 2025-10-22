@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'About',
 };
 
-export default function AboutPage() {
+function AboutPage() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold tracking-tight">About Us</h1>
@@ -14,3 +14,6 @@ export default function AboutPage() {
     </div>
   );
 }
+
+export { metadata };
+export default AboutPage;

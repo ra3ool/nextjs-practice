@@ -5,11 +5,11 @@ import type { ShippingAddressType } from '@/types/cart.type';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'Shipping Address',
 };
 
-export default async function ShippingAddressPage() {
+async function ShippingAddressPage() {
   const session = await getServerSession(authOptions);
   const userId = +session!.user!.id;
 
@@ -19,3 +19,6 @@ export default async function ShippingAddressPage() {
     <ClientShippingAddressPage addresses={addresses as ShippingAddressType[]} />
   );
 }
+
+export { metadata };
+export default ShippingAddressPage;

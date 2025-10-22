@@ -19,11 +19,11 @@ import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'Addresses',
 };
 
-export default async function ShippingAddressPage() {
+async function UserAddressesPage() {
   const [cart, session] = await Promise.all([
     getMyCart(),
     getServerSession(authOptions),
@@ -66,3 +66,6 @@ export default async function ShippingAddressPage() {
     </div>
   );
 }
+
+export { metadata };
+export default UserAddressesPage;

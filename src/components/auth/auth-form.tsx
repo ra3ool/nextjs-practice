@@ -22,7 +22,7 @@ import { useForm, UseFormReturn } from 'react-hook-form';
 
 type AuthMode = 'login' | 'register';
 
-export function AuthForm({ mode }: { mode: AuthMode }) {
+function AuthForm({ mode }: { mode: AuthMode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
@@ -147,3 +147,5 @@ function renderInputs(
     />
   ));
 }
+
+export { AuthForm };

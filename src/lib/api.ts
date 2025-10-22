@@ -6,7 +6,7 @@ type FetchOptions = {
   cache?: RequestCache; // 'force-cache' | 'no-store'
 };
 
-export function createApiClient(baseURL?: string) {
+function createApiClient(baseURL?: string) {
   const API_URL =
     baseURL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
@@ -30,8 +30,8 @@ export function createApiClient(baseURL?: string) {
   };
 }
 
-export const defaultApi = createApiClient();
+const defaultApi = createApiClient();
 
-export const userApi = createApiClient(
-  'https://63c2988fe3abfa59bdaf89f6.mockapi.io',
-);
+const userApi = createApiClient('https://63c2988fe3abfa59bdaf89f6.mockapi.io');
+
+export { createApiClient, defaultApi, userApi };

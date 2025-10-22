@@ -7,11 +7,7 @@ import type { CartType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
 import { getServerSession } from 'next-auth';
 
-export default async function CartLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+async function CartLayout({ children }: { children: React.ReactNode }) {
   const [cart, session] = await Promise.all([
     getMyCart(),
     getServerSession(authOptions),
@@ -28,3 +24,5 @@ export default async function CartLayout({
     </CartProvider>
   );
 }
+
+export default CartLayout;

@@ -2,11 +2,11 @@ import { authOptions } from '@/lib/auth';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: 'Profile',
 };
 
-export default async function ProfilePage() {
+async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
   return (
@@ -17,3 +17,6 @@ export default async function ProfilePage() {
     </div>
   );
 }
+
+export { metadata };
+export default ProfilePage;

@@ -1,5 +1,6 @@
 'use client';
 
+import { AuthForm } from '@/components/auth/auth-form';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,9 +11,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { useState } from 'react';
-import { AuthForm } from '@/components/auth/auth-form';
 
-export default function AuthPage() {
+function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
@@ -36,3 +36,5 @@ export default function AuthPage() {
     </Card>
   );
 }
+
+export default AuthPage;
