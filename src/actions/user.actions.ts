@@ -10,14 +10,9 @@ import type {
   PaymentMethodsType,
   ShippingAddressType,
 } from '@/types/cart.type';
+import { ServiceResponse } from '@/types/service-response.type';
 import { Prisma } from '@prisma/client';
 import { getServerSession, User } from 'next-auth';
-
-type ServiceResponse<T> = {
-  success: boolean;
-  message: string;
-  data?: T | null;
-};
 
 export async function getUser(id: number): Promise<User | null> {
   try {

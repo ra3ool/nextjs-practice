@@ -8,12 +8,12 @@ type FetchOptions = {
 
 function createApiClient(baseURL?: string) {
   const API_URL =
-    baseURL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+    baseURL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
 
-  return async function apiFetch<T>(
+  return async <T>(
     path: string,
     { method = 'GET', body, tags, revalidate, cache }: FetchOptions = {},
-  ): Promise<T> {
+  ): Promise<T> => {
     const res = await fetch(`${API_URL}${path}`, {
       method,
       headers: { 'Content-Type': 'application/json' },
@@ -23,7 +23,7 @@ function createApiClient(baseURL?: string) {
     });
 
     if (!res.ok) {
-      throw new Error(`API error ${res.status}: ${await res.text()}`);
+      throw new Error(`API error ${res.status}: ${res.text()}`);
     }
 
     return res.json() as Promise<T>;
