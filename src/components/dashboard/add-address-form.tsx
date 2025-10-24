@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { isSuccessResponse } from '@/lib/response';
 import { cn } from '@/lib/utils';
 import { shippingAddressSchema } from '@/schemas/cart.schema';
 import type { ShippingAddressType } from '@/types/cart.type';
@@ -52,11 +53,11 @@ function AddAddressForm({
   ) => {
     startTransition(async () => {
       const result = await updateUserAddress(values);
-      if (result?.success) {
+      if (isSuccessResponse(result)) {
         toast.success(result.message);
         router.refresh();
       } else {
-        toast.error(result?.message);
+        toast.error(result.message);
       }
     });
   };

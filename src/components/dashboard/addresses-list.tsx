@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { isSuccessResponse } from '@/lib/response';
 import { cn } from '@/lib/utils';
 import type { ShippingAddressType } from '@/types/cart.type';
 import {
@@ -38,7 +39,7 @@ function AddressesList({
     startTransition(async () => {
       const result = await setDefaultAddress(address);
 
-      if (result.success) {
+      if (isSuccessResponse(result)) {
         toast.success(result.message);
         router.refresh();
       } else {
@@ -51,7 +52,7 @@ function AddressesList({
     startTransition(async () => {
       const result = await deleteUserAddress(address);
 
-      if (result.success) {
+      if (isSuccessResponse(result)) {
         toast.success(result.message);
         router.refresh();
       } else {

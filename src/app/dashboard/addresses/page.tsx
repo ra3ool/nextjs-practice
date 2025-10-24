@@ -12,21 +12,21 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { routes } from '@/constants/routes.constants';
-import { authOptions } from '@/lib/auth';
+import { isErrorResponse } from '@/lib/response';
 import type { CartType, ShippingAddressType } from '@/types/cart.type';
 import { serializeCart } from '@/utils/serialize-cart';
 import type { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import { toast } from 'sonner';
 
 const metadata: Metadata = {
   title: 'Addresses',
 };
 
 async function UserAddressesPage() {
-  const [cart, session] = await Promise.all([
+  const [cart, addressResult] = await Promise.all([
     getMyCart(),
-    getServerSession(authOptions),
+    getUserAddresses(),
   ]);
   const serializedCart = serializeCart(cart as CartType);
 
@@ -34,8 +34,10 @@ async function UserAddressesPage() {
     redirect(routes.cart.root);
   }
 
-  const userId = +session!.user!.id;
-  const addresses = await getUserAddresses(userId);
+  if (isErrorResponse(addressResult)) {
+    toast.error(addressResult.message || 'Error in get user addresses');
+  }
+  const addresses = addressResult.data as ShippingAddressType[];
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,7 +63,7 @@ async function UserAddressesPage() {
           your address list is empty, try to add new address
         </p>
       ) : (
-        <AddressesList addresses={addresses as ShippingAddressType[]} />
+        <AddressesList addresses={addresses} />
       )}
     </div>
   );

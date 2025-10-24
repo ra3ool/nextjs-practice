@@ -1,7 +1,9 @@
 'use server';
 
 import { authOptions } from '@/lib/auth';
+import { handleServiceError } from '@/lib/error-handler';
 import { prisma } from '@/lib/prisma';
+import { ResponseBuilder } from '@/lib/response';
 import {
   paymentMethodSchema,
   shippingAddressSchema,
@@ -10,52 +12,86 @@ import type {
   PaymentMethodsType,
   ShippingAddressType,
 } from '@/types/cart.type';
-import { ServiceResponse } from '@/types/service-response.type';
-import { Prisma } from '@prisma/client';
+import type { ServiceResponse } from '@/types/service-response.type';
 import { getServerSession, User } from 'next-auth';
 
-export async function getUser(id: number): Promise<User | null> {
+export async function getUsers(): Promise<ServiceResponse<User[] | null>> {
   try {
-    return await prisma.user.findFirst({ where: { id } });
+    const users = await prisma.user.findMany();
+    if (!users || users.length === 0) {
+      return ResponseBuilder.success([], 'No users found');
+    }
+
+    return ResponseBuilder.success(users, 'Users fetched successfully');
   } catch (error) {
-    console.error('Failed to fetch user:', error);
-    return null;
+    console.error('Failed to fetch users list:', error);
+    return handleServiceError(error);
   }
 }
 
-export async function getUserAddresses(userId: number) {
+export async function getUser(
+  id: number,
+): Promise<ServiceResponse<User | null>> {
   try {
+    const user = await prisma.user.findFirst({ where: { id } });
+    if (!user) {
+      return ResponseBuilder.notFound('User not found');
+    }
+
+    return ResponseBuilder.success(user, 'User fetched successfully');
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    return handleServiceError(error);
+  }
+}
+
+export async function getUserAddresses(): Promise<
+  ServiceResponse<ShippingAddressType[] | null>
+> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
+    const userId = +session.user.id;
+
     const addresses = await prisma.userAddress.findMany({
       where: { userId },
       orderBy: [{ createdAt: 'desc' }],
     });
-    return addresses || [];
+    if (!addresses || addresses.length === 0) {
+      return ResponseBuilder.success([], 'No address found');
+    }
+
+    return ResponseBuilder.success(
+      addresses as ShippingAddressType[],
+      'Addresses fetched successfully',
+    );
   } catch (error) {
     console.error('Failed to fetch user addresses:', error);
-    return [];
+    return handleServiceError(error);
   }
 }
 
 export async function setDefaultAddress(
-  address: ShippingAddressType,
-): Promise<ServiceResponse<void>> {
-  if (address.isDefault)
-    return {
-      success: false,
-      message: 'Address already set as default',
-    };
-
+  data: ShippingAddressType,
+): Promise<ServiceResponse<ShippingAddressType | null>> {
   try {
     const session = await getServerSession(authOptions);
-    const userId = +session!.user!.id;
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
 
-    await prisma.$transaction(async (tx) => {
+    const address = shippingAddressSchema.parse(data);
+    const userId = +session.user.id;
+
+    const updatedAddress = await prisma.$transaction(async (tx) => {
       await tx.userAddress.updateMany({
         where: { userId, isDefault: true },
         data: { isDefault: false },
       });
 
-      await tx.userAddress.update({
+      return await tx.userAddress.update({
         where: {
           id: address.id,
           userId,
@@ -64,45 +100,34 @@ export async function setDefaultAddress(
       });
     });
 
-    return {
-      success: true,
-      message: 'Default address updated successfully',
-    };
+    return ResponseBuilder.success(
+      updatedAddress as ShippingAddressType,
+      'Default address updated successfully',
+    );
   } catch (error) {
     console.error('Failed to set default address:', error);
-
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2025') {
-        return {
-          success: false,
-          message: 'Address not found or you do not have permission',
-        };
-      }
-    }
-
-    return {
-      success: false,
-      message: 'Failed to set default address',
-    };
+    return handleServiceError(error);
   }
 }
 
 export async function updateUserAddress(
   data: ShippingAddressType,
-): Promise<ServiceResponse<ShippingAddressType>> {
+): Promise<ServiceResponse<ShippingAddressType | null>> {
   try {
     const session = await getServerSession(authOptions);
-    const userId = +session!.user!.id;
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
+    const userId = +session.user.id;
 
     const address = shippingAddressSchema.parse(data);
 
-    // Handle default address logic
     if (address.isDefault) {
       await prisma.userAddress.updateMany({
         where: {
           userId,
           isDefault: true,
-          ...(address.id && { id: { not: address.id } }), // Exclude current address if updating
+          ...(address.id && { id: { not: address.id } }),
         },
         data: { isDefault: false },
       });
@@ -138,48 +163,37 @@ export async function updateUserAddress(
       },
     });
 
-    return {
-      success: true,
-      message: `Address ${operation}d successfully`,
-      data: {
+    return ResponseBuilder.success(
+      {
         ...userAddress,
         postalCode: userAddress.postalCode ?? undefined,
         // lat: userAddress.lat ? Number(userAddress.lat) : undefined,
         // lng: userAddress.lng ? Number(userAddress.lng) : undefined,
       },
-    };
+      `Address ${operation}d successfully`,
+    );
   } catch (error) {
     console.error('Failed to update user address:', error);
-
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      switch (error.code) {
-        case 'P2025':
-          return {
-            success: false,
-            message: 'Address not found or access denied',
-          };
-        case 'P2002':
-          return {
-            success: false,
-            message: 'Address already exists',
-          };
-      }
-    }
-
-    return {
-      success: false,
-      message: 'Failed to update user address',
-    };
+    return handleServiceError(error);
   }
 }
 
-export async function deleteUserAddress(address: ShippingAddressType) {
+export async function deleteUserAddress(
+  data: ShippingAddressType,
+): Promise<ServiceResponse<ShippingAddressType | null>> {
   try {
-    if (address.isDefault)
-      return { success: false, message: "You can't delete default address!" };
-
     const session = await getServerSession(authOptions);
-    const userId = +session!.user!.id;
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
+
+    const address = shippingAddressSchema.parse(data);
+
+    if (address.isDefault) {
+      return ResponseBuilder.badRequest('Address already set as default');
+    }
+
+    const userId = +session.user.id;
 
     await prisma.userAddress.delete({
       where: {
@@ -188,17 +202,20 @@ export async function deleteUserAddress(address: ShippingAddressType) {
       },
     });
 
-    return { success: true, message: 'Address deleted successfully' };
+    return ResponseBuilder.success(address, 'Address deleted successfully');
   } catch (error) {
     console.error('Failed to delete address:', error);
-    return { success: false, message: 'Failed to delete address' };
+    return handleServiceError(error);
   }
 }
 
 export async function updateUserPaymentMethod(data: PaymentMethodsType) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = +session!.user!.id;
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
+    const userId = +session.user.id;
 
     const paymentMethod = paymentMethodSchema.parse(data);
 
