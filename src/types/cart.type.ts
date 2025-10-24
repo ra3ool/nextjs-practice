@@ -16,7 +16,7 @@ export type CartItemType = z.infer<typeof cartItemSchema>;
 
 export type ShippingAddressType = z.infer<typeof shippingAddressSchema>;
 
-export type StepsType = '' | 'cart' | 'shipping' | 'payment' | 'review'; //empty string used for loading state
+export type StepsType = 'loading' | 'cart' | 'shipping' | 'payment' | 'review';
 export interface CartContextType {
   session: Session | null;
   cart: CartType;

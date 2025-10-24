@@ -50,7 +50,7 @@ function AddToCart({ cart, item }: Props) {
   };
 
   return existItem ? (
-    <div className="flex justify-around items-center gap-3">
+    <div className="flex justify-evenly items-center gap-3">
       <Button
         variant="outline"
         type="button"

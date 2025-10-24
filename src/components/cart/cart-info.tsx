@@ -24,6 +24,11 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
     [addresses],
   );
 
+  const hasEmptyCart = useMemo(
+    () => !cart.items || cart.items.length === 0,
+    [cart],
+  );
+
   const subtotalQty = useMemo(
     () => cart.items?.reduce((a, c) => a + c.qty, 0) ?? 0,
     [cart.items],
@@ -46,20 +51,27 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
   const cartContent = useMemo(
     () => (
       <Card className={cn('p-4 select-none', className)}>
-        <div className="flex items-center gap-2">
-          Subtotal({subtotalQty}):
-          <span className="font-bold">{formatPrice(cart.itemsPrice)}</span>
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center justify-between">
+            <span>Subtotal ({subtotalQty} items):</span>
+            <span className="font-bold">{formatPrice(cart.itemsPrice)}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Tax:</span>
+            <span className="font-bold">{formatPrice(cart.taxPrice)}</span>
+          </div>
+          <div className="flex items-center justify-between border-t pt-2">
+            <span className="font-semibold">Total Price:</span>
+            <span className="font-bold text-lg">
+              {formatPrice(cart.totalPrice)}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          Tax: <span className="font-bold">{formatPrice(cart.taxPrice)}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          Total Price:{' '}
-          <span className="font-bold">{formatPrice(cart.totalPrice)}</span>
-        </div>
+
         <ActionButton
-          step={currentStep}
-          hasDefault={hasDefaultAddress}
+          currentStep={currentStep}
+          hasEmptyCart={hasEmptyCart}
+          hasDefaultAddress={hasDefaultAddress}
           onFormSubmit={onFormSubmit}
         />
       </Card>
@@ -70,6 +82,7 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
       cart.taxPrice,
       cart.totalPrice,
       currentStep,
+      hasEmptyCart,
       hasDefaultAddress,
       onFormSubmit,
       className,
@@ -81,12 +94,14 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
 
 const ActionButton = memo(
   ({
-    step,
-    hasDefault,
+    currentStep,
+    hasEmptyCart,
+    hasDefaultAddress,
     onFormSubmit,
   }: {
-    step: StepsType;
-    hasDefault: boolean;
+    currentStep: StepsType;
+    hasEmptyCart: boolean;
+    hasDefaultAddress: boolean;
     onFormSubmit?: () => void;
   }) => {
     const router = useRouter();
@@ -94,17 +109,23 @@ const ActionButton = memo(
       (path: string) => router.push(path),
       [router],
     );
-    switch (step) {
+
+    switch (currentStep) {
       case 'cart':
         return (
-          <Button onClick={() => goToRoute(routes.cart.shippingAddress)}>
-            Proceed To Shipping Address
+          <Button
+            disabled={hasEmptyCart}
+            onClick={() => goToRoute(routes.cart.shippingAddress)}
+          >
+            {hasEmptyCart
+              ? 'Please add some product'
+              : 'Proceed To Shipping Address'}
           </Button>
         );
       case 'shipping':
         return (
-          <Button disabled={!hasDefault} onClick={onFormSubmit}>
-            {!hasDefault
+          <Button disabled={!hasDefaultAddress} onClick={onFormSubmit}>
+            {!hasDefaultAddress
               ? 'Please select an address'
               : 'Proceed To Payment Method'}
           </Button>
@@ -117,8 +138,10 @@ const ActionButton = memo(
         );
       case 'review':
         return <Button>Place Order</Button>;
+      case 'loading':
+        <Button disabled>Loading...</Button>;
       default:
-        return <Button disabled>Loading...</Button>;
+        return <Button disabled>Unknown Step!</Button>;
     }
   },
 );
