@@ -1,4 +1,4 @@
-import { getUsers } from '@/actions/mock-user.actions';
+import { getUsers } from '@/actions/user.actions';
 import { isErrorResponse } from '@/lib/response';
 import { toast } from 'sonner';
 

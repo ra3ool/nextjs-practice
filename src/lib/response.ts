@@ -1,10 +1,10 @@
-import {
+import type {
   ErrorResponse,
   ServiceResponse,
   SuccessResponse,
 } from '@/types/service-response.type';
 
-export class ResponseBuilder {
+class ResponseBuilder {
   static success<T>(data: T, message: string = 'Success'): ServiceResponse<T> {
     return {
       success: true,
@@ -46,14 +46,16 @@ export class ResponseBuilder {
   }
 }
 
-export function isSuccessResponse<T>(
+function isSuccessResponse<T>(
   response: ServiceResponse<T>,
 ): response is SuccessResponse<T> {
   return response.success === true;
 }
 
-export function isErrorResponse<T>(
+function isErrorResponse<T>(
   response: ServiceResponse<T>,
 ): response is ErrorResponse {
   return response.success === false;
 }
+
+export { isErrorResponse, isSuccessResponse, ResponseBuilder };

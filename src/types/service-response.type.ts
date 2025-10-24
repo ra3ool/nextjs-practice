@@ -6,6 +6,12 @@ export type ServiceResponse<T = void> = {
   errors?: string[];
 };
 
+export interface ErrorContext {
+  originalError?: unknown;
+  userId?: string;
+  action?: string;
+}
+
 export type SuccessResponse<T> = ServiceResponse<T> & {
   success: true;
   data: T;
