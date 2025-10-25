@@ -26,4 +26,4 @@ export const routes = {
   product: {
     root: '/product',
   },
-};
+} as const;

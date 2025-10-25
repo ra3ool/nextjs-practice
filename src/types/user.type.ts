@@ -13,3 +13,5 @@ export interface MockUser {
   id: string;
   age: string;
 }
+
+export type UserRole = 'admin' | 'user' | 'guest';
