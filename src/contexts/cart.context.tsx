@@ -11,7 +11,7 @@ import { createContext, useContext, useMemo, useState } from 'react';
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 function CartProvider({ children, session, cart }: CartProviderType) {
-  const [currentStep, setCurrentStep] = useState<StepsType>('');
+  const [currentStep, setCurrentStep] = useState<StepsType>('loading');
   const [onFormSubmit, setOnFormSubmit] = useState<() => void>(() => {});
   const [addresses, setAddresses] = useState<ShippingAddressType[]>([]);
 

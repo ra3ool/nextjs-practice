@@ -138,10 +138,8 @@ const ActionButton = memo(
         );
       case 'review':
         return <Button>Place Order</Button>;
-      case 'loading':
-        <Button disabled>Loading...</Button>;
       default:
-        return <Button disabled>Unknown Step!</Button>;
+        return <Button disabled>Loading...</Button>;
     }
   },
 );
