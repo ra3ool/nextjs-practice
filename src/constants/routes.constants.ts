@@ -7,6 +7,10 @@ export const routes = {
     root: '/dashboard',
     profile: '/dashboard/profile',
     addresses: '/dashboard/addresses',
+    users: {
+      root: '/dashboard/users',
+      mock: '/dashboard/users/mock',
+    },
   },
   cart: {
     root: '/cart',

@@ -22,6 +22,19 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
           >
             Addresses
           </Link>
+          <Link
+            href={routes.dashboard.users.root}
+            className="block hover:underline"
+          >
+            Users
+          </Link>
+          {/* TODO make dropdown for this nested routes */}
+          <Link
+            href={routes.dashboard.users.mock}
+            className="block hover:underline"
+          >
+            Mock users
+          </Link>
         </nav>
       </aside>
       <main className="p-6">{children}</main>
