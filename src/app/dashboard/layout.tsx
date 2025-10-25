@@ -5,8 +5,8 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[200px_1fr] h-full">
       <aside className="border-r p-4 space-y-2">
-        <p className="font-semibold">Dashboard</p>
-        <nav className="space-y-1 text-sm">
+        <nav className="space-y-1 text-sm sticky top-20">
+          <h3 className="font-semibold text-xl">Dashboard</h3>
           <Link href={routes.dashboard.root} className="block hover:underline">
             Home
           </Link>
