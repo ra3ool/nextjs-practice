@@ -8,7 +8,7 @@ async function UsersPage() {
   return (
     <div>
       <UsersList
-        initialUsers={isSuccessResponse(response) ? response.data : null}
+        initialUsers={isSuccessResponse(response) ? response.data : []}
       />
     </div>
   );

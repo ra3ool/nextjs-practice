@@ -1,4 +1,3 @@
-import { getMyCart } from '@/actions/cart.actions';
 import { getUserAddresses } from '@/actions/user.actions';
 import { AddAddressForm } from '@/components/dashboard/add-address-form';
 import { AddressesList } from '@/components/dashboard/addresses-list';
@@ -11,12 +10,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { routes } from '@/constants/routes.constants';
 import { isErrorResponse } from '@/lib/response';
-import type { CartType, ShippingAddressType } from '@/types/cart.type';
-import { serializeCart } from '@/utils/serialize-cart';
+import type { ShippingAddressType } from '@/types/cart.type';
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 
 const metadata: Metadata = {
@@ -24,15 +20,7 @@ const metadata: Metadata = {
 };
 
 async function UserAddressesPage() {
-  const [cart, addressResult] = await Promise.all([
-    getMyCart(),
-    getUserAddresses(),
-  ]);
-  const serializedCart = serializeCart(cart as CartType);
-
-  if (!serializedCart.sessionCartId || serializedCart.items?.length === 0) {
-    redirect(routes.cart.root);
-  }
+  const addressResult = await getUserAddresses();
 
   if (isErrorResponse(addressResult)) {
     toast.error(addressResult.message || 'Error in get user addresses');

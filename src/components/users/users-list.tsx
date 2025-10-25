@@ -1,6 +1,15 @@
 'use client';
 
 import { getUsers } from '@/actions/mock-user.actions';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { isSuccessResponse } from '@/lib/response';
 import { MockUser } from '@/types/user.type';
 import { useEffect, useState } from 'react';
@@ -11,7 +20,7 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (initialUsers) return;
+    if (initialUsers && initialUsers.length > 0) return;
 
     const fetchUsers = async () => {
       try {
@@ -58,14 +67,26 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Users</h1>
-      <ul className="space-y-2">
-        {users.map((user) => (
-          <li key={user.id} className="p-3 border rounded-md">
-            <div className="font-medium">{user.name}</div>
-            <div className="text-gray-600">{user.email}</div>
-          </li>
-        ))}
-      </ul>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Item</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead>Price</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell className="font-medium flex items-center gap-4 cursor-pointer">
+                {user.name}
+              </TableCell>
+              <TableCell>test</TableCell>
+              <TableCell>test</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
