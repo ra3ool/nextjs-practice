@@ -1,7 +1,6 @@
 'use client';
 
-import { getUsers } from '@/actions/mock-user.actions';
-import loading from '@/app/dashboard/loading';
+import { deleteUser, getUsers } from '@/actions/mock-user.actions';
 import {
   Table,
   TableBody,
@@ -11,39 +10,33 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { isSuccessResponse } from '@/lib/response';
+import { cn } from '@/lib/utils';
 import { MockUser } from '@/types/user.type';
 import { EditIcon, TrashIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 import { PaginationControls } from '../shared/pagination-controls';
 
 function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
   const [users, setUsers] = useState<MockUser[]>(initialUsers || []);
-  const [loading, setLoading] = useState(!initialUsers);
-  const [error, setError] = useState<string | null>(null);
-  const [displayUsers, setDisplayUsers] = useState<MockUser[]>([]);
+  const [paginatedUsers, setPaginatedUsers] = useState<MockUser[]>([]);
+  const [isPending, startTransition] = useTransition();
   const currentPage = useRef(1);
   const itemsPerPage = 9;
 
   useEffect(() => {
     if (initialUsers && initialUsers.length > 0) return;
 
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
+    const fetchUsers = () => {
+      startTransition(async () => {
         const response = await getUsers();
 
         if (isSuccessResponse(response)) {
           setUsers(response.data as MockUser[]);
         } else {
-          setError(response.message);
+          toast.error(response.message);
         }
-      } catch {
-        setError('An unexpected error occurred');
-      } finally {
-        setLoading(false);
-      }
+      });
     };
 
     fetchUsers();
@@ -54,19 +47,45 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
     paginationCurrentPage: number,
   ) => {
     currentPage.current = paginationCurrentPage;
-    setDisplayUsers(paginatedData);
+    setPaginatedUsers(paginatedData);
   };
 
-  if (loading) {
-    return <div className="p-4">Loading users...</div>;
-  }
+  const handleDeleteUser = (userId: number, userName: string) => {
+    if (isPending) return;
 
-  if (error) {
-    return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-        <p className="text-red-800">Error: {error}</p>
-      </div>
-    );
+    if (!confirm(`Are you sure you want to delete ${userName}?`)) {
+      return;
+    }
+
+    startTransition(async () => {
+      const response = await deleteUser(userId);
+
+      if (isSuccessResponse(response)) {
+        toast.success(response.message);
+        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      } else {
+        toast.error(response.message);
+      }
+    });
+  };
+
+  const handleDeleteClick = (userId: number, userName: string) => {
+    toast.error(`Delete ${userName}?`, {
+      description: 'This action cannot be undone.',
+      action: {
+        label: 'Delete',
+        onClick: () => handleDeleteUser(userId, userName),
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {},
+      },
+      duration: 10000,
+    });
+  };
+
+  if (!initialUsers && users.length === 0 && isPending) {
+    return <div className="p-4">Loading users...</div>;
   }
 
   if (users.length === 0) {
@@ -81,10 +100,10 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">Users</h1>
 
-      <Table className="border rounded-lg">
+      <Table className={cn('border rounded-lg', isPending && 'opacity-50')}>
         <TableHeader>
           <TableRow>
-            <TableHead>Row</TableHead>
+            <TableHead className="w-16">Row</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Phone Number</TableHead>
@@ -96,7 +115,7 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {displayUsers.map((user, index) => (
+          {paginatedUsers.map((user, index) => (
             <TableRow key={user.id}>
               <TableCell>
                 {(currentPage.current - 1) * itemsPerPage + index + 1}
@@ -105,14 +124,33 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.phoneNumber}</TableCell>
               <TableCell>
-                {new Date(user.dateOfBirth).toLocaleDateString()}
+                {user.dateOfBirth
+                  ? new Date(user.dateOfBirth).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })
+                  : 'N/A'}
               </TableCell>
               <TableCell>{user.country}</TableCell>
               <TableCell>{user.company}</TableCell>
               <TableCell>{user.zipcode}</TableCell>
-              <TableCell className="flex gap-4">
-                <EditIcon className="cursor-pointer" />
-                <TrashIcon className="text-red-400 cursor-pointer" />
+              <TableCell>
+                <div className="flex gap-2">
+                  <button
+                    className="p-1 rounded cursor-pointer"
+                    disabled={isPending}
+                  >
+                    <EditIcon className="h-4 w-4" />
+                  </button>
+                  <button
+                    className="p-1 rounded cursor-pointer"
+                    onClick={() => handleDeleteClick(user.id, user.name)}
+                    disabled={isPending}
+                  >
+                    <TrashIcon className="h-4 w-4 text-red-400" />
+                  </button>
+                </div>
               </TableCell>
             </TableRow>
           ))}

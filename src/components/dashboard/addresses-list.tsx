@@ -69,10 +69,8 @@ function AddressesList({
           address={address}
           className={cn(
             'cursor-pointer',
-            address.isDefault
-              ? 'ring ring-amber-700 dark:ring-amber-200'
-              : undefined,
-            isPending ? 'opacity-50' : undefined,
+            address.isDefault && 'ring ring-amber-700 dark:ring-amber-200',
+            isPending && 'opacity-50',
           )}
           onClick={() => handleAddressClick(address)}
           {...(deletable && { handleDeleteAddress })}

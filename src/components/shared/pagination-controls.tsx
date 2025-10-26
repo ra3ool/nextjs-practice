@@ -9,6 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { cn } from '@/lib/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface PaginationControlsProps<T> {
@@ -169,9 +170,9 @@ export function PaginationControls<T>({
                 e.preventDefault();
                 if (currentPage > 1) handlePageChange(currentPage - 1);
               }}
-              className={
-                currentPage === 1 ? 'pointer-events-none opacity-50' : ''
-              }
+              className={cn(
+                currentPage === 1 && 'pointer-events-none opacity-50',
+              )}
             />
           </PaginationItem>
 
@@ -183,11 +184,9 @@ export function PaginationControls<T>({
                 e.preventDefault();
                 if (currentPage < totalPages) handlePageChange(currentPage + 1);
               }}
-              className={
-                currentPage === totalPages
-                  ? 'pointer-events-none opacity-50'
-                  : ''
-              }
+              className={cn(
+                currentPage === totalPages && 'pointer-events-none opacity-50',
+              )}
             />
           </PaginationItem>
         </PaginationContent>

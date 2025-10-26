@@ -10,7 +10,7 @@ export interface MockUser {
   company: string;
   email: string;
   phoneNumber: string;
-  id: string;
+  id: number;
   age: string;
 }
 

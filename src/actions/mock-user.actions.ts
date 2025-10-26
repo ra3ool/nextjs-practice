@@ -99,14 +99,14 @@ export async function updateUser(
 }
 
 export async function deleteUser(
-  id: string,
-): Promise<ServiceResponse<{ success: boolean } | null>> {
+  id: number,
+): Promise<ServiceResponse<MockUser | null>> {
   try {
-    if (!id || typeof id !== 'string') {
+    if (!id) {
       return ResponseBuilder.badRequest('Invalid user ID');
     }
 
-    const result = await userApi<{ success: boolean }>(`${path}/${id}`, {
+    const result = await userApi<MockUser>(`${path}/${id}`, {
       method: 'DELETE',
       cache: 'no-store',
     });
