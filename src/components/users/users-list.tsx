@@ -1,6 +1,20 @@
 'use client';
 
 import { deleteUser, getUsers } from '@/actions/mock-user.actions';
+import { PaginationControls } from '@/components/shared/pagination-controls';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Table,
   TableBody,
@@ -15,7 +29,6 @@ import { MockUser } from '@/types/user.type';
 import { EditIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { PaginationControls } from '../shared/pagination-controls';
 
 function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
   const [users, setUsers] = useState<MockUser[]>(initialUsers || []);
@@ -50,19 +63,15 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
     setPaginatedUsers(paginatedData);
   };
 
-  const handleDeleteUser = (userId: number, userName: string) => {
-    if (isPending) return;
-
-    if (!confirm(`Are you sure you want to delete ${userName}?`)) {
-      return;
-    }
-
+  const handleDeleteUser = (userId: number) => {
     startTransition(async () => {
       const response = await deleteUser(userId);
 
       if (isSuccessResponse(response)) {
         toast.success(response.message);
-        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+        setPaginatedUsers((prevUsers) =>
+          prevUsers.filter((user) => user.id !== userId),
+        );
       } else {
         toast.error(response.message);
       }
@@ -70,11 +79,13 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
   };
 
   const handleDeleteClick = (userId: number, userName: string) => {
+    if (isPending) return;
+
     toast.error(`Delete ${userName}?`, {
       description: 'This action cannot be undone.',
       action: {
         label: 'Delete',
-        onClick: () => handleDeleteUser(userId, userName),
+        onClick: () => handleDeleteUser(userId),
       },
       cancel: {
         label: 'Cancel',
@@ -98,64 +109,105 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
 
   return (
     <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Users</h1>
+      <div className="flex gap-8 items-center">
+        <h2 className="text-xl font-bold">Users</h2>
 
-      <Table className={cn('border rounded-lg', isPending && 'opacity-50')}>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-16">Row</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Phone Number</TableHead>
-            <TableHead>Date Of Birth</TableHead>
-            <TableHead>Country</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Zip Code</TableHead>
-            <TableHead className="w-20">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {paginatedUsers.map((user, index) => (
-            <TableRow key={user.id}>
-              <TableCell>
-                {(currentPage.current - 1) * itemsPerPage + index + 1}
-              </TableCell>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.phoneNumber}</TableCell>
-              <TableCell>
-                {user.dateOfBirth
-                  ? new Date(user.dateOfBirth).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })
-                  : 'N/A'}
-              </TableCell>
-              <TableCell>{user.country}</TableCell>
-              <TableCell>{user.company}</TableCell>
-              <TableCell>{user.zipcode}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <button
-                    className="p-1 rounded cursor-pointer"
-                    disabled={isPending}
-                  >
-                    <EditIcon className="h-4 w-4" />
-                  </button>
-                  <button
-                    className="p-1 rounded cursor-pointer"
-                    onClick={() => handleDeleteClick(user.id, user.name)}
-                    disabled={isPending}
-                  >
-                    <TrashIcon className="h-4 w-4 text-red-400" />
-                  </button>
+        <Dialog>
+          <form>
+            <DialogTrigger asChild>
+              <Button variant="outline">Add New User</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add/Edit User</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. Click save when you&apos;re
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4">
+                <div className="grid gap-3">
+                  <Label htmlFor="name-1">Name</Label>
+                  <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
                 </div>
-              </TableCell>
+                <div className="grid gap-3">
+                  <Label htmlFor="username-1">Username</Label>
+                  <Input
+                    id="username-1"
+                    name="username"
+                    defaultValue="@peduarte"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogClose>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </form>
+        </Dialog>
+      </div>
+
+      <div className="border rounded-lg overflow-hidden">
+        <Table className={cn(isPending && 'opacity-50')}>
+          <TableHeader className="bg-muted">
+            <TableRow>
+              <TableHead className="w-16">Row</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone Number</TableHead>
+              <TableHead>Date Of Birth</TableHead>
+              <TableHead>Country</TableHead>
+              <TableHead>Company</TableHead>
+              <TableHead>Zip Code</TableHead>
+              <TableHead className="w-20">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {paginatedUsers.map((user, index) => (
+              <TableRow key={user.id} className="h-12">
+                <TableCell>
+                  {(currentPage.current - 1) * itemsPerPage + index + 1}
+                </TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.phoneNumber}</TableCell>
+                <TableCell>
+                  {user.dateOfBirth
+                    ? new Date(user.dateOfBirth).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                    : 'N/A'}
+                </TableCell>
+                <TableCell>{user.country}</TableCell>
+                <TableCell>{user.company}</TableCell>
+                <TableCell>{user.zipcode}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <button
+                      className="p-1 rounded cursor-pointer"
+                      disabled={isPending}
+                    >
+                      <EditIcon className="h-4 w-4" />
+                    </button>
+                    <button
+                      className="p-1 rounded cursor-pointer"
+                      onClick={() => handleDeleteClick(user.id, user.name)}
+                      disabled={isPending}
+                    >
+                      <TrashIcon className="h-4 w-4 text-red-400" />
+                    </button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       <PaginationControls
         data={users}
