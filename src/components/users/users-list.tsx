@@ -1,6 +1,7 @@
 'use client';
 
 import { getUsers } from '@/actions/mock-user.actions';
+import loading from '@/app/dashboard/loading';
 import {
   Table,
   TableBody,
@@ -11,7 +12,8 @@ import {
 } from '@/components/ui/table';
 import { isSuccessResponse } from '@/lib/response';
 import { MockUser } from '@/types/user.type';
-import { useEffect, useState } from 'react';
+import { EditIcon, TrashIcon } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { PaginationControls } from '../shared/pagination-controls';
 
 function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
@@ -19,12 +21,11 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
   const [loading, setLoading] = useState(!initialUsers);
   const [error, setError] = useState<string | null>(null);
   const [displayUsers, setDisplayUsers] = useState<MockUser[]>([]);
+  const currentPage = useRef(1);
+  const itemsPerPage = 9;
 
   useEffect(() => {
-    if (initialUsers && initialUsers.length > 0) {
-      setUsers(initialUsers);
-      return;
-    }
+    if (initialUsers && initialUsers.length > 0) return;
 
     const fetchUsers = async () => {
       try {
@@ -48,7 +49,11 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
     fetchUsers();
   }, [initialUsers]);
 
-  const handlePageChange = (paginatedData: MockUser[]) => {
+  const handlePageChange = (
+    paginatedData: MockUser[],
+    paginationCurrentPage: number,
+  ) => {
+    currentPage.current = paginationCurrentPage;
     setDisplayUsers(paginatedData);
   };
 
@@ -76,32 +81,47 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">Users</h1>
 
-      <div className="border rounded-lg">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone Number</TableHead>
-              <TableHead>Age</TableHead>
+      <Table className="border rounded-lg">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Row</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Phone Number</TableHead>
+            <TableHead>Date Of Birth</TableHead>
+            <TableHead>Country</TableHead>
+            <TableHead>Company</TableHead>
+            <TableHead>Zip Code</TableHead>
+            <TableHead className="w-20">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {displayUsers.map((user, index) => (
+            <TableRow key={user.id}>
+              <TableCell>
+                {(currentPage.current - 1) * itemsPerPage + index + 1}
+              </TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>{user.phoneNumber}</TableCell>
+              <TableCell>
+                {new Date(user.dateOfBirth).toLocaleDateString()}
+              </TableCell>
+              <TableCell>{user.country}</TableCell>
+              <TableCell>{user.company}</TableCell>
+              <TableCell>{user.zipcode}</TableCell>
+              <TableCell className="flex gap-4">
+                <EditIcon className="cursor-pointer" />
+                <TrashIcon className="text-red-400 cursor-pointer" />
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {displayUsers.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.phoneNumber}</TableCell>
-                <TableCell>{user.age}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+        </TableBody>
+      </Table>
 
       <PaginationControls
         data={users}
-        itemsPerPage={9}
+        itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
       />
     </div>

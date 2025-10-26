@@ -41,6 +41,7 @@ async function DashboardLayout({ children }: { children: React.ReactNode }) {
       <aside className="border-r p-4 space-y-2">
         <nav className="space-y-1 text-sm sticky top-20">
           <h3 className="font-semibold text-xl">Dashboard</h3>
+          {/* TODO make nav hidden in small screen */}
           {filteredNavItems.map((item) => (
             <Link
               key={item.href}
@@ -52,7 +53,7 @@ async function DashboardLayout({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
       </aside>
-      <main className="p-6">{children}</main>
+      <div className="p-6 overflow-auto">{children}</div>
     </div>
   );
 }

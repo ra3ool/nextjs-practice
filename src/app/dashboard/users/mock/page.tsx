@@ -6,11 +6,9 @@ async function UsersPage() {
   const response = await getUsers();
 
   return (
-    <div>
-      <UsersList
-        initialUsers={isSuccessResponse(response) ? response.data : []}
-      />
-    </div>
+    <UsersList
+      initialUsers={isSuccessResponse(response) ? response.data : []}
+    />
   );
 }
 
