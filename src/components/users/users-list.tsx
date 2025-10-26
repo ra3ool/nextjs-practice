@@ -2,15 +2,6 @@
 
 import { getUsers } from '@/actions/mock-user.actions';
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
-import {
   Table,
   TableBody,
   TableCell,
@@ -21,21 +12,13 @@ import {
 import { isSuccessResponse } from '@/lib/response';
 import { MockUser } from '@/types/user.type';
 import { useEffect, useState } from 'react';
-
-const ITEMS_PER_PAGE = 5;
+import { PaginationControls } from '../shared/pagination-controls';
 
 function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
   const [users, setUsers] = useState<MockUser[]>(initialUsers || []);
   const [loading, setLoading] = useState(!initialUsers);
   const [error, setError] = useState<string | null>(null);
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedUsers = users.slice(startIndex, endIndex);
+  const [displayUsers, setDisplayUsers] = useState<MockUser[]>([]);
 
   useEffect(() => {
     if (initialUsers && initialUsers.length > 0) {
@@ -51,8 +34,7 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
         const response = await getUsers();
 
         if (isSuccessResponse(response)) {
-          const usersData = response.data as MockUser[];
-          setUsers(usersData);
+          setUsers(response.data as MockUser[]);
         } else {
           setError(response.message);
         }
@@ -66,87 +48,8 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
     fetchUsers();
   }, [initialUsers]);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const getPaginationItems = () => {
-    const items = [];
-    const maxVisiblePages = 5;
-
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    if (startPage > 1) {
-      items.push(
-        <PaginationItem key={1}>
-          <PaginationLink
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handlePageChange(1);
-            }}
-          >
-            1
-          </PaginationLink>
-        </PaginationItem>,
-      );
-
-      if (startPage > 2) {
-        items.push(
-          <PaginationItem key="ellipsis-start">
-            <PaginationEllipsis />
-          </PaginationItem>,
-        );
-      }
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      items.push(
-        <PaginationItem key={i}>
-          <PaginationLink
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handlePageChange(i);
-            }}
-            isActive={currentPage === i}
-          >
-            {i}
-          </PaginationLink>
-        </PaginationItem>,
-      );
-    }
-
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) {
-        items.push(
-          <PaginationItem key="ellipsis-end">
-            <PaginationEllipsis />
-          </PaginationItem>,
-        );
-      }
-
-      items.push(
-        <PaginationItem key={totalPages}>
-          <PaginationLink
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handlePageChange(totalPages);
-            }}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>,
-      );
-    }
-
-    return items;
+  const handlePageChange = (paginatedData: MockUser[]) => {
+    setDisplayUsers(paginatedData);
   };
 
   if (loading) {
@@ -179,12 +82,12 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>phoneNumber</TableHead>
-              <TableHead>Phone</TableHead>
+              <TableHead>Phone Number</TableHead>
+              <TableHead>Age</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedUsers.map((user) => (
+            {displayUsers.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="font-medium">{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
@@ -196,56 +99,11 @@ function UsersList({ initialUsers }: { initialUsers?: MockUser[] | null }) {
         </Table>
       </div>
 
-      {totalPages > 1 && (
-        <div className="space-y-2">
-          <Pagination>
-            <PaginationContent>
-              {/* Previous Button */}
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                      handlePageChange(currentPage - 1);
-                    }
-                  }}
-                  className={
-                    currentPage === 1
-                      ? 'pointer-events-none opacity-50'
-                      : 'cursor-pointer'
-                  }
-                />
-              </PaginationItem>
-
-              {getPaginationItems()}
-
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage < totalPages) {
-                      handlePageChange(currentPage + 1);
-                    }
-                  }}
-                  className={
-                    currentPage === totalPages
-                      ? 'pointer-events-none opacity-50'
-                      : 'cursor-pointer'
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-
-          {/* Page Info */}
-          <div className="text-sm text-muted-foreground text-center">
-            Showing {startIndex + 1} to {Math.min(endIndex, users.length)} of{' '}
-            {users.length} users (Page {currentPage} of {totalPages})
-          </div>
-        </div>
-      )}
+      <PaginationControls
+        data={users}
+        itemsPerPage={9}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
