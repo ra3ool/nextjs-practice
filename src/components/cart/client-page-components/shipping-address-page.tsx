@@ -26,7 +26,7 @@ function ClientShippingAddressPage({
   const { cart, setAddresses, setOnFormSubmit } = useCart();
 
   useEffect(() => {
-    if (!cart.sessionCartId || cart.items?.length === 0) {
+    if (!cart.items || cart.items?.length === 0) {
       router.replace(routes.cart.root);
     }
   }, [cart, router]);

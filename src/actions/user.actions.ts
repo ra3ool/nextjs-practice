@@ -45,6 +45,26 @@ export async function getUser(
   }
 }
 
+export async function getCurrentUser(): Promise<ServiceResponse<User | null>> {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
+    const userId = +session.user.id;
+
+    const user = await prisma.user.findFirst({ where: { id: userId } });
+    if (!user) {
+      return ResponseBuilder.notFound('User not found');
+    }
+
+    return ResponseBuilder.success(user, 'User fetched successfully');
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    return handleServiceError(error);
+  }
+}
+
 export async function getUserAddresses(): Promise<
   ServiceResponse<ShippingAddressType[] | null>
 > {

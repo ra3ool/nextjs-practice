@@ -8,7 +8,7 @@ function ClientCartPage() {
 
   return (
     <>
-      {!cart.sessionCartId || cart.items?.length === 0 ? (
+      {!cart.items || cart.items?.length === 0 ? (
         <p className="mt-3">cart is empty, go shopping</p>
       ) : (
         <>

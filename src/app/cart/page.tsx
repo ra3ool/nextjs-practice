@@ -1,4 +1,4 @@
-import { ClientCartPage } from '@/components/cart/client-cart-page';
+import { ClientCartPage } from '@/components/cart/client-page-components/cart-page';
 import type { Metadata } from 'next';
 
 const metadata: Metadata = {

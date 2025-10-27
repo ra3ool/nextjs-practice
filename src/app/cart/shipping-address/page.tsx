@@ -1,5 +1,5 @@
 import { getUserAddresses } from '@/actions/user.actions';
-import { ClientShippingAddressPage } from '@/components/cart/client-shipping-address-page';
+import { ClientShippingAddressPage } from '@/components/cart/client-page-components/shipping-address-page';
 import { isErrorResponse } from '@/lib/response';
 import type { ShippingAddressType } from '@/types/cart.type';
 import type { Metadata } from 'next';
