@@ -8,6 +8,7 @@ CREATE TABLE `cart` (
     `totalPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `shippingPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `taxPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
+    `paymentMethod` VARCHAR(50) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 

@@ -23,6 +23,7 @@ export const insertCartSchema = z.object({
   shippingPrice: decimalSchema.default(0),
   taxPrice: decimalSchema.default(0),
   totalPrice: decimalSchema.default(0),
+  paymentMethod: z.string().min(1).max(50),
 });
 
 export const cartResponseSchema = insertCartSchema.extend({

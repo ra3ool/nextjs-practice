@@ -17,3 +17,4 @@ export const CART_STEPS_MAP = CART_STEPS_INFO.reduce((acc, step) => {
 }, {} as Record<string, StepsType>);
 
 export const PAYMENT_METHODS = ['PayPal', 'CashOnDelivery'];
+export const DEFAULT_PAYMENT_METHODS = 'PayPal';

@@ -87,6 +87,7 @@ model Cart {
   totalPrice    Decimal  @default(0) @db.Decimal(12, 2)
   shippingPrice Decimal  @default(0) @db.Decimal(12, 2)
   taxPrice      Decimal  @default(0) @db.Decimal(12, 2)
+  paymentMethod String   @db.VarChar(50)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

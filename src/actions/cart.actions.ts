@@ -1,5 +1,6 @@
 'use server';
 
+import { DEFAULT_PAYMENT_METHODS } from '@/constants/cart.constants';
 import { routes } from '@/constants/routes.constants';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -54,6 +55,7 @@ const getOrCreateCart = async (txClient = prisma) => {
       sessionCartId,
       ...(userId && { userId }),
       items: [],
+      paymentMethod: DEFAULT_PAYMENT_METHODS,
       ...calcPrice([]),
     },
     update: {
