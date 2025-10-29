@@ -4,14 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { handleServiceError } from '@/lib/error-handler';
 import { prisma } from '@/lib/prisma';
 import { ResponseBuilder } from '@/lib/response';
-import {
-  paymentMethodSchema,
-  shippingAddressSchema,
-} from '@/schemas/cart.schema';
-import type {
-  PaymentMethodsType,
-  ShippingAddressType,
-} from '@/types/cart.type';
+import { shippingAddressSchema } from '@/schemas/cart.schema';
+import type { ShippingAddressType } from '@/types/cart.type';
 import type { ServiceResponse } from '@/types/service-response.type';
 import { getServerSession, User } from 'next-auth';
 
@@ -226,28 +220,5 @@ export async function deleteUserAddress(
   } catch (error) {
     console.error('Failed to delete address:', error);
     return handleServiceError(error);
-  }
-}
-
-export async function updateUserPaymentMethod(data: PaymentMethodsType) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return ResponseBuilder.unauthorized('Authentication required');
-    }
-    const userId = +session.user.id;
-
-    const paymentMethod = paymentMethodSchema.parse(data);
-
-    // await prisma.user.update({
-    //   where: { id: userId },
-    //   data: {},
-    // });
-  } catch (error) {
-    console.error('Failed to update payment method:', error);
-    return {
-      success: false,
-      message: 'Failed to update payment method',
-    };
   }
 }

@@ -19,8 +19,8 @@ interface CartInfoProps {
 const CartInfo = memo(({ cart, className }: CartInfoProps) => {
   const { currentStep, onFormSubmit, addresses } = useCart();
 
-  const hasDefaultAddress = useMemo(
-    () => addresses.some((address) => address.isDefault),
+  const addressDefaultList = useMemo(
+    () => addresses.map((address) => address.isDefault),
     [addresses],
   );
 
@@ -60,6 +60,10 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
             <span>Tax:</span>
             <span className="font-bold">{formatPrice(cart.taxPrice)}</span>
           </div>
+          <div className="flex items-center justify-between">
+            <span>Shipping Price:</span>
+            <span className="font-bold">{formatPrice(cart.shippingPrice)}</span>
+          </div>
           <div className="flex items-center justify-between border-t pt-2">
             <span className="font-semibold">Total Price:</span>
             <span className="font-bold text-lg">
@@ -71,7 +75,7 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
         <ActionButton
           currentStep={currentStep}
           hasEmptyCart={hasEmptyCart}
-          hasDefaultAddress={hasDefaultAddress}
+          addressDefaultList={addressDefaultList}
           onFormSubmit={onFormSubmit}
         />
       </Card>
@@ -83,7 +87,7 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
       cart.totalPrice,
       currentStep,
       hasEmptyCart,
-      hasDefaultAddress,
+      addressDefaultList,
       onFormSubmit,
       className,
     ],
@@ -96,12 +100,12 @@ const ActionButton = memo(
   ({
     currentStep,
     hasEmptyCart,
-    hasDefaultAddress,
+    addressDefaultList,
     onFormSubmit,
   }: {
     currentStep: StepsType;
     hasEmptyCart: boolean;
-    hasDefaultAddress: boolean;
+    addressDefaultList: boolean[];
     onFormSubmit?: () => void;
   }) => {
     const router = useRouter();
@@ -124,18 +128,22 @@ const ActionButton = memo(
         );
       case 'shipping':
         return (
-          <Button disabled={!hasDefaultAddress} onClick={onFormSubmit}>
-            {!hasDefaultAddress
+          <Button
+            disabled={
+              addressDefaultList.length === 0 ||
+              !addressDefaultList.includes(true)
+            }
+            onClick={onFormSubmit}
+          >
+            {addressDefaultList.length === 0
+              ? 'Please add an address'
+              : !addressDefaultList.includes(true)
               ? 'Please select an address'
               : 'Proceed To Payment Method'}
           </Button>
         );
       case 'payment':
-        return (
-          <Button onClick={() => goToRoute(routes.cart.review)}>
-            Review Order
-          </Button>
-        );
+        return <Button onClick={onFormSubmit}>Review And Place Order</Button>;
       case 'review':
         return <Button>Place Order</Button>;
       default:
