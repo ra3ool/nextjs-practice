@@ -8,7 +8,7 @@ export const CART_STEPS_INFO = [
     link: '/cart/shipping-address',
   },
   { name: 'payment', label: 'Payment Method', link: '/cart/payment-method' },
-  { name: 'review', label: 'Review Order', link: '/cart/review' },
+  { name: 'review', label: 'Review And Place Order', link: '/cart/review' },
 ] as const;
 
 export const CART_STEPS_MAP = CART_STEPS_INFO.reduce((acc, step) => {

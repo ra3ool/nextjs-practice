@@ -26,7 +26,7 @@ function ClientShippingAddressPage({
   const { cart, setAddresses, setOnFormSubmit } = useCart();
 
   useEffect(() => {
-    if (!cart.items || cart.items?.length === 0) {
+    if (!cart.items || cart.items.length === 0) {
       router.replace(routes.cart.root);
     }
   }, [cart, router]);
@@ -41,14 +41,20 @@ function ClientShippingAddressPage({
   );
 
   useEffect(() => {
+    const submitHandler = () => {
+      router.push(routes.cart.paymentMethod);
+    };
+
     setOnFormSubmit(() => {
       if (!hasDefaultAddress) return () => {};
 
-      return () => {
-        router.push(routes.cart.paymentMethod);
-      };
+      return submitHandler;
     });
-  }, [hasDefaultAddress, setOnFormSubmit, router]);
+
+    return () => {
+      setOnFormSubmit(() => {});
+    };
+  }, []);
 
   return (
     <>
