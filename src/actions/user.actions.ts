@@ -16,7 +16,7 @@ export async function getUsers(): Promise<ServiceResponse<User[] | null>> {
       return ResponseBuilder.success([], 'No users found');
     }
 
-    return ResponseBuilder.success(users, 'Users fetched successfully');
+    return ResponseBuilder.success(users, 'Users fetched');
   } catch (error) {
     console.error('Failed to fetch users list:', error);
     return handleServiceError(error);
@@ -32,7 +32,7 @@ export async function getUser(
       return ResponseBuilder.notFound('User not found');
     }
 
-    return ResponseBuilder.success(user, 'User fetched successfully');
+    return ResponseBuilder.success(user, 'User fetched');
   } catch (error) {
     console.error('Failed to fetch user:', error);
     return handleServiceError(error);
@@ -52,7 +52,7 @@ export async function getCurrentUser(): Promise<ServiceResponse<User | null>> {
       return ResponseBuilder.notFound('User not found');
     }
 
-    return ResponseBuilder.success(user, 'User fetched successfully');
+    return ResponseBuilder.success(user, 'User fetched');
   } catch (error) {
     console.error('Failed to fetch user:', error);
     return handleServiceError(error);
@@ -79,7 +79,7 @@ export async function getUserAddresses(): Promise<
 
     return ResponseBuilder.success(
       addresses as ShippingAddressType[],
-      'Addresses fetched successfully',
+      'Addresses fetched',
     );
   } catch (error) {
     console.error('Failed to fetch user addresses:', error);
@@ -116,7 +116,7 @@ export async function setDefaultAddress(
 
     return ResponseBuilder.success(
       updatedAddress as ShippingAddressType,
-      'Default address updated successfully',
+      'Default address updated',
     );
   } catch (error) {
     console.error('Failed to set default address:', error);
@@ -184,7 +184,7 @@ export async function updateUserAddress(
         // lat: userAddress.lat ? Number(userAddress.lat) : undefined,
         // lng: userAddress.lng ? Number(userAddress.lng) : undefined,
       },
-      `Address ${operation}d successfully`,
+      `Address ${operation}d`,
     );
   } catch (error) {
     console.error('Failed to update user address:', error);
@@ -216,7 +216,7 @@ export async function deleteUserAddress(
       },
     });
 
-    return ResponseBuilder.success(address, 'Address deleted successfully');
+    return ResponseBuilder.success(address, 'Address deleted');
   } catch (error) {
     console.error('Failed to delete address:', error);
     return handleServiceError(error);

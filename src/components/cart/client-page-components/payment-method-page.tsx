@@ -51,7 +51,7 @@ function ClientPaymentMethodPage() {
       const result = await updateCartPaymentMethod(cart, paymentMethod);
       if (isSuccessResponse(result)) {
         toast.success(result.message);
-        router.push(routes.dashboard.root);
+        // router.push(routes.dashboard.root);
       } else {
         toast.error(result.message);
       }

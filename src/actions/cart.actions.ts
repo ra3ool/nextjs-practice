@@ -1,11 +1,21 @@
 'use server';
 
-import { DEFAULT_PAYMENT_METHODS } from '@/constants/cart.constants';
+import {
+  DEFAULT_PAYMENT_METHODS,
+  freeShippingLimit,
+} from '@/constants/cart.constants';
 import { routes } from '@/constants/routes.constants';
 import { authOptions } from '@/lib/auth';
+import { handleServiceError } from '@/lib/error-handler';
 import { prisma } from '@/lib/prisma';
-import { cartItemSchema } from '@/schemas/cart.schema';
-import type { CartItemType } from '@/types/cart.type';
+import { ResponseBuilder } from '@/lib/response';
+import { cartItemSchema, paymentMethodSchema } from '@/schemas/cart.schema';
+import type {
+  CartItemType,
+  CartType,
+  PaymentMethodsType,
+} from '@/types/cart.type';
+import type { ServiceResponse } from '@/types/service-response.type';
 import { round2 } from '@/utils/round2';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
@@ -15,7 +25,9 @@ const calcPrice = (items: CartItemType[]) => {
   const itemsPrice = round2(
     items.reduce((acc, item) => acc + item.price * item.qty, 0),
   );
-  const shippingPrice = round2(itemsPrice > 100 ? 0 : 10);
+  const shippingPrice = round2(
+    itemsPrice === 0 || itemsPrice > freeShippingLimit ? 0 : 10,
+  );
   const taxPrice = round2(itemsPrice * 0.1);
   const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
 
@@ -42,9 +54,6 @@ const getSessionData = async () => {
   return { sessionCartId, userId };
 };
 
-/**
- * 🛍️ Get or create cart for current user/guest
- */
 const getOrCreateCart = async (txClient = prisma) => {
   const { sessionCartId, userId } = await getSessionData();
 
@@ -64,9 +73,6 @@ const getOrCreateCart = async (txClient = prisma) => {
   });
 };
 
-/**
- * 🛍️ Get current cart
- */
 export const getMyCart = async () => {
   try {
     return await getOrCreateCart();
@@ -75,9 +81,6 @@ export const getMyCart = async () => {
   }
 };
 
-/**
- * 🛒 Add or update item in cart
- */
 export const addItemToCart = async (item: CartItemType) => {
   try {
     const checkedItem = cartItemSchema.parse(item);
@@ -132,9 +135,6 @@ export const addItemToCart = async (item: CartItemType) => {
   }
 };
 
-/**
- * ❌ Remove item from cart
- */
 export const removeItemFromCart = async (item: CartItemType) => {
   try {
     const checkedItem = cartItemSchema.parse(item);
@@ -177,9 +177,6 @@ export const removeItemFromCart = async (item: CartItemType) => {
   }
 };
 
-/**
- * 🧹 Clear entire cart
- */
 export const clearCart = async () => {
   try {
     const cart = await getOrCreateCart();
@@ -200,3 +197,22 @@ export const clearCart = async () => {
     };
   }
 };
+
+export async function updateCartPaymentMethod(
+  cart: CartType,
+  data: PaymentMethodsType,
+): Promise<ServiceResponse<CartType | null>> {
+  try {
+    const paymentMethod = paymentMethodSchema.parse(data);
+
+    await prisma.cart.update({
+      where: { sessionCartId: cart.sessionCartId },
+      data: { paymentMethod: paymentMethod.type },
+    });
+
+    return ResponseBuilder.success(null, 'Payment method updated');
+  } catch (error) {
+    console.error('Failed to update payment method:', error);
+    return handleServiceError(error);
+  }
+}

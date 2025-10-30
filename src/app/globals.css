@@ -138,3 +138,6 @@ body {
 .container {
   flex-grow: 1;
 }
+button {
+  cursor: pointer;
+}

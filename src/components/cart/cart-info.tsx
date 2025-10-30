@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { freeShippingLimit } from '@/constants/cart.constants';
 import { routes } from '@/constants/routes.constants';
 import { useCart } from '@/contexts/cart.context';
 import { cn } from '@/lib/utils';
@@ -60,9 +61,16 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
             <span>Tax:</span>
             <span className="font-bold">{formatPrice(cart.taxPrice)}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <span>Shipping Price:</span>
-            <span className="font-bold">{formatPrice(cart.shippingPrice)}</span>
+          <div className="flex flex-col justify-between">
+            <div className="flex items-center justify-between">
+              <span>Shipping Price:</span>
+              <span className="font-bold">
+                {formatPrice(cart.shippingPrice)}
+              </span>
+            </div>
+            <div className="text-green-600 text-xs">
+              free shipping on over ${freeShippingLimit} shopping
+            </div>
           </div>
           <div className="flex items-center justify-between border-t pt-2">
             <span className="font-semibold">Total Price:</span>
