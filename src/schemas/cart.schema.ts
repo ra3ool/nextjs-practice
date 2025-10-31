@@ -59,8 +59,16 @@ export const shippingAddressSchema = z.object({
 export const paymentMethodSchema = z
   .object({
     type: z.string(),
+    discountCode: z
+      .string()
+      .min(5, 'Must be at least 5 characters')
+      .optional()
+      .or(z.literal('')),
   })
-  .refine((data) => PAYMENT_METHODS.includes(data.type), {
-    path: ['type'],
-    error: 'Invalid payment method',
-  });
+  .refine(
+    (data) => PAYMENT_METHODS.map((method) => method.name).includes(data.type),
+    {
+      path: ['type'],
+      error: 'Invalid payment method',
+    },
+  );

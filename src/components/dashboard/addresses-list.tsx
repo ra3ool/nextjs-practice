@@ -35,7 +35,7 @@ function AddressesList({
   const router = useRouter();
 
   const handleAddressClick = (address: ShippingAddressType) => {
-    if (isPending) return;
+    if (isPending || address.isDefault) return;
     startTransition(async () => {
       const result = await setDefaultAddress(address);
 

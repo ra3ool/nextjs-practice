@@ -16,7 +16,11 @@ export const CART_STEPS_MAP = CART_STEPS_INFO.reduce((acc, step) => {
   return acc;
 }, {} as Record<string, StepsType>);
 
-export const PAYMENT_METHODS = ['PayPal', 'CashOnDelivery'];
+export const PAYMENT_METHODS = [
+  { name: 'PayPal', description: 'pay with all credit cards' },
+  { name: 'Wallet', description: 'use your wallet charge to pay' },
+  { name: 'CashOnDelivery', description: 'pay after you deliver the products' },
+];
 export const DEFAULT_PAYMENT_METHODS = 'PayPal';
 
 export const freeShippingLimit = 100;
