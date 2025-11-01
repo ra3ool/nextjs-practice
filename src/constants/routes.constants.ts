@@ -16,7 +16,7 @@ export const routes = {
     root: '/cart',
     shippingAddress: '/cart/shipping-address',
     paymentMethod: '/cart/payment-method',
-    review: '/cart/review',
+    placeOrder: '/cart/place-order',
   },
   products: {
     root: '/products',

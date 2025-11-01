@@ -50,11 +50,16 @@ function ClientPaymentMethodPage() {
   });
 
   const onSubmit = (data: PaymentMethodsType) => {
+    if (data.type === cart.paymentMethod) {
+      router.push(routes.cart.placeOrder);
+      return;
+    }
+
     startTransition(async () => {
       const result = await updateCartPaymentMethod(cart, data);
       if (isSuccessResponse(result)) {
         toast.success(result.message);
-        router.push(routes.cart.review);
+        router.push(routes.cart.placeOrder);
       } else {
         toast.error(result.message);
       }

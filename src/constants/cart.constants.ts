@@ -1,14 +1,19 @@
 import { StepsType } from '@/types/cart.type';
+import { routes } from './routes.constants';
 
 export const CART_STEPS_INFO = [
-  { name: 'cart', label: 'Cart Table', link: '/cart' },
+  { name: 'cart', label: 'Cart Table', link: routes.cart.root },
   {
     name: 'shipping',
     label: 'Shipping Address',
-    link: '/cart/shipping-address',
+    link: routes.cart.shippingAddress,
   },
-  { name: 'payment', label: 'Payment Method', link: '/cart/payment-method' },
-  { name: 'review', label: 'Review And Place Order', link: '/cart/review' },
+  { name: 'payment', label: 'Payment Method', link: routes.cart.paymentMethod },
+  {
+    name: 'review',
+    label: 'Review And Place Order',
+    link: routes.cart.placeOrder,
+  },
 ] as const;
 
 export const CART_STEPS_MAP = CART_STEPS_INFO.reduce((acc, step) => {

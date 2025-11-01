@@ -54,7 +54,7 @@ function ClientShippingAddressPage({
     return () => {
       setOnFormSubmit(() => {});
     };
-  }, []);
+  }, [hasDefaultAddress]);
 
   return (
     <>
