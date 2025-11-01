@@ -20,8 +20,8 @@ export const insertCartSchema = z.object({
   userId: z.number().int().positive().optional().nullable(),
   items: z.array(cartItemSchema).default([]),
   itemsPrice: decimalSchema.default(0),
-  shippingPrice: decimalSchema.default(0),
   taxPrice: decimalSchema.default(0),
+  shippingPrice: decimalSchema.default(0),
   totalPrice: decimalSchema.default(0),
   paymentMethod: z.string().min(1).max(50),
 });
@@ -72,3 +72,24 @@ export const paymentMethodSchema = z
       error: 'Invalid payment method',
     },
   );
+
+export const insertOrderSchema = z.object({
+  userId: z.number(),
+  shippingAddress: z.string(),
+  paymentMethod: z
+    .string()
+    .refine((data) =>
+      PAYMENT_METHODS.map((method) => method.name).includes(data),
+    ),
+  itemsPrice: decimalSchema.default(0),
+  taxPrice: decimalSchema.default(0),
+  shippingPrice: decimalSchema.default(0),
+  totalPrice: decimalSchema.default(0),
+});
+
+export const insertOrderItemSchema = z.object({
+  productId: z.number(),
+  orderId: z.number(),
+  qty: z.number(),
+  price: decimalSchema.default(0),
+});

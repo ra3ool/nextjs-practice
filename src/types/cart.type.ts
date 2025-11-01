@@ -1,9 +1,12 @@
 import {
   cartItemSchema,
   insertCartSchema,
+  insertOrderItemSchema,
+  insertOrderSchema,
   paymentMethodSchema,
   shippingAddressSchema,
 } from '@/schemas/cart.schema';
+import { User } from '@prisma/client';
 import type { Session } from 'next-auth';
 import { z } from 'zod';
 
@@ -17,7 +20,7 @@ export type CartItemType = z.infer<typeof cartItemSchema>;
 export type ShippingAddressType = z.infer<typeof shippingAddressSchema>;
 
 export type StepsType = 'loading' | 'cart' | 'shipping' | 'payment' | 'review';
-export interface CartContextType {
+export type CartContextType = {
   session: Session | null;
   cart: CartType;
   currentStep: StepsType;
@@ -26,11 +29,22 @@ export interface CartContextType {
   setAddresses: (addresses: ShippingAddressType[]) => void;
   onFormSubmit?: () => void;
   setOnFormSubmit: (handler: () => void) => void;
-}
-export interface CartProviderType {
+};
+export type CartProviderType = {
   children: React.ReactNode;
   session: CartContextType['session'];
   cart: CartContextType['cart'];
-}
+};
 
 export type PaymentMethodsType = z.infer<typeof paymentMethodSchema>;
+
+export type OrderType = z.infer<typeof insertOrderSchema> & {
+  id: Number;
+  createdAt: Date | string;
+  isPaid: Boolean;
+  paidAt: Date | string | null;
+  deliveredAt: Date | string | null;
+  orderItems: OrderItemType[];
+  user: User
+};
+export type OrderItemType = z.infer<typeof insertOrderItemSchema>;

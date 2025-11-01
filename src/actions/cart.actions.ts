@@ -25,10 +25,10 @@ const calcPrice = (items: CartItemType[]) => {
   const itemsPrice = round2(
     items.reduce((acc, item) => acc + item.price * item.qty, 0),
   );
+  const taxPrice = round2(itemsPrice * 0.1);
   const shippingPrice = round2(
     itemsPrice === 0 || itemsPrice > freeShippingLimit ? 0 : 10,
   );
-  const taxPrice = round2(itemsPrice * 0.1);
   const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
 
   return { itemsPrice, shippingPrice, taxPrice, totalPrice };
