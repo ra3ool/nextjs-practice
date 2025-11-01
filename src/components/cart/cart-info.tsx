@@ -20,10 +20,7 @@ interface CartInfoProps {
 const CartInfo = memo(({ cart, className }: CartInfoProps) => {
   const { currentStep, onFormSubmit, addresses } = useCart();
 
-  const addressDefaultList = useMemo(
-    () => addresses.map((address) => address.isDefault),
-    [addresses],
-  );
+  const addressListLength = useMemo(() => addresses.length ?? 0, [addresses]);
 
   const hasEmptyCart = useMemo(
     () => !cart.items || cart.items.length === 0,
@@ -83,7 +80,7 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
         <ActionButton
           currentStep={currentStep}
           hasEmptyCart={hasEmptyCart}
-          addressDefaultList={addressDefaultList}
+          addressListLength={addressListLength}
           onFormSubmit={onFormSubmit}
         />
       </Card>
@@ -95,7 +92,7 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
       cart.totalPrice,
       currentStep,
       hasEmptyCart,
-      addressDefaultList,
+      addressListLength,
       onFormSubmit,
       className,
     ],
@@ -108,12 +105,12 @@ const ActionButton = memo(
   ({
     currentStep,
     hasEmptyCart,
-    addressDefaultList,
+    addressListLength,
     onFormSubmit,
   }: {
     currentStep: StepsType;
     hasEmptyCart: boolean;
-    addressDefaultList: boolean[];
+    addressListLength: number;
     onFormSubmit?: () => void;
   }) => {
     const router = useRouter();
@@ -136,17 +133,9 @@ const ActionButton = memo(
         );
       case 'shipping':
         return (
-          <Button
-            disabled={
-              addressDefaultList.length === 0 ||
-              !addressDefaultList.includes(true)
-            }
-            onClick={onFormSubmit}
-          >
-            {addressDefaultList.length === 0
+          <Button disabled={addressListLength === 0} onClick={onFormSubmit}>
+            {addressListLength === 0
               ? 'Please add an address'
-              : !addressDefaultList.includes(true)
-              ? 'Please select an address'
               : 'Proceed To Payment Method'}
           </Button>
         );

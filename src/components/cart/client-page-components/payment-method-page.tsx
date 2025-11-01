@@ -36,7 +36,7 @@ function ClientPaymentMethodPage() {
 
   //FIXME go with a better way, prevent router.replace when user has default address
   useEffect(() => {
-    if (!(addresses && addresses.some((address) => address.isDefault))) {
+    if (!addresses) {
       router.replace(routes.cart.shippingAddress);
     }
   }, [addresses, router]);
@@ -44,7 +44,7 @@ function ClientPaymentMethodPage() {
   const form = useForm({
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: {
-      type: cart.paymentMethod || DEFAULT_PAYMENT_METHODS,
+      type: cart.paymentMethod,
       discountCode: '',
     },
   });
@@ -135,7 +135,7 @@ function ClientPaymentMethodPage() {
                     <FormItem>
                       <FormControl>
                         <Input
-                          placeholder="Enter Code"
+                          placeholder="Have Discount Code?"
                           disabled={isPending}
                           className="rounded-r-none max-w-3xs"
                           {...field}

@@ -20,39 +20,48 @@ import type { ShippingAddressType } from '@/types/cart.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRightIcon, LoaderIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useTransition } from 'react';
+import { useMemo, useTransition } from 'react';
 import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
 function AddAddressForm({
   addresses,
+  addressForEdit,
   className,
 }: {
-  addresses?: ShippingAddressType[];
+  addresses: ShippingAddressType[];
+  addressForEdit?: ShippingAddressType;
   className?: string;
 }) {
   const form = useForm<ShippingAddressType>({
     resolver: zodResolver(shippingAddressSchema),
     defaultValues: {
-      phoneNumber: addresses?.[0]?.phoneNumber || '',
-      country: addresses?.[0]?.country || '',
-      city: addresses?.[0]?.city || '',
-      address: addresses?.[0]?.address || '',
-      postalCode: addresses?.[0]?.postalCode || '',
+      phoneNumber: addressForEdit?.phoneNumber || '',
+      country: addressForEdit?.country || '',
+      city: addressForEdit?.city || '',
+      address: addressForEdit?.address || '',
+      postalCode: addressForEdit?.postalCode || '',
+      isDefault: addressForEdit?.isDefault || false,
       // lat: undefined,
       // lng: undefined,
-      isDefault: false,
     },
   });
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
+  const hasDefaultAddress = useMemo(
+    () => addresses.some((address) => address.isDefault),
+    [addresses],
+  );
+
   const onSubmit: SubmitHandler<z.infer<typeof shippingAddressSchema>> = (
-    values: ShippingAddressType,
+    address: ShippingAddressType,
   ) => {
+    if (!hasDefaultAddress) address.isDefault = true;
+
     startTransition(async () => {
-      const result = await updateUserAddress(values);
+      const result = await updateUserAddress(address);
       if (isSuccessResponse(result)) {
         toast.success(result.message);
         router.refresh();
@@ -285,9 +294,9 @@ function AddAddressForm({
               <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                 <FormControl>
                   <Checkbox
-                    checked={field.value}
+                    checked={!hasDefaultAddress ? true : field.value}
                     onCheckedChange={field.onChange}
-                    disabled={isPending}
+                    disabled={!hasDefaultAddress || isPending}
                     suppressHydrationWarning
                     className="w-5 h-5"
                   />

@@ -45,6 +45,7 @@ function handleServiceError(
         );
 
       case 'P2002':
+        //TODO find a better way to grab and show error
         const fieldName = prismaError.meta?.target?.[0] || 'field';
         return ResponseBuilder.error(`${fieldName} already exists`, 409, [
           `Duplicate value for ${fieldName}`,

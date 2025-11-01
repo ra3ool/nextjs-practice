@@ -42,7 +42,7 @@ async function UserAddressesPage() {
                 Add your desire address to your address lists
               </SheetDescription>
             </SheetHeader>
-            <AddAddressForm className="px-4 w-full" />
+            <AddAddressForm addresses={addresses} className="px-4 w-full" />
           </SheetContent>
         </Sheet>
       </div>

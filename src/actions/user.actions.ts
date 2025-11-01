@@ -136,17 +136,6 @@ export async function updateUserAddress(
 
     const address = shippingAddressSchema.parse(data);
 
-    if (address.isDefault) {
-      await prisma.userAddress.updateMany({
-        where: {
-          userId,
-          isDefault: true,
-          ...(address.id && { id: { not: address.id } }),
-        },
-        data: { isDefault: false },
-      });
-    }
-
     const operation = address.id ? 'update' : 'create';
 
     const userAddress = await prisma.userAddress.upsert({
@@ -177,6 +166,10 @@ export async function updateUserAddress(
       },
     });
 
+    if (address.isDefault) {
+      await setDefaultAddress(userAddress as ShippingAddressType);
+    }
+
     return ResponseBuilder.success(
       {
         ...userAddress,
@@ -204,7 +197,7 @@ export async function deleteUserAddress(
     const address = shippingAddressSchema.parse(data);
 
     if (address.isDefault) {
-      return ResponseBuilder.badRequest('Address already set as default');
+      return ResponseBuilder.badRequest("You can't delete default address");
     }
 
     const userId = +session.user.id;

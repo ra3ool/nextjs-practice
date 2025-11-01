@@ -35,32 +35,23 @@ function ClientShippingAddressPage({
     setAddresses(addresses);
   }, [addresses, setAddresses]);
 
-  const hasDefaultAddress = useMemo(
-    () => addresses.some((address) => address.isDefault),
-    [addresses],
-  );
-
   useEffect(() => {
     const submitHandler = () => {
       router.push(routes.cart.paymentMethod);
     };
 
-    setOnFormSubmit(() => {
-      if (!hasDefaultAddress) return () => {};
-
-      return submitHandler;
-    });
+    setOnFormSubmit(() => submitHandler);
 
     return () => {
       setOnFormSubmit(() => {});
     };
-  }, [hasDefaultAddress]);
+  }, []);
 
   return (
     <>
       <div className="flex gap-8 items-center mb-6">
         <h2 className="text-2xl">Shipping Address</h2>
-        {/* TODO make side-sheet close after adding address */}
+        {/* FIXME make side-sheet close after adding address */}
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline">Add New Address</Button>
@@ -72,7 +63,7 @@ function ClientShippingAddressPage({
                 Add your desire address to your address lists
               </SheetDescription>
             </SheetHeader>
-            <AddAddressForm className="px-4 w-full" />
+            <AddAddressForm addresses={addresses} className="px-4 w-full" />
           </SheetContent>
         </Sheet>
       </div>
