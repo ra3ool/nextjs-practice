@@ -13,19 +13,20 @@ import {
 import { routes } from '@/constants/routes.constants';
 import { cn } from '@/lib/utils';
 import type { CartType } from '@/types/cart.type';
-import { round2 } from '@/utils/round2';
+import { formatPrice } from '@/utils/format-price';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 function CartTable({
   cart,
   className,
+  showOnlyItemsDetail,
 }: {
   cart: CartType;
   className?: string;
+  showOnlyItemsDetail: boolean;
 }) {
   const router = useRouter();
-  // TODO make constants for routes
   const goToProductDetails = (itemSlug: string) => {
     router.push(`${routes.product.root}/${itemSlug}`);
   };
@@ -45,8 +46,13 @@ function CartTable({
             {cart.items?.map((item) => (
               <TableRow key={item.slug}>
                 <TableCell
-                  className="font-medium flex items-center gap-4 cursor-pointer"
-                  onClick={() => goToProductDetails(item.slug)}
+                  className={cn(
+                    'font-medium flex items-center gap-4',
+                    !showOnlyItemsDetail && 'cursor-pointer',
+                  )}
+                  {...(!showOnlyItemsDetail && {
+                    onClick: () => goToProductDetails(item.slug),
+                  })}
                 >
                   <div className="relative h-10 w-10">
                     <Image
@@ -57,22 +63,28 @@ function CartTable({
                       className="object-contain"
                     />
                   </div>
-                  {item.name}
+                  {item.name} - {formatPrice(item.price)}
                 </TableCell>
                 <TableCell>
-                  <AddToCart
-                    cart={cart}
-                    item={{
-                      ...item,
-                      qty: 1,
-                    }}
-                  />
+                  {!showOnlyItemsDetail ? (
+                    <AddToCart
+                      cart={cart}
+                      item={{
+                        ...item,
+                        qty: 1,
+                      }}
+                    />
+                  ) : (
+                    item.qty
+                  )}
                 </TableCell>
-                <TableCell>${round2(item.price * item.qty)}</TableCell>
+                <TableCell>{formatPrice(item.price * item.qty)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
-          <TableCaption>your cart items and details</TableCaption>
+          {!showOnlyItemsDetail && (
+            <TableCaption>your cart items and details</TableCaption>
+          )}
         </Table>
       </div>
     </div>

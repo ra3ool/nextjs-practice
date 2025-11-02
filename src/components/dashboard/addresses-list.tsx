@@ -85,11 +85,13 @@ function AddressCard({
   className,
   handleDeleteAddress,
   onClick,
+  showDefaultAddressCheckIcon = true,
 }: {
   address: ShippingAddressType;
   className?: string;
   handleDeleteAddress?: Function;
   onClick?: MouseEventHandler;
+  showDefaultAddressCheckIcon?: boolean;
 }) {
   return (
     <Card
@@ -107,7 +109,7 @@ function AddressCard({
         {address.postalCode && <>Postal Code: {address.postalCode}</>}
       </div>
       <div className="flex gap-4 items-center">
-        {address.isDefault && (
+        {address.isDefault && showDefaultAddressCheckIcon && (
           <CheckIcon className="text-amber-700 dark:text-amber-200" />
         )}
         {typeof handleDeleteAddress === 'function' && (
