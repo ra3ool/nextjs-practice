@@ -13,10 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import {
-  DEFAULT_PAYMENT_METHODS,
-  PAYMENT_METHODS,
-} from '@/constants/cart.constants';
+import { PAYMENT_METHODS } from '@/constants/cart.constants';
 import { routes } from '@/constants/routes.constants';
 import { useCart } from '@/contexts/cart.context';
 import { isSuccessResponse } from '@/lib/response';
@@ -36,7 +33,7 @@ function ClientPaymentMethodPage() {
 
   //FIXME go with a better way, prevent router.replace when user has default address
   useEffect(() => {
-    if (!addresses) {
+    if (!addresses || addresses.length === 0) {
       router.replace(routes.cart.shippingAddress);
     }
   }, [addresses, router]);

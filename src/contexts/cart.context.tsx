@@ -10,12 +10,17 @@ import { createContext, useContext, useMemo, useState } from 'react';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-function CartProvider({ children, session, cart }: CartProviderType) {
+function CartProvider({
+  children,
+  session,
+  cart,
+  addresses: initialAddresses,
+}: CartProviderType) {
   const [currentStep, setCurrentStep] = useState<StepsType>('loading');
   const [onFormSubmit, setOnFormSubmit] = useState<() => void>(() => {});
-  const [addresses, setAddresses] = useState<ShippingAddressType[]>([]);
+  const [addresses, setAddresses] =
+    useState<ShippingAddressType[]>(initialAddresses);
 
-  // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({
       cart,

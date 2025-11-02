@@ -34,6 +34,7 @@ export type CartProviderType = {
   children: React.ReactNode;
   session: CartContextType['session'];
   cart: CartContextType['cart'];
+  addresses: CartContextType['addresses'];
 };
 
 export type PaymentMethodsType = z.infer<typeof paymentMethodSchema>;
@@ -45,6 +46,6 @@ export type OrderType = z.infer<typeof insertOrderSchema> & {
   paidAt: Date | string | null;
   deliveredAt: Date | string | null;
   orderItems: OrderItemType[];
-  user: User
+  user: User;
 };
 export type OrderItemType = z.infer<typeof insertOrderItemSchema>;

@@ -15,7 +15,7 @@ import { routes } from '@/constants/routes.constants';
 import { useCart } from '@/contexts/cart.context';
 import type { ShippingAddressType } from '@/types/cart.type';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 function ClientShippingAddressPage({
   addresses,
