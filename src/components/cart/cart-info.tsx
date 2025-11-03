@@ -142,7 +142,7 @@ const ActionButton = memo(
       case 'payment':
         return <Button onClick={onFormSubmit}>Review And Place Order</Button>;
       case 'review':
-        return <Button>Place Order</Button>;
+        return <Button onClick={onFormSubmit}>Place Order</Button>;
       default:
         return <Button disabled>Loading...</Button>;
     }

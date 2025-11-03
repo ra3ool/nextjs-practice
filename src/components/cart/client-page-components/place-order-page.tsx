@@ -1,31 +1,77 @@
 'use client';
 
+import { createOrder } from '@/actions/order.actions';
 import { CartTable } from '@/components/cart/cart-table';
 import { AddressCard } from '@/components/dashboard/addresses-list';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { routes } from '@/constants/routes.constants';
 import { useCart } from '@/contexts/cart.context';
+import { isSuccessResponse } from '@/lib/response';
+import { cn } from '@/lib/utils';
 import type { ShippingAddressType } from '@/types/cart.type';
 import { useRouter } from 'next/navigation';
-import { MouseEventHandler, useEffect } from 'react';
+import { MouseEventHandler, useEffect, useTransition } from 'react';
+import { toast } from 'sonner';
 
 function ClientPlaceOrderPage() {
   const router = useRouter();
-  const { cart, addresses } = useCart();
+  const { cart, session, addresses, setOnFormSubmit } = useCart();
   const defaultAddress = addresses.find((address) => address.isDefault);
-  const goToStep = (link: string) => router.push(link);
+  const [isPending, startTransition] = useTransition();
+
+  const goToStep = (link: string) => {
+    if (isPending) return;
+    router.push(link);
+  };
 
   useEffect(() => {
     if (!cart.items || cart.items.length === 0) {
       router.replace(routes.cart.root);
-    } else if (!addresses || addresses.length === 0) {
+    } else if (!defaultAddress) {
       router.replace(routes.cart.shippingAddress);
     }
   }, [cart, router]);
 
+  useEffect(() => {
+    const orderAddress = {
+      country: defaultAddress?.country,
+      city: defaultAddress?.city,
+      address: defaultAddress?.address,
+      phoneNumber: defaultAddress?.phoneNumber,
+      postalCode: defaultAddress?.postalCode,
+    };
+
+    const submitHandler = () =>
+      startTransition(async () => {
+        const payload = {
+          userId: session!.user?.id,
+          shippingAddress: JSON.stringify(orderAddress),
+          paymentMethod: cart.paymentMethod,
+          itemsPrice: cart.itemsPrice,
+          taxPrice: cart.taxPrice,
+          shippingPrice: cart.shippingPrice,
+          totalPrice: cart.totalPrice,
+        };
+        const result = await createOrder(payload);
+        console.log('result :', result);
+
+        if (isSuccessResponse(result)) {
+          toast.success(result.message);
+        } else {
+          toast.error(result.message);
+        }
+      });
+
+    setOnFormSubmit(() => submitHandler);
+
+    return () => {
+      setOnFormSubmit(() => {});
+    };
+  }, []);
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className={cn('flex flex-col gap-5', isPending && 'opacity-50')}>
       <CardWrapper
         title="Cart Items"
         onEditClick={() => goToStep(routes.cart.root)}

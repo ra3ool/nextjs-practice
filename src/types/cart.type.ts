@@ -39,7 +39,9 @@ export type CartProviderType = {
 
 export type PaymentMethodsType = z.infer<typeof paymentMethodSchema>;
 
-export type OrderType = z.infer<typeof insertOrderSchema> & {
+//should move to order type file
+export type InsertOrderType = z.infer<typeof insertOrderSchema>;
+export type OrderType = InsertOrderType & {
   id: Number;
   createdAt: Date | string;
   isPaid: Boolean;
