@@ -101,15 +101,15 @@ model Order {
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          Int
   shippingAddress String      @db.Text
-  paymentMethod   String
-  paymentResult   String
-  paidAt          DateTime
+  paymentMethod   String      @db.VarChar(50)
+  paymentResult   String?     @db.VarChar(50)
+  paidAt          DateTime?
   itemsPrice      Decimal     @default(0) @db.Decimal(12, 2)
   shippingPrice   Decimal     @default(0) @db.Decimal(12, 2)
   taxPrice        Decimal     @default(0) @db.Decimal(12, 2)
   totalPrice      Decimal     @default(0) @db.Decimal(12, 2)
   isDelivered     Boolean     @default(false)
-  deliveredAt     DateTime
+  deliveredAt     DateTime?
   createdAt       DateTime    @default(now())
   OrderItem       OrderItem[]
 
@@ -117,10 +117,10 @@ model Order {
 }
 
 model OrderItem {
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId   Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
   qty       Int
   price     Decimal @default(0) @db.Decimal(12, 2)
 

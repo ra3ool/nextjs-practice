@@ -3,15 +3,15 @@ CREATE TABLE `orders` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `shippingAddress` TEXT NOT NULL,
-    `paymentMethod` VARCHAR(191) NOT NULL,
-    `paymentResult` VARCHAR(191) NOT NULL,
-    `paidAt` DATETIME(3) NOT NULL,
+    `paymentMethod` VARCHAR(50) NOT NULL,
+    `paymentResult` VARCHAR(50) NULL,
+    `paidAt` DATETIME(3) NULL,
     `itemsPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `shippingPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `taxPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `totalPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `isDelivered` BOOLEAN NOT NULL DEFAULT false,
-    `deliveredAt` DATETIME(3) NOT NULL,
+    `deliveredAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
@@ -19,8 +19,8 @@ CREATE TABLE `orders` (
 
 -- CreateTable
 CREATE TABLE `order_item` (
-    `productId` INTEGER NOT NULL,
     `orderId` INTEGER NOT NULL,
+    `productId` INTEGER NOT NULL,
     `qty` INTEGER NOT NULL,
     `price` DECIMAL(12, 2) NOT NULL DEFAULT 0,
 
