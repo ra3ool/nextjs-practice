@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 
 function ClientPlaceOrderPage() {
   const router = useRouter();
-  const { cart, session, addresses, setOnFormSubmit } = useCart();
+  const { cart, addresses, setOnFormSubmit } = useCart();
   const defaultAddress = addresses.find((address) => address.isDefault);
   const [isPending, startTransition] = useTransition();
 
@@ -45,7 +45,6 @@ function ClientPlaceOrderPage() {
     const submitHandler = () =>
       startTransition(async () => {
         const payload = {
-          userId: session!.user?.id,
           shippingAddress: JSON.stringify(orderAddress),
           paymentMethod: cart.paymentMethod,
           itemsPrice: cart.itemsPrice,
@@ -53,11 +52,11 @@ function ClientPlaceOrderPage() {
           shippingPrice: cart.shippingPrice,
           totalPrice: cart.totalPrice,
         };
-        const result = await createOrder(payload);
-        console.log('result :', result);
+        const result = await createOrder(cart, payload);
 
         if (isSuccessResponse(result)) {
           toast.success(result.message);
+          router.push(routes.dashboard.root);
         } else {
           toast.error(result.message);
         }
