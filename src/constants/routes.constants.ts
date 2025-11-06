@@ -11,6 +11,10 @@ export const routes = {
       root: '/dashboard/users',
       mock: '/dashboard/users/mock',
     },
+    orders: {
+      root: '/dashboard/orders',
+      single: '/dashboard/order',
+    },
   },
   cart: {
     root: '/cart',
@@ -23,9 +27,5 @@ export const routes = {
     brands: '/products/brands',
     categories: '/products/categories',
     single: '/product',
-  },
-  orders: {
-    root: '/orders',
-    single: '/order',
   },
 } as const;
