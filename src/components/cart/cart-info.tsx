@@ -20,7 +20,7 @@ interface CartInfoProps {
 const CartInfo = memo(({ cart, className }: CartInfoProps) => {
   const { currentStep, onFormSubmit, addresses } = useCart();
 
-  const addressListLength = useMemo(() => addresses.length ?? 0, [addresses]);
+  const addressListLength = useMemo(() => addresses?.length ?? 0, [addresses]);
 
   const hasEmptyCart = useMemo(
     () => !cart.items || cart.items.length === 0,

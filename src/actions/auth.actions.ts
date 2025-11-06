@@ -1,5 +1,6 @@
 'use client';
 
+import { syncCartAfterLogin } from '@/actions/cart.actions';
 import { signIn } from '@/lib/auth-client';
 import { loginSchema, registerSchema } from '@/schemas/auth.schema';
 import type { LoginType, RegisterType } from '@/types/auth.type';
@@ -21,6 +22,12 @@ export const loginAction = async (input: LoginType) => {
   });
 
   if (res?.ok) {
+    try {
+      await syncCartAfterLogin();
+    } catch (e) {
+      console.error('Cart sync failed:', e);
+    }
+
     toast.success('Welcome back!');
     return { success: true };
   }
