@@ -22,8 +22,10 @@ export const routes = {
     root: '/products',
     brands: '/products/brands',
     categories: '/products/categories',
+    single: '/product',
   },
-  product: {
-    root: '/product',
+  orders: {
+    root: '/orders',
+    single: '/order',
   },
 } as const;

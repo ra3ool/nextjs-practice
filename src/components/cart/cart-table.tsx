@@ -28,7 +28,7 @@ function CartTable({
 }) {
   const router = useRouter();
   const goToProductDetails = (itemSlug: string) => {
-    router.push(`${routes.product.root}/${itemSlug}`);
+    router.push(`${routes.products.single}/${itemSlug}`);
   };
 
   return (
@@ -92,4 +92,3 @@ function CartTable({
 }
 
 export { CartTable };
-

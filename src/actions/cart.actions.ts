@@ -242,7 +242,7 @@ export const addItemToCart = async (item: CartItemType) => {
       return { cartId: cart.id, message };
     });
 
-    revalidatePath(`${routes.product.root}/${checkedItem.slug}`);
+    revalidatePath(`${routes.products.single}/${checkedItem.slug}`);
     return { success: true, message: result.message };
   } catch (e) {
     return {
@@ -286,7 +286,7 @@ export const removeItemFromCart = async (item: CartItemType) => {
       },
     });
 
-    revalidatePath(`${routes.product.root}/${item.slug}`);
+    revalidatePath(`${routes.products.single}/${item.slug}`);
     return { success: true, message };
   } catch (e) {
     return {

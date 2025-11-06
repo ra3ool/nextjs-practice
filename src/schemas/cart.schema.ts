@@ -70,7 +70,6 @@ export const paymentMethodSchema = z
 
 //should move to order schema file
 export const insertOrderSchema = z.object({
-  userId: z.number(),
   shippingAddress: z.string(),
   paymentMethod: z
     .string()
