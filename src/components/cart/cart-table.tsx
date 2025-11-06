@@ -20,11 +20,11 @@ import { useRouter } from 'next/navigation';
 function CartTable({
   cart,
   className,
-  showOnlyItemsDetail,
+  showOnlyItemsDetail = false,
 }: {
   cart: CartType;
   className?: string;
-  showOnlyItemsDetail: boolean;
+  showOnlyItemsDetail?: boolean;
 }) {
   const router = useRouter();
   const goToProductDetails = (itemSlug: string) => {
@@ -92,3 +92,4 @@ function CartTable({
 }
 
 export { CartTable };
+

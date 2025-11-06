@@ -26,11 +26,6 @@ export const insertCartSchema = z.object({
   paymentMethod: z.string().min(1).max(50),
 });
 
-export const cartResponseSchema = insertCartSchema.extend({
-  id: z.number().int().positive(),
-  createdAt: z.date(),
-});
-
 export const shippingAddressSchema = z.object({
   id: z.number().optional(),
   country: z

@@ -12,6 +12,7 @@ import { z } from 'zod';
 
 export type InsertCartType = z.infer<typeof insertCartSchema>;
 export type CartType = InsertCartType & {
+  id: number;
   createdAt: Date | string;
   updatedAt: Date | string;
 };
