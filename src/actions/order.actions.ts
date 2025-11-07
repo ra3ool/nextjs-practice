@@ -5,13 +5,13 @@ import { handleServiceError } from '@/lib/error-handler';
 import { prisma } from '@/lib/prisma';
 import { ResponseBuilder } from '@/lib/response';
 import { insertOrderSchema } from '@/schemas/cart.schema';
-import type { CartType, InsertOrderType } from '@/types/cart.type';
+import type { CartType, InsertOrderType, OrderType } from '@/types/cart.type';
 import type { ServiceResponse } from '@/types/service-response.type';
 import { getServerSession } from 'next-auth';
 
 export const createOrder = async (
   cart: CartType,
-  data: Omit<InsertOrderType, 'userId'>,
+  data: InsertOrderType,
 ): Promise<ServiceResponse<number | null>> => {
   try {
     const session = await getServerSession(authOptions);
@@ -54,6 +54,50 @@ export const createOrder = async (
     );
   } catch (error) {
     console.error('Failed to create order:', error);
+    return handleServiceError(error);
+  }
+};
+
+export const getOrdersList = async (): Promise<
+  ServiceResponse<OrderType[] | null>
+> => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
+    const userId = +session.user.id;
+
+    const orders = await prisma.order.findMany({ where: { userId } });
+    if (!orders || orders.length === 0) {
+      return ResponseBuilder.success([], 'No orders found');
+    }
+
+    return ResponseBuilder.success(orders, 'Orders list fetched');
+  } catch (error) {
+    console.error('Failed to fetch orders list:', error);
+    return handleServiceError(error);
+  }
+};
+
+export const getOrderById = async (
+  id: number,
+): Promise<ServiceResponse<OrderType | null>> => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return ResponseBuilder.unauthorized('Authentication required');
+    }
+    const userId = +session.user.id;
+
+    const order = await prisma.order.findFirst({ where: { id, userId } });
+    if (!order) {
+      return ResponseBuilder.notFound('Order not found');
+    }
+
+    return ResponseBuilder.success(order, 'Order fetched');
+  } catch (error) {
+    console.error('Failed to fetch order:', error);
     return handleServiceError(error);
   }
 };

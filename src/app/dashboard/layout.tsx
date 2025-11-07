@@ -26,6 +26,10 @@ const navigationItems = [
     label: 'Mock users',
     href: routes.dashboard.users.mock,
   },
+  {
+    label: 'Orders',
+    href: routes.dashboard.orders.root,
+  },
 ];
 
 async function DashboardLayout({ children }: { children: React.ReactNode }) {

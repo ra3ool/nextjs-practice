@@ -56,7 +56,7 @@ function ClientPlaceOrderPage() {
 
         if (isSuccessResponse(result)) {
           toast.success(result.message);
-          router.push(routes.dashboard.root);
+          router.push(`${routes.dashboard.orders.single}/${result.data}`);
         } else {
           toast.error(result.message);
         }
