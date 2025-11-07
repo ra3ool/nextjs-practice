@@ -1,11 +1,5 @@
 import { z } from 'zod';
-
-const decimalSchema = z
-  .union([
-    z.number().positive().max(999999999.99),
-    z.string().regex(/^\d+(\.\d{1,2})?$/),
-  ])
-  .transform((val) => (typeof val === 'string' ? parseFloat(val) : val));
+import { decimalSchema } from './shared.schema';
 
 export const insertProductSchema = z.object({
   name: z.string().min(3).max(255).trim(),

@@ -1,9 +1,6 @@
 import { PAYMENT_METHODS } from '@/constants/cart.constants';
 import { z } from 'zod';
-
-const decimalSchema = z
-  .union([z.number().min(0), z.string().regex(/^\d+(\.\d{1,2})?$/)])
-  .transform((val) => (typeof val === 'string' ? parseFloat(val) : val));
+import { decimalSchema } from './shared.schema';
 
 export const cartItemSchema = z.object({
   productId: z.number().int().positive(),
@@ -12,17 +9,17 @@ export const cartItemSchema = z.object({
   qty: z.number().int().min(1, 'Quantity must be at least 1'),
   stock: z.number().int().min(0).default(0),
   image: z.url().or(z.string().min(1)),
-  price: decimalSchema.refine((val) => val >= 0, 'Price cannot be negative'),
+  price: decimalSchema,
 });
 
 export const insertCartSchema = z.object({
   sessionCartId: z.uuidv4(),
   userId: z.number().int().positive().optional().nullable(),
   items: z.array(cartItemSchema).default([]),
-  itemsPrice: decimalSchema.default(0),
-  taxPrice: decimalSchema.default(0),
-  shippingPrice: decimalSchema.default(0),
-  totalPrice: decimalSchema.default(0),
+  itemsPrice: decimalSchema,
+  taxPrice: decimalSchema,
+  shippingPrice: decimalSchema,
+  totalPrice: decimalSchema,
   paymentMethod: z.string().min(1).max(50),
 });
 
@@ -76,15 +73,15 @@ export const insertOrderSchema = z.object({
     .refine((data) =>
       PAYMENT_METHODS.map((method) => method.name).includes(data),
     ),
-  itemsPrice: decimalSchema.default(0),
-  taxPrice: decimalSchema.default(0),
-  shippingPrice: decimalSchema.default(0),
-  totalPrice: decimalSchema.default(0),
+  itemsPrice: decimalSchema,
+  taxPrice: decimalSchema,
+  shippingPrice: decimalSchema,
+  totalPrice: decimalSchema,
 });
 
 export const insertOrderItemSchema = z.object({
   productId: z.number(),
   orderId: z.number(),
   qty: z.number(),
-  price: decimalSchema.default(0),
+  price: decimalSchema,
 });
