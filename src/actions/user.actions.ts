@@ -95,9 +95,9 @@ export async function setDefaultAddress(
     if (!session?.user?.id) {
       return ResponseBuilder.unauthorized('Authentication required');
     }
+    const userId = +session.user.id;
 
     const address = shippingAddressSchema.parse(data);
-    const userId = +session.user.id;
 
     const updatedAddress = await prisma.$transaction(async (tx) => {
       await tx.userAddress.updateMany({
@@ -193,14 +193,13 @@ export async function deleteUserAddress(
     if (!session?.user?.id) {
       return ResponseBuilder.unauthorized('Authentication required');
     }
+    const userId = +session.user.id;
 
     const address = shippingAddressSchema.parse(data);
 
     if (address.isDefault) {
       return ResponseBuilder.badRequest("You can't delete default address");
     }
-
-    const userId = +session.user.id;
 
     await prisma.userAddress.delete({
       where: {
