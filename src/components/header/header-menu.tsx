@@ -1,5 +1,6 @@
 'use client';
 
+import { ToggleTheme } from '@/components/header/toggle-theme';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,7 +10,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,7 +40,6 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { ToggleTheme } from './toggle-theme';
 
 function HeaderMenu() {
   return (

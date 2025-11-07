@@ -1,9 +1,9 @@
+import { AUTH_ROUTES, PROTECTED_ROUTES } from '@/constants/acl.constants';
+import { routes } from '@/constants/routes.constants';
+import { canAccess } from '@/lib/acl';
+import { UserRole } from '@/types/user.type';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
-import { AUTH_ROUTES, PROTECTED_ROUTES } from './constants/acl.constants';
-import { routes } from './constants/routes.constants';
-import { canAccess } from './lib/acl';
-import { UserRole } from './types/user.type';
 
 function redirectTo(url: string, request: NextRequest, callbackUrl?: string) {
   const target = callbackUrl ? `${url}?callbackUrl=${callbackUrl}` : url;

@@ -1,11 +1,11 @@
 import { ImageWithLoader } from '@/components/image-with-loader';
+import { ProductPrice } from '@/components/products/products-price';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { routes } from '@/constants/routes.constants';
 import type { ProductWithRelations } from '@/types/product.type';
 import { StarIcon } from 'lucide-react';
 import Link from 'next/link';
-import { ProductPrice } from './products-price';
 
 function ProductCard({ product }: { product: ProductWithRelations }) {
   return (

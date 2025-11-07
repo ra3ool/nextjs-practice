@@ -1,7 +1,7 @@
+import { ResponseBuilder } from '@/lib/response';
 import { ErrorContext, ServiceResponse } from '@/types/service-response.type';
 import { Prisma } from '@prisma/client';
 import { ZodError } from 'zod';
-import { ResponseBuilder } from './response';
 
 function handleServiceError(
   error: unknown,

@@ -1,6 +1,6 @@
+import { roles } from '@/constants/roles.constants';
+import { routes } from '@/constants/routes.constants';
 import { UserRole } from '@/types/user.type';
-import { roles } from './roles.constants';
-import { routes } from './routes.constants';
 
 export const AUTH_ROUTES = [routes.auth.root] as const;
 

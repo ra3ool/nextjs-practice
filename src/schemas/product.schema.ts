@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { decimalSchema } from './shared.schema';
+import { decimalSchema } from '@/schemas/shared.schema';
 
 export const insertProductSchema = z.object({
   name: z.string().min(3).max(255).trim(),

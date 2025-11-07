@@ -1,8 +1,8 @@
 import { routes } from '@/constants/routes.constants';
+import { prisma } from '@/lib/prisma-client';
 import bcrypt from 'bcryptjs';
 import type { AuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { prisma } from './prisma-client';
 
 const authOptions: AuthOptions = {
   providers: [

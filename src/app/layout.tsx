@@ -1,9 +1,9 @@
+import '@/app/globals.css';
 import { SiteHeader } from '@/components/header/the-header';
 import { Toaster } from '@/components/ui/sonner';
 import { AppProviders } from '@/contexts/app.context';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 const appName = process.env.APP_NAME || '';

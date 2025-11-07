@@ -1,5 +1,5 @@
+import { routes } from '@/constants/routes.constants';
 import { StepsType } from '@/types/cart.type';
-import { routes } from './routes.constants';
 
 export const CART_STEPS_INFO = [
   { name: 'cart', label: 'Cart Table', link: routes.cart.root },

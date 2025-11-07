@@ -1,6 +1,6 @@
 import { PAYMENT_METHODS } from '@/constants/cart.constants';
+import { decimalSchema } from '@/schemas/shared.schema';
 import { z } from 'zod';
-import { decimalSchema } from './shared.schema';
 
 export const cartItemSchema = z.object({
   productId: z.number().int().positive(),

@@ -1,7 +1,7 @@
+import { HeaderMenu } from '@/components/header/header-menu';
 import { routes } from '@/constants/routes.constants';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { HeaderMenu } from './header-menu';
 
 function SiteHeader({ className }: { className: string }) {
   return (
