@@ -6,7 +6,7 @@ import {
   paymentMethodSchema,
   shippingAddressSchema,
 } from '@/schemas/cart.schema';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import type { Session } from 'next-auth';
 import { z } from 'zod';
 

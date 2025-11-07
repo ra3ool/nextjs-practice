@@ -7,7 +7,8 @@ import { ResponseBuilder } from '@/lib/response';
 import { shippingAddressSchema } from '@/schemas/cart.schema';
 import type { ShippingAddressType } from '@/types/cart.type';
 import type { ServiceResponse } from '@/types/service-response.type';
-import { getServerSession, User } from 'next-auth';
+import type { User } from '@prisma/client';
+import { getServerSession } from 'next-auth';
 
 export async function getUsers(): Promise<ServiceResponse<User[] | null>> {
   try {

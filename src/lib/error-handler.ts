@@ -1,6 +1,6 @@
+import { Prisma } from '@/lib/prisma-client';
 import { ResponseBuilder } from '@/lib/response';
 import { ErrorContext, ServiceResponse } from '@/types/service-response.type';
-import { Prisma } from '@prisma/client';
 import { ZodError } from 'zod';
 
 function handleServiceError(

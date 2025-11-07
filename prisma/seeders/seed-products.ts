@@ -1,6 +1,6 @@
 import { products } from '@/db/products';
+import { PrismaClient } from '@/lib/prisma-client';
 import { createSlug } from '@/utils/create-slug';
-import { PrismaClient } from '@prisma/client';
 
 export async function seedProducts(db: PrismaClient) {
   console.log('🌱 Seeding products...');
