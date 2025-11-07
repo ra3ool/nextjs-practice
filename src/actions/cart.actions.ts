@@ -7,7 +7,7 @@ import {
 import { routes } from '@/constants/routes.constants';
 import { authOptions } from '@/lib/auth';
 import { handleServiceError } from '@/lib/error-handler';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma-client';
 import { ResponseBuilder } from '@/lib/response';
 import { cartItemSchema, paymentMethodSchema } from '@/schemas/cart.schema';
 import type {

@@ -2,7 +2,7 @@
 
 import { authOptions } from '@/lib/auth';
 import { handleServiceError } from '@/lib/error-handler';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma-client';
 import { ResponseBuilder } from '@/lib/response';
 import { shippingAddressSchema } from '@/schemas/cart.schema';
 import type { ShippingAddressType } from '@/types/cart.type';
