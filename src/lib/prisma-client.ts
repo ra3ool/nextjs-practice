@@ -1,3 +1,4 @@
+import { serializePrisma } from '@/utils/serialize-prisma';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 declare global {
@@ -7,9 +8,24 @@ declare global {
 const prismaInstance =
   global.prisma ||
   new PrismaClient({
-    log: ['query'], // optional: helpful during dev
+    log: process.env.NODE_ENV === 'development' ? ['query'] : [],
   });
 
-if (process.env.NODE_ENV !== 'production') global.prisma = prismaInstance;
+if (process.env.NODE_ENV !== 'production') {
+  global.prisma = prismaInstance;
+}
+
+// if we wanna prisma middleware, can use this
+
+// const prismaWithSerialization = prismaInstance.$extends({
+//   query: {
+//     $allModels: {
+//       async $allOperations({ operation, model, args, query }) {
+//         const result = await query(args);
+//         return serializePrisma(result);
+//       },
+//     },
+//   },
+// }) as PrismaClient;
 
 export { prismaInstance as prisma, Prisma, PrismaClient };
