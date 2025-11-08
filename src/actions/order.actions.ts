@@ -7,6 +7,7 @@ import { ResponseBuilder } from '@/lib/response';
 import { insertOrderSchema } from '@/schemas/cart.schema';
 import type { CartType, InsertOrderType, OrderType } from '@/types/cart.type';
 import type { ServiceResponse } from '@/types/service-response.type';
+import { serializePrisma } from '@/utils/serialize-prisma';
 import { getServerSession } from 'next-auth';
 
 export const createOrder = async (
@@ -68,12 +69,21 @@ export const getOrdersList = async (): Promise<
     }
     const userId = +session.user.id;
 
-    const orders = await prisma.order.findMany({ where: { userId } });
+    const orders = await prisma.order.findMany({
+      where: { userId },
+      include: {
+        OrderItem: true,
+        user: { select: { name: true, email: true } },
+      },
+    });
     if (!orders || orders.length === 0) {
       return ResponseBuilder.success([], 'No orders found');
     }
 
-    return ResponseBuilder.success(orders, 'Orders list fetched');
+    return ResponseBuilder.success(
+      serializePrisma(orders) as unknown as OrderType[],
+      'Orders list fetched',
+    );
   } catch (error) {
     console.error('Failed to fetch orders list:', error);
     return handleServiceError(error);
@@ -90,12 +100,21 @@ export const getOrderById = async (
     }
     const userId = +session.user.id;
 
-    const order = await prisma.order.findFirst({ where: { id, userId } });
+    const order = await prisma.order.findFirst({
+      where: { id, userId },
+      include: {
+        OrderItem: true,
+        user: { select: { name: true, email: true } },
+      },
+    });
     if (!order) {
       return ResponseBuilder.notFound('Order not found');
     }
 
-    return ResponseBuilder.success(order, 'Order fetched');
+    return ResponseBuilder.success(
+      serializePrisma(order) as unknown as OrderType,
+      'Order fetched',
+    );
   } catch (error) {
     console.error('Failed to fetch order:', error);
     return handleServiceError(error);

@@ -6,15 +6,14 @@ import {
   paymentMethodSchema,
   shippingAddressSchema,
 } from '@/schemas/cart.schema';
-import type { User } from '@prisma/client';
 import type { Session } from 'next-auth';
 import { z } from 'zod';
 
 export type InsertCartType = z.infer<typeof insertCartSchema>;
 export type CartType = InsertCartType & {
   id: number;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  createdAt: string;
+  updatedAt: string;
 };
 export type CartItemType = z.infer<typeof cartItemSchema>;
 
@@ -43,12 +42,12 @@ export type PaymentMethodsType = z.infer<typeof paymentMethodSchema>;
 //should move to order type file
 export type InsertOrderType = z.infer<typeof insertOrderSchema>;
 export type OrderType = InsertOrderType & {
-  id: Number;
-  createdAt: Date | string;
-  isPaid: Boolean;
-  paidAt: Date | string | null;
-  deliveredAt: Date | string | null;
-  orderItems: OrderItemType[];
-  user: User;
+  id: number;
+  isDelivered: boolean;
+  createdAt: string;
+  paidAt: string | null;
+  deliveredAt: string | null;
+  OrderItem: OrderItemType[];
+  user: { name: string; email: string };
 };
 export type OrderItemType = z.infer<typeof insertOrderItemSchema>;

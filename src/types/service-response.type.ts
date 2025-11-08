@@ -1,7 +1,7 @@
 export type ServiceResponse<T = void> = {
   success: boolean;
   message: string;
-  data?: T | null;
+  data?: T;
   status?: number;
   errors?: string[];
 };
