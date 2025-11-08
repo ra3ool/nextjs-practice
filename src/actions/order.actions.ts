@@ -31,7 +31,7 @@ export const createOrder = async (
         },
       });
 
-      await tx.orderItem.createMany({
+      await tx.orderItems.createMany({
         data: cart.items.map((item) => ({
           orderId: insertedOrder.id,
           productId: item.productId,
@@ -72,7 +72,7 @@ export const getOrdersList = async (): Promise<
     const orders = await prisma.order.findMany({
       where: { userId },
       include: {
-        OrderItem: true,
+        OrderItems: true,
         user: { select: { name: true, email: true } },
       },
     });
@@ -103,7 +103,7 @@ export const getOrderById = async (
     const order = await prisma.order.findFirst({
       where: { id, userId },
       include: {
-        OrderItem: true,
+        OrderItems: true,
         user: { select: { name: true, email: true } },
       },
     });

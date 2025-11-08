@@ -47,7 +47,7 @@ export type OrderType = InsertOrderType & {
   createdAt: string;
   paidAt: string | null;
   deliveredAt: string | null;
-  OrderItem: OrderItemType[];
+  OrderItems: OrderItemType[];
   user: { name: string; email: string };
 };
 export type OrderItemType = z.infer<typeof insertOrderItemSchema>;

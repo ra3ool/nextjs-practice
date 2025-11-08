@@ -18,6 +18,7 @@ import type {
 import type { ServiceResponse } from '@/types/service-response.type';
 import { mergeCartItems } from '@/utils/cart-merge';
 import { round2 } from '@/utils/round2';
+import { serializePrisma } from '@/utils/serialize-prisma';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -334,7 +335,7 @@ export const updateCartPaymentMethod = async (
     });
 
     return ResponseBuilder.success(
-      updated as unknown as CartType,
+      serializePrisma(updated) as unknown as CartType,
       'Payment method updated',
     );
   } catch (e) {

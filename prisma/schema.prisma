@@ -42,21 +42,21 @@ model UserAddress {
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
-  name        String      @db.VarChar(255)
-  slug        String      @unique @db.VarChar(255)
-  description String      @db.Text
-  price       Decimal     @default(0) @db.Decimal(12, 2)
-  rate        Decimal     @default(0) @db.Decimal(3, 2)
-  stock       Int         @default(0)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  images      String      @db.Text
-  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(255)
+  slug        String       @unique @db.VarChar(255)
+  description String       @db.Text
+  price       Decimal      @default(0) @db.Decimal(12, 2)
+  rate        Decimal      @default(0) @db.Decimal(3, 2)
+  stock       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  images      String       @db.Text
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  Int
-  brand       Brand       @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brand       Brand        @relation(fields: [brandId], references: [id], onDelete: Cascade)
   brandId     Int
-  OrderItem   OrderItem[]
+  OrderItems  OrderItems[]
 
   @@map("products")
 }
@@ -97,26 +97,26 @@ model Cart {
 }
 
 model Order {
-  id              Int         @id @default(autoincrement())
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              Int          @id @default(autoincrement())
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          Int
-  shippingAddress String      @db.Text
-  paymentMethod   String      @db.VarChar(50)
-  paymentResult   String?     @db.VarChar(50)
+  shippingAddress String       @db.Text
+  paymentMethod   String       @db.VarChar(50)
+  paymentResult   String?      @db.VarChar(50)
   paidAt          DateTime?
-  itemsPrice      Decimal     @default(0) @db.Decimal(12, 2)
-  shippingPrice   Decimal     @default(0) @db.Decimal(12, 2)
-  taxPrice        Decimal     @default(0) @db.Decimal(12, 2)
-  totalPrice      Decimal     @default(0) @db.Decimal(12, 2)
-  isDelivered     Boolean     @default(false)
+  itemsPrice      Decimal      @default(0) @db.Decimal(12, 2)
+  shippingPrice   Decimal      @default(0) @db.Decimal(12, 2)
+  taxPrice        Decimal      @default(0) @db.Decimal(12, 2)
+  totalPrice      Decimal      @default(0) @db.Decimal(12, 2)
+  isDelivered     Boolean      @default(false)
   deliveredAt     DateTime?
-  createdAt       DateTime    @default(now())
-  OrderItem       OrderItem[]
+  createdAt       DateTime     @default(now())
+  OrderItems      OrderItems[]
 
   @@map("orders")
 }
 
-model OrderItem {
+model OrderItems {
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId   Int
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -125,5 +125,5 @@ model OrderItem {
   price     Decimal @default(0) @db.Decimal(12, 2)
 
   @@id([orderId, productId])
-  @@map("order_item")
+  @@map("order_items")
 }
