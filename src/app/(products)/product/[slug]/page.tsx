@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { routes } from '@/constants/routes.constants';
 import type { CartType } from '@/types/cart.type';
-import { serializeCart } from '@/utils/serialize-cart';
+import { serializePrisma } from '@/utils/serialize-prisma';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -26,7 +26,7 @@ async function ProductDetails({ params }: { params: { slug: string } }) {
 
   if (!product) notFound();
 
-  const cart = serializeCart(rawCart as CartType);
+  const cart = serializePrisma(rawCart as CartType);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">

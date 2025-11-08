@@ -5,7 +5,7 @@ import { CheckoutSteps } from '@/components/cart/checkout-steps';
 import { CartProvider } from '@/contexts/cart.context';
 import { authOptions } from '@/lib/auth';
 import type { CartType, ShippingAddressType } from '@/types/cart.type';
-import { serializeCart } from '@/utils/serialize-cart';
+import { serializePrisma } from '@/utils/serialize-prisma';
 import { getServerSession } from 'next-auth';
 
 async function CartLayout({ children }: { children: React.ReactNode }) {
@@ -14,7 +14,7 @@ async function CartLayout({ children }: { children: React.ReactNode }) {
     getServerSession(authOptions),
     getUserAddresses(),
   ]);
-  const serializedCart = serializeCart(cart as CartType);
+  const serializedCart = serializePrisma(cart as CartType);
   const addresses = addressesResult.data as ShippingAddressType[];
 
   return (
