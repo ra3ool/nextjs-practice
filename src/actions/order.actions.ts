@@ -73,7 +73,6 @@ export const getOrdersList = async (): Promise<
       where: { userId },
       include: {
         OrderItems: true,
-        user: { select: { name: true, email: true } },
       },
     });
     if (!orders || orders.length === 0) {
@@ -103,8 +102,17 @@ export const getOrderById = async (
     const order = await prisma.order.findFirst({
       where: { id, userId },
       include: {
-        OrderItems: true,
-        user: { select: { name: true, email: true } },
+        OrderItems: {
+          include: {
+            product: {
+              select: {
+                slug: true,
+                images: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!order) {
