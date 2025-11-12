@@ -8,6 +8,7 @@ import {
 } from '@/schemas/cart.schema';
 import type { Session } from 'next-auth';
 import { z } from 'zod';
+import { Product } from './product.type';
 
 export type InsertCartType = z.infer<typeof insertCartSchema>;
 export type CartType = InsertCartType & {
@@ -43,11 +44,12 @@ export type PaymentMethodsType = z.infer<typeof paymentMethodSchema>;
 export type InsertOrderType = z.infer<typeof insertOrderSchema>;
 export type OrderType = InsertOrderType & {
   id: number;
-  isDelivered: boolean;
   createdAt: string;
   paidAt: string | null;
   deliveredAt: string | null;
   OrderItems: OrderItemType[];
   user: { name: string; email: string };
 };
-export type OrderItemType = z.infer<typeof insertOrderItemSchema>;
+export type OrderItemType = z.infer<typeof insertOrderItemSchema> & {
+  product?: Product;
+};

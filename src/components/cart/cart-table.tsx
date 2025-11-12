@@ -21,10 +21,12 @@ function CartTable({
   cart,
   className,
   showOnlyItemsDetail = false,
+  linkToProduct = true,
 }: {
   cart: CartType;
   className?: string;
   showOnlyItemsDetail?: boolean;
+  linkToProduct?: boolean;
 }) {
   const router = useRouter();
   const goToProductDetails = (itemSlug: string) => {
@@ -48,9 +50,9 @@ function CartTable({
                 <TableCell
                   className={cn(
                     'font-medium flex items-center gap-4',
-                    !showOnlyItemsDetail && 'cursor-pointer',
+                    linkToProduct && 'cursor-pointer',
                   )}
-                  {...(!showOnlyItemsDetail && {
+                  {...(linkToProduct && {
                     onClick: () => goToProductDetails(item.slug),
                   })}
                 >

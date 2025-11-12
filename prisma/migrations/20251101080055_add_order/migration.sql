@@ -10,7 +10,6 @@ CREATE TABLE `orders` (
     `shippingPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `taxPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
     `totalPrice` DECIMAL(12, 2) NOT NULL DEFAULT 0,
-    `isDelivered` BOOLEAN NOT NULL DEFAULT false,
     `deliveredAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 

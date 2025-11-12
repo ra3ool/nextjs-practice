@@ -75,7 +75,7 @@ function ClientPlaceOrderPage() {
         title="Cart Items"
         onEditClick={() => goToStep(routes.cart.root)}
       >
-        <CartTable cart={cart} showOnlyItemsDetail />
+        <CartTable cart={cart} showOnlyItemsDetail linkToProduct={false} />
       </CardWrapper>
 
       <CardWrapper
