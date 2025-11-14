@@ -45,7 +45,7 @@ function ClientShippingAddressPage({
     return () => {
       setOnFormSubmit(() => {});
     };
-  }, []);
+  }, [router, setOnFormSubmit]);
 
   return (
     <>

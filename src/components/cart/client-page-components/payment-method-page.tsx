@@ -22,7 +22,7 @@ import { paymentMethodSchema } from '@/schemas/cart.schema';
 import type { PaymentMethodsType } from '@/types/cart.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useEffect, useTransition } from 'react';
+import { useCallback, useEffect, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -46,7 +46,7 @@ function ClientPaymentMethodPage() {
     },
   });
 
-  const onSubmit = (data: PaymentMethodsType) => {
+  const onSubmit = useCallback((data: PaymentMethodsType) => {
     if (data.type === cart.paymentMethod) {
       router.push(routes.cart.placeOrder);
       return;
@@ -61,7 +61,7 @@ function ClientPaymentMethodPage() {
         toast.error(result.message);
       }
     });
-  };
+  }, [cart, router]);
 
   useEffect(() => {
     const submitHandler = () => {
@@ -73,7 +73,7 @@ function ClientPaymentMethodPage() {
     return () => {
       setOnFormSubmit(() => {});
     };
-  }, []);
+  }, [form, onSubmit, setOnFormSubmit]);
 
   return (
     <>

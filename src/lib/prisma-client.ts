@@ -1,4 +1,3 @@
-import { serializePrisma } from '@/utils/serialize-prisma';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 declare global {

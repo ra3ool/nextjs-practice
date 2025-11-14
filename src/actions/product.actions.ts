@@ -1,12 +1,14 @@
 'use server';
 
 import { prisma } from '@/lib/prisma-client';
+import type { Brand, Category, Product } from '@prisma/client';
 import type { ProductWithRelations } from '@/types/product.type';
 
-//FIXME to don't use any
-const convertProduct = (product: any): ProductWithRelations => ({
+type ProductWithPrismaRelations = Product & { brand: Brand; category: Category };
+
+const convertProduct = (product: ProductWithPrismaRelations): ProductWithRelations => ({
   ...product,
-  images: JSON.parse(product.images),
+  images: JSON.parse(product.images as string),
   price: Number(product.price),
   rate: Number(product.rate),
 });

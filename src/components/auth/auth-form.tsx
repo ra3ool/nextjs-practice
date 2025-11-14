@@ -17,12 +17,34 @@ import type { LoginType, RegisterType } from '@/types/auth.type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 
 type AuthMode = 'login' | 'register';
 
 function AuthForm({ mode }: { mode: AuthMode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      }
+    >
+      <AuthFormContent mode={mode} />
+    </Suspense>
+  );
+}
+
+function AuthFormContent({ mode }: { mode: AuthMode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');

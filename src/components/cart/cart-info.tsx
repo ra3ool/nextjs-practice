@@ -95,11 +95,13 @@ const CartInfo = memo(({ cart, className }: CartInfoProps) => {
       addressListLength,
       onFormSubmit,
       className,
+      cart.shippingPrice,
     ],
   );
 
   return cartContent;
 });
+CartInfo.displayName = 'CartInfo';
 
 const ActionButton = memo(
   ({
@@ -148,5 +150,6 @@ const ActionButton = memo(
     }
   },
 );
+ActionButton.displayName = 'ActionButton';
 
 export { CartInfo };

@@ -62,7 +62,7 @@ export function PaginationControls<T>({
 
   useEffect(() => {
     onPageChange?.(paginatedData, currentPage, totalPages);
-  }, [currentPage, totalPages, data.length]);
+  }, [currentPage, totalPages, paginatedData, onPageChange]);
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -81,7 +81,7 @@ export function PaginationControls<T>({
     const items = [];
 
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
@@ -150,7 +150,7 @@ export function PaginationControls<T>({
     }
 
     return items;
-  }, [totalPages, currentPage, handlePageChange]);
+  }, [totalPages, currentPage, handlePageChange, maxVisiblePages]);
 
   if (totalPages <= 1) {
     return showInfo ? (

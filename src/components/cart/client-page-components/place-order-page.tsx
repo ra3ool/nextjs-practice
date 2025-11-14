@@ -31,7 +31,7 @@ function ClientPlaceOrderPage() {
     } else if (!defaultAddress) {
       router.replace(routes.cart.shippingAddress);
     }
-  }, [cart, router]);
+  }, [cart, router, defaultAddress]);
 
   useEffect(() => {
     const orderAddress = {
@@ -67,7 +67,7 @@ function ClientPlaceOrderPage() {
     return () => {
       setOnFormSubmit(() => {});
     };
-  }, []);
+  }, [cart, defaultAddress, router, setOnFormSubmit]);
 
   return (
     <div className={cn('flex flex-col gap-5', isPending && 'opacity-50')}>

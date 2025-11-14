@@ -13,7 +13,11 @@ const metadata: Metadata = {
   title: 'Order details',
 };
 
-async function OrderDetailPage({ params }: { params: { orderId: string } }) {
+async function OrderDetailPage({
+  params,
+}: {
+  params: Promise<{ orderId: string }>;
+}) {
   const { orderId } = await params;
   const result = await getOrderById(Number(orderId));
   if (

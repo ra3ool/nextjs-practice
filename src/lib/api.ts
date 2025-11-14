@@ -1,6 +1,6 @@
 type FetchOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  body?: any;
+  body?: unknown;
   tags?: string[]; // for cache invalidation
   revalidate?: number; // ISR in seconds
   cache?: RequestCache; // 'force-cache' | 'no-store'

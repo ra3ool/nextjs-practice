@@ -16,7 +16,11 @@ const metadata: Metadata = {
   title: 'Product',
 };
 
-async function ProductDetails({ params }: { params: { slug: string } }) {
+async function ProductDetails({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
   const [product, rawCart] = await Promise.all([

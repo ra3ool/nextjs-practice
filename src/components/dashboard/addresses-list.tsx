@@ -89,7 +89,7 @@ function AddressCard({
 }: {
   address: ShippingAddressType;
   className?: string;
-  handleDeleteAddress?: Function;
+  handleDeleteAddress?: (address: ShippingAddressType) => void;
   onClick?: MouseEventHandler;
   showDefaultAddressCheckIcon?: boolean;
 }) {

@@ -80,5 +80,6 @@ const CheckoutSteps = memo(({ className }: { className?: string }) => {
     </nav>
   );
 });
+CheckoutSteps.displayName = 'CheckoutSteps';
 
 export { CheckoutSteps };
