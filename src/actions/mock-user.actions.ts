@@ -1,3 +1,5 @@
+'use server';
+
 import { userApi } from '@/lib/api';
 import { handleServiceError } from '@/lib/error-handler';
 import { ResponseBuilder } from '@/lib/response';

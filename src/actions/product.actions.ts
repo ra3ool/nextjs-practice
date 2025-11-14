@@ -1,3 +1,5 @@
+'use server';
+
 import { prisma } from '@/lib/prisma-client';
 import type { ProductWithRelations } from '@/types/product.type';
 
