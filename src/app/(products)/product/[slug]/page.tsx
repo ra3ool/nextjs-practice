@@ -15,9 +15,10 @@ import { notFound } from 'next/navigation';
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const product = await getProduct({ slug: params.slug });
+  const { slug } = await params;
+  const product = await getProduct({ slug });
 
   if (!product) {
     return { title: 'Product Not Found' };
