@@ -16,7 +16,7 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
           className="flex justify-center items-center h-48 w-full relative"
         >
           <ImageWithLoader
-            src={product.images[0]}
+            src={product.images?.[0]}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 192px"
@@ -35,14 +35,16 @@ function ProductCard({ product }: { product: ProductWithRelations }) {
           </h6>
         </Link>
         <div className="flex items-center justify-between flex-wrap">
-          <Link href={`${routes.products.brands}/${product.brand.slug}`}>
+          <Link href={`${routes.products.brands}/${product.brand?.slug}`}>
             <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
-              {product.brand.name}
+              {product.brand?.name}
             </p>
           </Link>
-          <Link href={`${routes.products.categories}/${product.category.slug}`}>
+          <Link
+            href={`${routes.products.categories}/${product.category?.slug}`}
+          >
             <p className="text-sm text-blue-600 hover:text-blue-800 font-medium capitalize">
-              {product.category.name}
+              {product.category?.name}
             </p>
           </Link>
         </div>
