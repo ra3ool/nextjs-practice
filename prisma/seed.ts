@@ -1,8 +1,8 @@
-import { PrismaClient } from '@/lib/prisma-client';
+import { prisma } from '@/lib/prisma-client';
 import { seedProducts } from './seeders/seed-products';
 import { seedUsers } from './seeders/seed-users';
 
-const db = new PrismaClient();
+const db = prisma;
 
 async function main() {
   await seedUsers(db);
