@@ -1,6 +1,6 @@
 {
   "name": "next",
-  "version": "0.4.15",
+  "version": "0.5.15",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
