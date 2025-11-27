@@ -1,6 +1,6 @@
+import { ContactForm } from '@/components/contact-form';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ContactForm } from '@/components/contact-form';
 
 global.fetch = jest.fn();
 
@@ -18,13 +18,15 @@ describe('ContactForm', () => {
   it('submits form and shows success message', async () => {
     const user = userEvent.setup();
     (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true });
-    
+
     render(<ContactForm />);
     await user.type(screen.getByPlaceholderText('Your name'), 'John Doe');
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() => {
-      expect(screen.getByText('Form submitted successfully!')).toBeInTheDocument();
+      expect(
+        screen.getByText('Form submitted successfully!'),
+      ).toBeInTheDocument();
     });
   });
 });
