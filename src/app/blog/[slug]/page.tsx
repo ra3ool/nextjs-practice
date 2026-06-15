@@ -2,7 +2,7 @@ interface BlogPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default async function BlogPage({ params }: BlogPageProps) {
+async function BlogPage({ params }: BlogPageProps) {
   const { slug } = await params;
 
   return (
@@ -11,3 +11,5 @@ export default async function BlogPage({ params }: BlogPageProps) {
     </div>
   );
 }
+
+export default BlogPage;

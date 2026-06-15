@@ -17,4 +17,4 @@ function ProductPrice({
   );
 }
 
-export default ProductPrice;
+export { ProductPrice };

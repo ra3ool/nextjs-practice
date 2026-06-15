@@ -1,0 +1,51 @@
+'use client';
+
+import type {
+  CartContextType,
+  CartProviderType,
+  ShippingAddressType,
+  StepsType,
+} from '@/types/cart.type';
+import { createContext, useContext, useMemo, useState } from 'react';
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+function CartProvider({
+  children,
+  session,
+  cart,
+  addresses: initialAddresses,
+}: CartProviderType) {
+  const [currentStep, setCurrentStep] = useState<StepsType>('loading');
+  const [onFormSubmit, setOnFormSubmit] = useState<() => void>(() => {});
+  const [addresses, setAddresses] =
+    useState<ShippingAddressType[]>(initialAddresses);
+
+  const contextValue = useMemo(
+    () => ({
+      cart,
+      session,
+      currentStep,
+      setCurrentStep,
+      addresses,
+      setAddresses,
+      onFormSubmit,
+      setOnFormSubmit,
+    }),
+    [cart, session, currentStep, addresses, onFormSubmit],
+  );
+
+  return (
+    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
+  );
+}
+
+function useCart() {
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+}
+
+export { CartProvider, useCart };

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
-export function ContactForm() {
+function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const submitContact = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,3 +33,5 @@ export function ContactForm() {
     </Card>
   );
 }
+
+export { ContactForm };

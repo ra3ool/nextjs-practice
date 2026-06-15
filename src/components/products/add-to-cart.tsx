@@ -2,7 +2,7 @@
 
 import { addItemToCart, removeItemFromCart } from '@/actions/cart.actions';
 import { Button } from '@/components/ui/button';
-import { CartItemType, CartType } from '@/types/cart.type';
+import type { CartItemType, CartType } from '@/types/cart.type';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
@@ -18,10 +18,10 @@ const actionMap = {
   delete: removeItemFromCart,
 };
 
-export default function AddToCart({ cart, item }: Props) {
+function AddToCart({ cart, item }: Props) {
   const [isPending, startTransition] = useTransition();
 
-  const existItem = cart.items.find(
+  const existItem = cart.items?.find(
     (cartItem) => cartItem.productId === item.productId,
   );
 
@@ -50,7 +50,7 @@ export default function AddToCart({ cart, item }: Props) {
   };
 
   return existItem ? (
-    <div className="flex justify-around items-center">
+    <div className="flex justify-evenly items-center gap-3">
       <Button
         variant="outline"
         type="button"
@@ -63,7 +63,7 @@ export default function AddToCart({ cart, item }: Props) {
       <Button
         variant="outline"
         type="button"
-        disabled={isPending}
+        disabled={isPending || existItem.stock <= existItem.qty}
         onClick={() => handleCartAction('add')}
       >
         <PlusIcon />
@@ -81,3 +81,5 @@ export default function AddToCart({ cart, item }: Props) {
     </Button>
   );
 }
+
+export { AddToCart };

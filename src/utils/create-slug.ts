@@ -1,4 +1,4 @@
-export function createSlug(name: string): string {
+function createSlug(name: string): string {
   if (!name || typeof name !== 'string') return '';
   return name
     .toLowerCase()
@@ -7,3 +7,5 @@ export function createSlug(name: string): string {
     .replace(/\s+/g, '-') // replace spaces with -
     .replace(/-+/g, '-'); // collapse multiple -
 }
+
+export { createSlug };

@@ -1,9 +1,11 @@
+import { routes } from '@/constants/routes.constants';
+import { prisma } from '@/lib/prisma-client';
 import bcrypt from 'bcryptjs';
 import type { AuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { prisma } from './prisma';
 
-export const authOptions: AuthOptions = {
+const authOptions: AuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
       name: 'Credentials',
@@ -27,7 +29,7 @@ export const authOptions: AuthOptions = {
         if (!isValid) return null;
 
         return {
-          id: String(user.id),
+          id: user.id,
           name: user.name,
           email: user.email,
           role: user.role,
@@ -36,8 +38,8 @@ export const authOptions: AuthOptions = {
     }),
   ],
   pages: {
-    signIn: '/auth',
-    error: '/auth',
+    signIn: routes.auth.root,
+    error: routes.auth.root,
   },
   session: {
     strategy: 'jwt',
@@ -46,7 +48,7 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = +user.id;
         token.role = user.role;
       }
       return token;
@@ -60,3 +62,5 @@ export const authOptions: AuthOptions = {
     },
   },
 };
+
+export { authOptions };

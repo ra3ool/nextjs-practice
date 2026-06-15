@@ -1,5 +1,16 @@
 'use client';
 
+import { ToggleTheme } from '@/components/header/toggle-theme';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -15,6 +26,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { routes } from '@/constants/routes.constants';
 import { signOut, useSession } from '@/lib/auth-client';
 import {
   ChevronDownIcon,
@@ -27,9 +39,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ToggleTheme } from './toggle-theme';
+import { useState } from 'react';
 
-export default function HeaderMenu() {
+function HeaderMenu() {
   return (
     <>
       <nav className="hidden md:flex items-center gap-2">
@@ -64,10 +76,7 @@ function NavContent() {
       <ToggleTheme />
 
       <Button variant="ghost" asChild>
-        <Link
-          href="/cart"
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
-        >
+        <Link href={routes.cart.root} className="flex items-center">
           <ShoppingCartIcon className="h-4 w-4" />
           Cart
         </Link>
@@ -81,6 +90,7 @@ function NavContent() {
 function NavAuthButtons() {
   const pathName = usePathname();
   const { data: session, status } = useSession();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   if (status === 'loading') {
     return (
@@ -95,7 +105,7 @@ function NavAuthButtons() {
     return (
       <Button asChild>
         <Link
-          href={`/auth?callbackUrl=${pathName}`}
+          href={`${routes.auth.root}?callbackUrl=${pathName}`}
           className="flex items-center gap-2"
         >
           <UserIcon className="h-4 w-4" />
@@ -106,32 +116,57 @@ function NavAuthButtons() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
-          <UserIcon className="h-4 w-4" />
-          {session.user?.name || 'Account'}
-          <ChevronDownIcon className="h-3 w-3" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuItem asChild>
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 cursor-pointer"
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" className="flex items-center gap-2">
+            <UserIcon className="h-4 w-4" />
+            {session.user?.name || 'Account'}
+            <ChevronDownIcon className="h-3 w-3" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuItem asChild>
+            <Link
+              href={routes.dashboard.root}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <LayoutDashboardIcon className="h-4 w-4" />
+              Dashboard
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="flex items-center gap-2 cursor-pointer text-red-400 focus:text-red-400"
+            onSelect={(e) => {
+              e.preventDefault(); // Prevent dropdown from closing
+              setShowLogoutDialog(true);
+            }}
           >
-            <LayoutDashboardIcon className="h-4 w-4" />
-            Dashboard
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => signOut()}
-          className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-600"
-        >
-          <LogOutIcon className="h-4 w-4 text-current" />
-          Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <LogOutIcon className="h-4 w-4 text-current" />
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have to login again to access your dashboard
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => signOut()}>
+              Log Out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
+
+export { HeaderMenu };

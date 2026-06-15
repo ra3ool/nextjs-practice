@@ -18,7 +18,7 @@ const iconMap = {
 } as const;
 const DEFAULT_THEME = 'system';
 
-export function ToggleTheme() {
+function ToggleTheme() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -36,3 +36,5 @@ export function ToggleTheme() {
     </Button>
   );
 }
+
+export { ToggleTheme };

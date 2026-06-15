@@ -12,7 +12,7 @@ const submitContact = async (data: FormData) => {
   revalidatePath('/'); //TODO read more about
 };
 
-export default function ContactPage() {
+function ContactPage() {
   return (
     <div className="flex flex-col items-center p-8">
       <h3 className="mb-4">server action</h3>
@@ -35,3 +35,5 @@ export default function ContactPage() {
     </div>
   );
 }
+
+export default ContactPage;

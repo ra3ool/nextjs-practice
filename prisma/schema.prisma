@@ -3,36 +3,59 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  email     String   @unique
-  password  String
-  role      String   @default("user")
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  Cart      Cart[]
+  id          Int           @id @default(autoincrement())
+  name        String?
+  email       String        @unique
+  password    String
+  role        String        @default("user")
+  createdAt   DateTime      @default(now())
+  Cart        Cart[]
+  UserAddress UserAddress[]
+  Order       Order[]
 
   @@map("users")
 }
 
-model Product {
+model UserAddress {
   id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(255)
-  slug        String   @unique @db.VarChar(255)
-  description String   @db.Text
-  price       Decimal  @default(0) @db.Decimal(12, 2)
-  rate        Decimal  @default(0) @db.Decimal(3, 2)
-  stock       Int      @default(0)
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-  images      String   @db.Text
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  country     String   @db.VarChar(50)
+  city        String   @db.VarChar(50)
+  address     String   @db.VarChar(255)
+  postalCode  String?  @db.VarChar(20)
+  lat         Decimal? @db.Decimal(10, 7)
+  lng         Decimal? @db.Decimal(10, 7)
+  phoneNumber String   @db.VarChar(20)
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, address, postalCode])
+  @@index([userId])
+  @@map("user_addresses")
+}
+
+model Product {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(255)
+  slug        String       @unique @db.VarChar(255)
+  description String       @db.Text
+  price       Decimal      @default(0) @db.Decimal(12, 2)
+  rate        Decimal      @default(0) @db.Decimal(3, 2)
+  stock       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  images      String       @db.Text
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  Int
-  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brand       Brand        @relation(fields: [brandId], references: [id], onDelete: Cascade)
   brandId     Int
+  OrderItems  OrderItems[]
 
   @@map("products")
 }
@@ -62,10 +85,43 @@ model Cart {
   sessionCartId String   @unique
   items         Json     @default("[]") @db.Json
   itemsPrice    Decimal  @default(0) @db.Decimal(12, 2)
-  totalPrice    Decimal  @default(0) @db.Decimal(12, 2)
-  shippingPrice Decimal  @default(0) @db.Decimal(12, 2)
   taxPrice      Decimal  @default(0) @db.Decimal(12, 2)
-  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  shippingPrice Decimal  @default(0) @db.Decimal(12, 2)
+  totalPrice    Decimal  @default(0) @db.Decimal(12, 2)
+  paymentMethod String   @db.VarChar(50)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("cart")
+}
+
+model Order {
+  id              Int          @id @default(autoincrement())
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int
+  shippingAddress String       @db.Text
+  paymentMethod   String       @db.VarChar(50)
+  paymentResult   String?      @db.VarChar(50)
+  paidAt          DateTime?
+  itemsPrice      Decimal      @default(0) @db.Decimal(12, 2)
+  shippingPrice   Decimal      @default(0) @db.Decimal(12, 2)
+  taxPrice        Decimal      @default(0) @db.Decimal(12, 2)
+  totalPrice      Decimal      @default(0) @db.Decimal(12, 2)
+  deliveredAt     DateTime?
+  createdAt       DateTime     @default(now())
+  OrderItems      OrderItems[]
+
+  @@map("orders")
+}
+
+model OrderItems {
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  qty       Int
+  price     Decimal @default(0) @db.Decimal(12, 2)
+
+  @@id([orderId, productId])
+  @@map("order_items")
 }

@@ -12,7 +12,7 @@ interface ImageWithLoaderProps extends Omit<ImageProps, 'src' | 'alt'> {
   errorFallback?: React.ReactNode;
 }
 
-export function ImageWithLoader({
+function ImageWithLoader({
   src,
   alt,
   fill = true,
@@ -65,3 +65,5 @@ export function ImageWithLoader({
     </div>
   );
 }
+
+export { ImageWithLoader };

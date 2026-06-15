@@ -1,12 +1,6 @@
 'use client';
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error;
-  reset?: () => void;
-}) {
+function Error({ error, reset }: { error: Error; reset?: () => void }) {
   return (
     <div className="p-4 space-y-2">
       <h2 className="font-bold text-red-600">Something went wrong!</h2>
@@ -22,3 +16,4 @@ export default function Error({
     </div>
   );
 }
+export default Error;

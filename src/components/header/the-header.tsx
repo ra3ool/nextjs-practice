@@ -1,12 +1,13 @@
+import { HeaderMenu } from '@/components/header/header-menu';
+import { routes } from '@/constants/routes.constants';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import HeaderMenu from './header-menu';
 
-export function SiteHeader({ className }: { className: string }) {
+function SiteHeader({ className }: { className: string }) {
   return (
-    <header className={cn('border-b select-none', className)}>
+    <header className={cn('border-b select-none bg-background', className)}>
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
-        <Link href="/" className="font-semibold tracking-tight">
+        <Link href={routes.root} className="font-semibold tracking-tight">
           Store Project
         </Link>
 
@@ -15,3 +16,5 @@ export function SiteHeader({ className }: { className: string }) {
     </header>
   );
 }
+
+export { SiteHeader };
